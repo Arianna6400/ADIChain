@@ -89,3 +89,5 @@ contract MedicalDataSharing {
     // Altre funzioni possono includere l'aggiornamento dei dati medici, il loro recupero, ecc.
     // ...
 }
+
+// #GiaccoGay
