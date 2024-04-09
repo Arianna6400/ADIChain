@@ -44,8 +44,7 @@ class TreatmentPlans(Model):
             self.cur.execute('''UPDATE TreatmentPlans SET id_patient=?, id_medic=?, id_caregiver=?, description=?, start_date=?, end_date=? WHERE id_treatment_plan=?''',
                              (self.id_patient, self.id_medic, self.id_caregiver, self.description, self.start_date, self.end_date, self.id_treatment_plan))
         self.conn.commit()
-        if self.id_treatment_plan is None:
-            self.id_treatment_plan = self.cur.lastrowid
+        self.id_treatment_plan = self.cur.lastrowid
 
     def delete(self):
         if self.id_treatment_plan is not None:
