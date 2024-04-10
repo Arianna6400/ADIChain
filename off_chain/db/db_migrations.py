@@ -54,7 +54,6 @@ cur.execute('''CREATE TABLE Reports(
             id_medic INTEGER NOT NULL,
             analyses TEXT NOT NULL,
             diagnosis TEXT NOT NULL,
-            phone TEXT,
             FOREIGN KEY(id_patient) REFERENCES Patients(id_patient),
             FOREIGN KEY(id_medic) REFERENCES Medics(id_medic)
             );''')

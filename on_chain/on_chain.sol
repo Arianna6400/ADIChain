@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 contract HealthCareRecords {
     struct Medic {
         string name;
+        string lastname;
         string specialization;
         bool isRegistered;
         uint256 offChainId; // Identificatore correlato al database off-chain
@@ -11,9 +12,46 @@ contract HealthCareRecords {
     
     struct Patient {
         string name;
+        string lastname;
         bool isRegistered;
+        bool autonomous;
         uint256 offChainId; // Identificatore correlato al database off-chain
-        mapping(address => bool) authorizedMedics;
+        mapping(address => address) authorizedMedics;
+        mapping(address => uint256) patientTreatmentPlan;
+        mapping(address => uint256) reportResult;
+    }
+
+    struct Caregivers {
+        string name;
+        string lastname;
+        bool isRegistered;
+        uint256 offChainId;
+        mapping(address => address) caredPatient;
+    }
+
+    struct Credentials {
+        uint256 offChainId;
+        string username;
+        string hash_password;
+        string role;
+        string public_key;
+        string private_key;
+    }
+
+    struct Reports {
+        uint256 offChainId;
+        string analysis;
+        string diagnosis;
+        uint256 medic_id; 
+    }
+
+    struct TreatmentPlan {
+        uint256 offChainId;
+        string medic_id;
+        string caregiver_id;
+        string description;
+        string start_date;
+        string end_date;
     }
 
     // Mapping per gli hash di Reports e TreatmentPlans
@@ -42,9 +80,9 @@ contract HealthCareRecords {
     }
 
     // Funzioni per la Registrazione
-    function registerMedic(string memory name, string memory specialization, uint256 offChainId) public {
+    function registerMedic(string memory name, string memory lastname, string memory specialization, uint256 offChainId) public {
         require(!medics[msg.sender].isRegistered, "Medic already registered.");
-        medics[msg.sender] = Medic(name, specialization, true, offChainId);
+        medics[msg.sender] = Medic(name, lastname, specialization, true, offChainId);
         emit MedicRegistered(msg.sender, name, specialization, offChainId);
     }
     
@@ -64,7 +102,7 @@ contract HealthCareRecords {
     // Funzioni per la Gestione di Accessi e Logs
     function grantAccessToMedic(address medicAddress) public onlyRegisteredPatient {
         require(medics[medicAddress].isRegistered, "Medic not registered.");
-        patients[msg.sender].authorizedMedics[medicAddress] = true;
+        patients[msg.sender].authorizedMedics[medicAddress] = medicAddress;
         emit AccessGranted(msg.sender, medicAddress);
     }
 
