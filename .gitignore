@@ -1,2 +1,6 @@
 .DS_Store
 ./ADIChain/ADIChain
+node_modules
+package-lock.json
+package.json
+truffle-config.js
