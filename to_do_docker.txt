@@ -1,0 +1,9 @@
+Comandi da eseguire su terminale
+
+BUILD DI DOCKER:
+
+docker build -t adichain .
+
+RUN DEL CONTAINER:
+
+docker run -p 8000:8000 adichain

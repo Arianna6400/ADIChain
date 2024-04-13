@@ -76,9 +76,5 @@ cur.execute('''CREATE TABLE AccessLog(
             timestamp TEXT NOT NULL,
             FOREIGN KEY(id_utente) REFERENCES Credentials(id)
             );''')
-cur.execute('''
-            INSERT INTO Credentials VALUES
-            ('1','carlo', '123456', 'MEDIC', 'aaaaa', 'bbbbbbb')
-            ''')
 con.commit()
 con.close()
