@@ -9,12 +9,12 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 #Setting up the working directory in our container
-WORKDIR /blockchain
-COPY . /blockchain
+WORKDIR /progetto
+COPY . /progetto
 
 #Exposing port 8000 where our container will run
 EXPOSE 8000
 
-CMD [ "python", "/blockchain/off_chain/main.py" ]
+CMD [ "python", "/progetto/off_chain/main.py" ]
 
 

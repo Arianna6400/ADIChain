@@ -6,4 +6,4 @@ docker build -t adichain .
 
 RUN DEL CONTAINER:
 
-docker run -p 8000:8000 adichain
+docker run -it -p 8000:8000 adichain
