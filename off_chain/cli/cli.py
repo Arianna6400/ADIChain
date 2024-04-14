@@ -6,7 +6,6 @@ from eth_keys import *
 from controllers.controller import Controller
 
 class CommandLineInterface:
-    
     def __init__(self):
 
         self.controller = Controller()
@@ -80,10 +79,10 @@ class CommandLineInterface:
                     password = getpass.getpass('Password: ')
                     confirm_password = getpass.getpass('Confirm Password: ')
 
-                    passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{12,100}$'
+                    passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
                     
                     if not re.fullmatch(passwd_regex, password):
-                        print('Password must contain at least  12 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
+                        print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
                     elif password != confirm_password:
                         print('Password and confirmation do not match. Try again\n')
                     else:

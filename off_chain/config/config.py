@@ -1,3 +1,3 @@
 import yaml
 
-config = yaml.safe_load(open('off_chain/config/configuration.yml', 'r'))
+config = yaml.safe_load(open('config/configuration.yml', 'r'))

@@ -17,7 +17,7 @@ class DatabaseOperations:
         self.dklen_param = 64
 
     def _create_new_table(self):
-        self.cur.execute('''CREATE TABLE Credentials(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS Credentials(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
             hash_password TEXT NOT NULL,
@@ -25,7 +25,7 @@ class DatabaseOperations:
             public_key TEXT NOT NULL,
             private_key TEXT NOT NULL
             );''')
-        self.cur.execute('''CREATE TABLE Medics(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS Medics(
             id_medic INTEGER NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
@@ -35,7 +35,7 @@ class DatabaseOperations:
             phone TEXT,
             FOREIGN KEY(id_medic) REFERENCES Credentials(id)
             );''')
-        self.cur.execute('''CREATE TABLE Patients(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS Patients(
             id_patient INTEGER NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
@@ -46,7 +46,7 @@ class DatabaseOperations:
             phone TEXT, 
             FOREIGN KEY(id_patient) REFERENCES Credentials(id)
             );''')
-        self.cur.execute('''CREATE TABLE Caregivers(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS Caregivers(
             id_caregiver INTEGER NOT NULL,
             id_patient INTEGER NOT NULL,
             name TEXT NOT NULL,
@@ -56,7 +56,7 @@ class DatabaseOperations:
             FOREIGN KEY(id_caregiver) REFERENCES Credentials(id),
             FOREIGN KEY(id_patient) REFERENCES Patients(id_patient)
             );''')
-        self.cur.execute('''CREATE TABLE Reports(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS Reports(
             id_report INTEGER PRIMARY KEY AUTOINCREMENT,
             id_patient INTEGER NOT NULL,
             id_medic INTEGER NOT NULL,
@@ -65,7 +65,7 @@ class DatabaseOperations:
             FOREIGN KEY(id_patient) REFERENCES Patients(id_patient),
             FOREIGN KEY(id_medic) REFERENCES Medics(id_medic)
             );''')
-        self.cur.execute('''CREATE TABLE TreatmentPlans(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS TreatmentPlans(
             id_treament_plan INTEGER PRIMARY KEY AUTOINCREMENT,
             id_patient INTEGER NOT NULL,
             id_medic INTEGER NOT NULL,
@@ -77,17 +77,13 @@ class DatabaseOperations:
             FOREIGN KEY(id_medic) REFERENCES Medics(id_medic),
             FOREIGN KEY(id_caregiver) REFERENCES Caregivers(id_caregiver)
             );''')
-        self.cur.execute('''CREATE TABLE AccessLog(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS AccessLog(
             id_access INTEGER PRIMARY KEY AUTOINCREMENT,
             id_utente INTEGER NOT NULL,
             action TEXT NOT NULL,
             timestamp TEXT NOT NULL,
             FOREIGN KEY(id_utente) REFERENCES Credentials(id)
             );''')
-        self.cur.execute('''
-            INSERT INTO Credentials VALUES
-            ('1','carlo', '123456', 'MEDIC', 'aaaaa', 'bbbbbbb')
-            ''')
         self.conn.commit()
     
 
