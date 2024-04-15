@@ -1,3 +1,5 @@
 eth-utils
 eth-keys
 pyyaml
+web3
+py-solc-x
