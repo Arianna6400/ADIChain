@@ -90,13 +90,13 @@ class CommandLineInterface:
                 else:
                     break
 
-                reg_code = self.controller.registration(username, password, role, public_key, private_key)
-                if reg_code == 0:
-                    print('You have succesfully registered!\n')
-                elif reg_code == -1:
-                    print('Your username has been taken.\n')
-                elif reg_code == -2:
-                    print('Internal error!')
+            reg_code = self.controller.registration(username, password, role, public_key, private_key)
+            if reg_code == 0:
+                print('You have succesfully registered!\n')
+            elif reg_code == -1:
+                print('Your username has been taken.\n')
+            elif reg_code == -2:
+                print('Internal error!')
         
         else:
             print('Sorry, but the provided public and private key do not match to any account\n')
