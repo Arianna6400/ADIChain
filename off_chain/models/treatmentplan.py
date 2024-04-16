@@ -1,4 +1,4 @@
-from model_base import Model
+from models.model_base import Model
 
 #Modello e attributi per la tabella TreatmentPlans
 class TreatmentPlans(Model):

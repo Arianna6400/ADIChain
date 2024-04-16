@@ -1,12 +1,12 @@
 from db.db_operations import DatabaseOperations
-#from session.session import Session
+from session.session import Session
 
 
 class Controller:
 
-    def __init__(self):
+    def __init__(self, session: Session):
         self.db_ops = DatabaseOperations()
-        #self.session = session
+        self.session = session
         self.__n_attempts_limit = 5
         self.__timeout_timer = 180        
 

@@ -4,13 +4,13 @@ import re
 from eth_utils import *
 from eth_keys import *
 from controllers.controller import Controller
-#from session.session import Session
+from session.session import Session
 
 class CommandLineInterface:
-    def __init__(self):
+    def __init__(self, session: Session):
 
-        self.controller = Controller()
-        #self.controller = session
+        self.controller = Controller(session)
+        self.session = session
 
         self.menu = {
             1: 'Register New Account',

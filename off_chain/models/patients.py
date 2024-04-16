@@ -1,4 +1,4 @@
-from model_base import Model
+from models.model_base import Model
 
 #Costruttore e attributi della tabella Patients
 class Patients(Model):

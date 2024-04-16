@@ -12,7 +12,7 @@ class Session:
         return self.__creds
     
 
-    def set_user(self, creds):
+    def set_user(self, creds: Credentials):
         self.__creds = creds
 
 
