@@ -8,7 +8,6 @@ class TransactionController:
         self.w3 = Web3(Web3.HTTPProvider(self.http_provider))
         assert self.w3.is_connected(), "Failed to connect to Ethereum node."
         self.contract = None
-        self.deploy_and_initialize()  # Call to deploy and initialize the contract
 
     #def deploy_and_initialize(self, contract_source_path='../on_chain/on_chain.sol'):
     def deploy_and_initialize(self, contract_source_path='./on_chain/on_chain.sol'):
