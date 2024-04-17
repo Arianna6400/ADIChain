@@ -54,8 +54,10 @@ class CommandLineInterface:
         public_key = input('Public Key: ')
 
         while True:
-            private_key = getpass.getpass('Private Key: ')
-            confirm_private_key = getpass.getpass('Confirm Private Key: ')
+            private_key = input('Private Key: ')
+            confirm_private_key = input('Confirm Private Key: ')
+            #private_key = getpass.getpass('Private Key: ')
+            #confirm_private_key = getpass.getpass('Confirm Private Key: ')
             if private_key == confirm_private_key:
                 break
             else:
@@ -86,10 +88,13 @@ class CommandLineInterface:
                     break
 
             while True:
-                password = getpass.getpass('Password: ')
-                confirm_password = getpass.getpass('Confirm Password: ')
-
-                passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
+                password = input('Password: ')
+                confirm_password = input('Confirm password: ')
+                #password = getpass.getpass('Password: ')
+                #confirm_password = getpass.getpass('Confirm Password: ')
+                
+                passwd_regex = r'^.{8,50}$'
+                #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
                 
                 if not re.fullmatch(passwd_regex, password):
                     print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
@@ -101,6 +106,12 @@ class CommandLineInterface:
             reg_code = self.controller.registration(username, password, role, public_key, private_key)
             if reg_code == 0:
                 print('You have succesfully registered!\n')
+                if role == 'patient':
+                    self.insert_patient_info()
+                elif role == 'medic':
+                    self.insert_medic_info()
+                elif role == 'caregiver':
+                    self.insert_caregiver_info()
             elif reg_code == -1:
                 print('Your username has been taken.\n')
             elif reg_code == -2:
@@ -110,7 +121,57 @@ class CommandLineInterface:
             print('Sorry, but the provided public and private key do not match to any account\n')
             return
 
-                
+    def insert_patient_info(self):
+        print("Proceed with the insertion of a few personal information.")
+        name = input('Name: ')
+        lastname = input('Lastname: ')
+        birthday = input('Date of birth: ')
+        birth_place = input('Birth place:')
+        residence = input('Place of residence:')
+        while True:
+            autonomous_flag = int(input('Are you autonomous? (Digit "1" if you are autonomous, "0" if you are not)'))
+            if autonomous_flag  in [0,1]:
+                break
+            else:
+                print('Wrong value! Insert a valid value please.')
+        phone = input('Phone number: ')
+
+        insert_code = self.controller.insert_patient_info(name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
+        if insert_code == 0:
+            print('Information saved correctly!')
+        elif insert_code == -1:
+            print('Internal error!')
+
+    def insert_medic_info(self):
+        print("Proceed with the insertion of a few personal information.")
+        name = input('Name: ')
+        lastname = input('Lastname: ')
+        birthday = input('Date of birth: ')
+        specialization = input('Specialization: ')
+        mail = input('Mail: ')
+        phone = input('Phone number: ')
+
+        insert_code = self.controller.insert_medic_info(name, lastname, birthday, specialization, mail, phone)
+        if insert_code == 0:
+            print('Information saved correctly!')
+        elif insert_code == -1:
+            print('Internal error!')
+ 
+
+    def insert_caregiver_info(self):
+        print("Proceed with the insertion of a few personal information.")
+        name = input('Name: ')
+        lastname = input('Lastname: ')
+        id_patient = int(input('Enter the ID of the patient you are taking care of: '))
+        relationship = input('What kind of relationship there is between you and the patient: ')
+        phone = input('Phone number: ')
+
+        insert_code = self.controller.insert_caregiver_info(name, lastname, id_patient, relationship, phone)
+        if insert_code == 0:
+            print('Information saved correctly!')
+        elif insert_code == -1:
+            print('Internal error!')
+       
     
     def login_menu(self):
         return

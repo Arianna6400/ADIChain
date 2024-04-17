@@ -3,6 +3,9 @@ import os
 import hashlib
 
 from config import config
+from models.medics import Medics
+from models.patients import Patients
+from models.caregivers import Caregivers
 
 class DatabaseOperations:
 
@@ -87,7 +90,7 @@ class DatabaseOperations:
         self.conn.commit()
     
 
-    def register(self, username, hash_password, role, public_key, private_key):
+    def register_creds(self, username, hash_password, role, public_key, private_key):
         try:
             hashed_passwd = self.hash_function(hash_password)
             self.cur.execute("""
@@ -107,6 +110,94 @@ class DatabaseOperations:
         except sqlite3.IntegrityError:
             return -2
         
+    
+    def insert_patient(self, name, lastname, birthday, birth_place, residence, autonomous, phone):
+        try:
+            self.cur.execute("""
+                            INSERT INTO Patients
+                            (name, lastname, birthday, birth_place, residence, autonomous, phone) VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                            (
+                                name, 
+                                lastname,
+                                birthday,
+                                birth_place,
+                                residence,
+                                autonomous,
+                                phone
+                            ))
+            self.conn.commit()
+            return 0
+        except sqlite3.IntegrityError:
+            return -1
+        
+    def insert_medic(self, name, lastname, birthday, specialization, mail, phone):
+        try:
+            self.cur.execute("""
+                            INSERT INTO Medics
+                            (name, lastname, birthday, specialization, mail, phone) VALUES (?, ?, ?, ?, ?, ?)""",
+                            (
+                                name,
+                                lastname,
+                                birthday,
+                                specialization,
+                                mail,
+                                phone
+                            ))
+            self.conn.commit()
+            return 0
+        except sqlite3.IntegrityError:
+            return -1
+
+    def insert_caregiver(self, name, lastname, id_patient, relationship, phone):
+        try:
+            self.cur.execute("""
+                            INSERT INTO Caregivers
+                            (name, lastname, id_patient, relationship, phone) VALUES (?, ?, ?, ?, ?)""",
+                            (
+                                name, 
+                                lastname,
+                                id_patient,
+                                relationship,
+                                phone
+                            ))
+            self.conn.commit()
+            return 0
+        except sqlite3.IntegrityError:
+            return -1
+
+    def get_user_by_id(self, id, role):
+        if role == 'medic':
+            user = self.cur.execute("""
+                                    SELECT *
+                                    FROM Medics
+                                    JOIN Credentials ON Medics.id_patient = Credentials.id
+                                    WHERE Credentials.id = ?""", (id,))
+            user_attr = user.fetchone()
+            if user_attr is not None:
+                medic = Medics(user_attr[0], user_attr[1], user_attr[2], user_attr[3], user_attr[4], user_attr[5], user_attr[6])
+                return medic
+        elif role == 'patient':
+            user = self.cur.execute("""
+                                    SELECT *
+                                    FROM Patients
+                                    JOIN Credentials ON Patients.id_patient = Credentials.id
+                                    WHERE Credentials.id = ?""", (id,))
+            user_attr = user.fetchone()
+            if user_attr is not None: 
+                patient = Patients(user_attr[0], user_attr[1], user_attr[2], user_attr[3], user_attr[4], user_attr[5], user_attr[6], user_attr[7])
+                return patient
+        elif role == 'caregiver':
+            user == self.cur.execute("""
+                                     SELECT *
+                                     FROM Caregivers
+                                     JOIN Credentials ON Caregivers.id_patient = Credentials.id
+                                     WHERE Credentials.id = ?""", (id,))
+            user_attr = user.fetchone()
+            if user_attr is not None:
+                caregiver = Caregivers(user_attr[0], user_attr[1], user_attr[2], user_attr[3], user_attr[4], user_attr[5])
+                return caregiver
+            
+        return None
 
     def hash_function(self, password: str):
 

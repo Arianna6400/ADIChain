@@ -8,11 +8,11 @@ class Session:
         self.__attempts = 0
         self.__login_error_timestamp = 0
 
-    def get_user(self):        
+    def get_creds(self):        
         return self.__creds
     
 
-    def set_user(self, creds: Credentials):
+    def set_creds(self, creds: Credentials):
         self.__creds = creds
 
 
