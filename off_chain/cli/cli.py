@@ -156,7 +156,7 @@ class CommandLineInterface:
         lastname = input('Lastname: ')
         while True:
             birthday = input('Date of birth (YYYY-MM-DD): ')
-            if check_birthdate_format(birthday): break
+            if self.check_birthdate_format(birthday): break
             else: print("Invalid birthdate or incorrect format.")
 
         birth_place = input('Birth place:')
@@ -181,18 +181,18 @@ class CommandLineInterface:
         lastname = input('Lastname: ')
         while True:
             birthday = input('Date of birth (YYYY-MM-DD): ')
-            if check_birthdate_format(birthday): break
+            if self.check_birthdate_format(birthday): break
             else: print("Invalid birthdate or incorrect format.")
 
         specialization = input('Specialization: ')
         while True:
             mail = input('Mail: ')
-            if check_email_format(email_input): break
+            if self.check_email_format(mail): break
             else: print("Invalid email format.")
 
         while True:
             phone = input('Phone number: ')
-            if check_phone_number_format(phone_input): break
+            if self.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
 
         insert_code = self.controller.insert_medic_info(name, lastname, birthday, specialization, mail, phone)
@@ -216,11 +216,10 @@ class CommandLineInterface:
         elif insert_code == -1:
             print('Internal error!')
        
-    
     def login_menu(self):
         return
     
-    def check_birthdate_format(date_string):
+    def check_birthdate_format(self, date_string):
         try:
             date = datetime.strptime(date_string, '%Y-%m-%d')
             current_date = datetime.now()
@@ -231,7 +230,7 @@ class CommandLineInterface:
         except ValueError:
             return False
         
-    def check_phone_number_format(phone_number):
+    def check_phone_number_format(self, phone_number):
         # Check if the phone number contains only digits and optional hyphens or spaces
         if phone_number.replace('-', '').replace(' ', '').isdigit():
             # Check if the length of the phone number is between 7 and 15 characters
@@ -239,7 +238,7 @@ class CommandLineInterface:
                 return True
         return False
     
-    def check_email_format(email):
+    def check_email_format(self, email):
         # Regular expression pattern for email validation
         email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         
