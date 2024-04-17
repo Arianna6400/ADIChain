@@ -106,11 +106,11 @@ class CommandLineInterface:
             reg_code = self.controller.registration(username, password, role, public_key, private_key)
             if reg_code == 0:
                 print('You have succesfully registered!\n')
-                if role == 'patient':
+                if role == 'PATIENT':
                     self.insert_patient_info()
-                elif role == 'medic':
+                elif role == 'MEDIC':
                     self.insert_medic_info()
-                elif role == 'caregiver':
+                elif role == 'CAREGIVER':
                     self.insert_caregiver_info()
             elif reg_code == -1:
                 print('Your username has been taken.\n')

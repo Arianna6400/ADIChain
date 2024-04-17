@@ -115,7 +115,8 @@ class DatabaseOperations:
         try:
             self.cur.execute("""
                             INSERT INTO Patients
-                            (name, lastname, birthday, birth_place, residence, autonomous, phone) VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                            (id_patient, name, lastname, birthday, birth_place, residence, autonomous, phone) SELECT last_insert_rowid(), ?, ?, ?, ?, ?, ?, ?
+                            FROM Credentials""",
                             (
                                 name, 
                                 lastname,
@@ -134,7 +135,8 @@ class DatabaseOperations:
         try:
             self.cur.execute("""
                             INSERT INTO Medics
-                            (name, lastname, birthday, specialization, mail, phone) VALUES (?, ?, ?, ?, ?, ?)""",
+                            (id_medic, name, lastname, birthday, specialization, mail, phone) SELECT last_insert_rowid(), ?, ?, ?, ?, ?, ?
+                            FROM Credentials""",
                             (
                                 name,
                                 lastname,
@@ -152,7 +154,8 @@ class DatabaseOperations:
         try:
             self.cur.execute("""
                             INSERT INTO Caregivers
-                            (name, lastname, id_patient, relationship, phone) VALUES (?, ?, ?, ?, ?)""",
+                            (id_caregiver, name, lastname, id_patient, relationship, phone) SELECT last_insert_rowid(), ?, ?, ?, ?, ?
+                            FROM Credentials""",
                             (
                                 name, 
                                 lastname,
