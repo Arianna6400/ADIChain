@@ -5,6 +5,8 @@ from eth_utils import *
 from eth_keys import *
 from controllers.controller import Controller
 from session.session import Session
+from datetime import datetime
+import re
 
 class CommandLineInterface:
     def __init__(self, session: Session):
@@ -149,7 +151,11 @@ class CommandLineInterface:
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
-        birthday = input('Date of birth: ')
+        while True:
+            birthday = input('Date of birth (YYYY-MM-DD): ')
+            if check_birthdate_format(birthday): break
+            else: print("Invalid birthdate or incorrect format.")
+
         birth_place = input('Birth place:')
         residence = input('Place of residence:')
         while True:
@@ -170,10 +176,21 @@ class CommandLineInterface:
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
-        birthday = input('Date of birth: ')
+        while True:
+            birthday = input('Date of birth (YYYY-MM-DD): ')
+            if check_birthdate_format(birthday): break
+            else: print("Invalid birthdate or incorrect format.")
+
         specialization = input('Specialization: ')
-        mail = input('Mail: ')
-        phone = input('Phone number: ')
+        while True:
+            mail = input('Mail: ')
+            if check_email_format(email_input): break
+            else: print("Invalid email format.")
+
+        while True:
+            phone = input('Phone number: ')
+            if check_phone_number_format(phone_input): break
+            else: print("Invalid phone number format.")
 
         insert_code = self.controller.insert_medic_info(name, lastname, birthday, specialization, mail, phone)
         if insert_code == 0:
@@ -199,3 +216,32 @@ class CommandLineInterface:
     
     def login_menu(self):
         return
+    
+    def check_birthdate_format(date_string):
+        try:
+            date = datetime.strptime(date_string, '%Y-%m-%d')
+            current_date = datetime.now()
+            if date < current_date:
+                return True
+            else:
+                return False
+        except ValueError:
+            return False
+        
+    def check_phone_number_format(phone_number):
+        # Check if the phone number contains only digits and optional hyphens or spaces
+        if phone_number.replace('-', '').replace(' ', '').isdigit():
+            # Check if the length of the phone number is between 7 and 15 characters
+            if 7 <= len(phone_number) <= 15:
+                return True
+        return False
+    
+    def check_email_format(email):
+        # Regular expression pattern for email validation
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        
+        # Use the re.match function to check if the email matches the pattern
+        if re.match(email_pattern, email):
+            return True
+        else:
+            return False
