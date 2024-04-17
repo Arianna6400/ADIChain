@@ -78,9 +78,9 @@ class CommandLineInterface:
             username = input('Username: ')
 
             while True:
-                role = input('Role: ').lower()
+                role = input('Role: ').upper()
 
-                roles = ['medic', 'patient', 'caregiver']
+                roles = ['MEDIC', 'PATIENT', 'CAREGIVER']
 
                 if not role in roles:
                     print('You have to select a role between Medic, Patient or Caregiver')

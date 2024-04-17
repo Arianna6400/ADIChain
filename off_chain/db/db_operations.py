@@ -24,7 +24,7 @@ class DatabaseOperations:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
             hash_password TEXT NOT NULL,
-            role TEXT CHECK(role IN ('MEDIC', 'PATIENT', 'CAREGIVER')) NOT NULL,
+            role TEXT CHECK(UPPER(role) IN ('MEDIC', 'PATIENT', 'CAREGIVER')) NOT NULL,
             public_key TEXT NOT NULL,
             private_key TEXT NOT NULL
             );''')
@@ -170,7 +170,7 @@ class DatabaseOperations:
             user = self.cur.execute("""
                                     SELECT *
                                     FROM Medics
-                                    JOIN Credentials ON Medics.id_patient = Credentials.id
+                                    JOIN Credentials ON Medics.id_medic = Credentials.id
                                     WHERE Credentials.id = ?""", (id,))
             user_attr = user.fetchone()
             if user_attr is not None:
@@ -190,7 +190,7 @@ class DatabaseOperations:
             user == self.cur.execute("""
                                      SELECT *
                                      FROM Caregivers
-                                     JOIN Credentials ON Caregivers.id_patient = Credentials.id
+                                     JOIN Credentials ON Caregivers.id_caregiver = Credentials.id
                                      WHERE Credentials.id = ?""", (id,))
             user_attr = user.fetchone()
             if user_attr is not None:
