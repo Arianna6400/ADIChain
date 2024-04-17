@@ -5,7 +5,7 @@ from solcx import compile_standard, get_installed_solc_versions, install_solc
 # Define a class to control on-chain operations
 class DeployController:
     # Initialize the controller with a default Ethereum node address and Solidity compiler version
-    def __init__(self, http_provider='http://127.0.0.1:8545', solc_version='0.8.0'):
+    def __init__(self, http_provider='http://ganache:8545', solc_version='0.8.0'): 
         self.http_provider = http_provider
         self.solc_version = solc_version
         self.w3 = Web3(Web3.HTTPProvider(self.http_provider))  # Set up a Web3 connection

@@ -1,8 +1,5 @@
-#Base Python image from Alpine
-FROM python:3.11-alpine
-
-#Packages for alpine dependecies
-RUN apk add --no-cache gcc musl-dev libffi-dev
+#Base Python image 
+FROM python:3.11
 
 #Installing pip requirements
 COPY requirements.txt .
