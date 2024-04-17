@@ -88,22 +88,25 @@ class CommandLineInterface:
                 #else:
                 #    break
                 if role == 'M':
-                    confirm = input("Do you confirm you're a Medic? (Y/n): ").strip().lower()
-                    if confirm == 'y':
+                    user_role = 'MEDIC'
+                    confirm = input("Do you confirm you're a Medic? (Y/n): ").strip().upper()
+                    if confirm == 'Y':
                         #print("Registrazione come medico completata.\n")
                         break
                     else:
                         print("Role not confirmed. Retry\n")
                 elif role == 'P':
-                    confirm = input("Do you confirm you're a Patient? (Y/n): ").strip().lower()
-                    if confirm == 'y':
+                    user_role = 'PATIENT'
+                    confirm = input("Do you confirm you're a Patient? (Y/n): ").strip().upper()
+                    if confirm == 'Y':
                         #print("Registrazione come paziente completata.\n")
                         break
                     else:
                         print("Role not confirmed. Retry\n")
                 elif role == 'C':
-                    confirm = input("Do you confirm you're a Caregiver? (Y/n): ").strip().lower()
-                    if confirm == 'y':
+                    user_role = 'CAREGIVER'
+                    confirm = input("Do you confirm you're a Caregiver? (Y/n): ").strip().upper()
+                    if confirm == 'Y':
                         #print("Registrazione come paziente completata.\n")
                         break
                     else:
@@ -127,7 +130,7 @@ class CommandLineInterface:
                 else:
                     break
 
-            reg_code = self.controller.registration(username, password, role, public_key, private_key)
+            reg_code = self.controller.registration(username, password, user_role, public_key, private_key)
             if reg_code == 0:
                 print('You have succesfully registered!\n')
                 if role == 'P':
