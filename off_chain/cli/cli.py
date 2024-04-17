@@ -91,7 +91,6 @@ class CommandLineInterface:
                     confirm = input("Do you confirm you're a Medic? (Y/n): ").strip().lower()
                     if confirm == 'y':
                         #print("Registrazione come medico completata.\n")
-                        # Qui puoi inserire le azioni specifiche per i medici
                         break
                     else:
                         print("Role not confirmed. Retry\n")
@@ -99,7 +98,6 @@ class CommandLineInterface:
                     confirm = input("Do you confirm you're a Patient? (Y/n): ").strip().lower()
                     if confirm == 'y':
                         #print("Registrazione come paziente completata.\n")
-                        # Qui puoi inserire le azioni specifiche per i pazienti
                         break
                     else:
                         print("Role not confirmed. Retry\n")
@@ -107,7 +105,6 @@ class CommandLineInterface:
                     confirm = input("Do you confirm you're a Caregiver? (Y/n): ").strip().lower()
                     if confirm == 'y':
                         #print("Registrazione come paziente completata.\n")
-                        # Qui puoi inserire le azioni specifiche per i pazienti
                         break
                     else:
                         print("Role not confirmed. Retry\n")
