@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 WORKDIR /progetto
 COPY . /progetto
 
-#Exposing port 8000 where our container will run
+#Exposing port where our container will run
 EXPOSE 8000
 
 CMD [ "python", "/progetto/off_chain/main.py" ]

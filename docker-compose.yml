@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  ganache:
+    image: trufflesuite/ganache-cli
+    command: ganache-cli --host 0.0.0.0 --port 8545 --accounts 10 --defaultBalanceEther 1000 --mnemonic "myth like bonus scare over problem client lizard pioneer submit female collect"
+    ports:
+      - "8545:8545"
+
+  adichain:
+    image: adichain  
+    depends_on:
+      - ganache
+    environment:
+      - ETHEREUM_NODE_URL=http://127.0.0.1:8545
+    ports:
+      - "3000:3000"
+    
