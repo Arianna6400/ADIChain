@@ -81,19 +81,10 @@ class CommandLineInterface:
 
             while True:
                 role = input("Insert your role: \n (C) if caregiver \n (M) if medic\n (P) if patient \n ").strip().upper()
-                #role = input('Insert your role: ').lower()
-
-                #roles = ['M', 'P', 'C']
-
-                #if not role in roles:
-                #    print('You have to select a role between Caregiver (C), Medic (M) or Patient (P)')
-                #else:
-                #    break
                 if role == 'M':
                     user_role = 'MEDIC'
                     confirm = input("Do you confirm you're a Medic? (Y/n): ").strip().upper()
                     if confirm == 'Y':
-                        #print("Registrazione come medico completata.\n")
                         break
                     else:
                         print("Role not confirmed. Retry\n")
@@ -101,7 +92,6 @@ class CommandLineInterface:
                     user_role = 'PATIENT'
                     confirm = input("Do you confirm you're a Patient? (Y/n): ").strip().upper()
                     if confirm == 'Y':
-                        #print("Registrazione come paziente completata.\n")
                         break
                     else:
                         print("Role not confirmed. Retry\n")
@@ -109,7 +99,6 @@ class CommandLineInterface:
                     user_role = 'CAREGIVER'
                     confirm = input("Do you confirm you're a Caregiver? (Y/n): ").strip().upper()
                     if confirm == 'Y':
-                        #print("Registrazione come paziente completata.\n")
                         break
                     else:
                         print("Role not confirmed. Retry\n")
