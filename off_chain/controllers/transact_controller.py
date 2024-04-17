@@ -10,6 +10,7 @@ class TransactionController:
         self.contract = None
         self.deploy_and_initialize()  # Call to deploy and initialize the contract
 
+    #def deploy_and_initialize(self, contract_source_path='../on_chain/on_chain.sol'):
     def deploy_and_initialize(self, contract_source_path='./on_chain/on_chain.sol'):
         controller = DeployController(self.http_provider)
         controller.compile_and_deploy(contract_source_path)

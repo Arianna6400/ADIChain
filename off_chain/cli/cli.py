@@ -78,15 +78,42 @@ class CommandLineInterface:
             username = input('Username: ')
 
             while True:
-                role = input('Role: ').lower()
+                role = input("Insert your role: \n (C) if caregiver \n (M) if medic\n (P) if patient \n ").strip().upper()
+                #role = input('Insert your role: ').lower()
 
-                roles = ['medic', 'patient', 'caregiver']
+                #roles = ['M', 'P', 'C']
 
-                if not role in roles:
-                    print('You have to select a role between Medic, Patient or Caregiver')
+                #if not role in roles:
+                #    print('You have to select a role between Caregiver (C), Medic (M) or Patient (P)')
+                #else:
+                #    break
+                if role == 'M':
+                    confirm = input("Do you confirm you're a Medic? (Y/n): ").strip().lower()
+                    if confirm == 'y':
+                        #print("Registrazione come medico completata.\n")
+                        # Qui puoi inserire le azioni specifiche per i medici
+                        break
+                    else:
+                        print("Role not confirmed. Retry\n")
+                elif role == 'P':
+                    confirm = input("Do you confirm you're a Patient? (Y/n): ").strip().lower()
+                    if confirm == 'y':
+                        #print("Registrazione come paziente completata.\n")
+                        # Qui puoi inserire le azioni specifiche per i pazienti
+                        break
+                    else:
+                        print("Role not confirmed. Retry\n")
+                elif role == 'C':
+                    confirm = input("Do you confirm you're a Caregiver? (Y/n): ").strip().lower()
+                    if confirm == 'y':
+                        #print("Registrazione come paziente completata.\n")
+                        # Qui puoi inserire le azioni specifiche per i pazienti
+                        break
+                    else:
+                        print("Role not confirmed. Retry\n")
                 else:
-                    break
-
+                    print("You have to select a role between Caregiver (C), Medic (M) or Patient (P). Retry\n")
+        
             while True:
                 password = input('Password: ')
                 confirm_password = input('Confirm password: ')
@@ -106,11 +133,11 @@ class CommandLineInterface:
             reg_code = self.controller.registration(username, password, role, public_key, private_key)
             if reg_code == 0:
                 print('You have succesfully registered!\n')
-                if role == 'patient':
+                if role == 'P':
                     self.insert_patient_info()
-                elif role == 'medic':
+                elif role == 'M':
                     self.insert_medic_info()
-                elif role == 'caregiver':
+                elif role == 'C':
                     self.insert_caregiver_info()
             elif reg_code == -1:
                 print('Your username has been taken.\n')
