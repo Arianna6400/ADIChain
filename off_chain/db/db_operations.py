@@ -56,7 +56,7 @@ class DatabaseOperations:
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Caregivers(
             id_caregiver INTEGER NOT NULL,
             id_patient INTEGER NOT NULL,
-            username TEXT NOT NULL UNIQUE
+            username TEXT NOT NULL UNIQUE,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             patient_relationship TEXT NOT NULL,

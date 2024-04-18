@@ -5,7 +5,6 @@ from eth_utils import *
 from eth_keys import *
 from controllers.controller import Controller
 from session.session import Session
-from datetime import datetime
 import re
 
 class CommandLineInterface:
@@ -139,7 +138,7 @@ class CommandLineInterface:
             print('Sorry, but the provided public and private key do not match to any account\n')
             return
 
-    def insert_patient_info(self, username):
+    def insert_patient_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
@@ -161,13 +160,13 @@ class CommandLineInterface:
             if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
 
-        insert_code = self.controller.insert_patient_info(username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
+        insert_code = self.controller.insert_patient_info(role, username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
         if insert_code == 0:
             print('Information saved correctly!')
         elif insert_code == -1:
             print('Internal error!')
 
-    def insert_medic_info(self, username):
+    def insert_medic_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
@@ -187,14 +186,14 @@ class CommandLineInterface:
             if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
 
-        insert_code = self.controller.insert_medic_info(username, name, lastname, birthday, specialization, mail, phone)
+        insert_code = self.controller.insert_medic_info(role, username, name, lastname, birthday, specialization, mail, phone)
         if insert_code == 0:
             print('Information saved correctly!')
         elif insert_code == -1:
             print('Internal error!')
  
 
-    def insert_caregiver_info(self, username):
+    def insert_caregiver_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
@@ -205,7 +204,7 @@ class CommandLineInterface:
             if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
 
-        insert_code = self.controller.insert_caregiver_info(username, name, lastname, id_patient, relationship, phone)
+        insert_code = self.controller.insert_caregiver_info(role, username, name, lastname, id_patient, relationship, phone)
         if insert_code == 0:
             print('Information saved correctly!')
         elif insert_code == -1:

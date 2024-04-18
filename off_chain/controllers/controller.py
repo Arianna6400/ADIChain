@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import re
 
 from db.db_operations import DatabaseOperations
