@@ -5,3 +5,4 @@ package-lock.json
 package.json
 truffle-config.js
 ADIChain
+*.vscode
