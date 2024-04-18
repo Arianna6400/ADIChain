@@ -1,5 +1,6 @@
-import time
 from web3 import Web3
+import os
+import time
 from controllers.deploy_controller import DeployController  # Import the OnChainController class
 
 class TransactionController:
@@ -11,9 +12,9 @@ class TransactionController:
         assert self.w3.is_connected(), "Failed to connect to Ethereum node."
         self.contract = None
 
-    #def deploy_and_initialize(self, contract_source_path='../on_chain/on_chain.sol'):
-    def deploy_and_initialize(self, contract_source_path='./on_chain/on_chain.sol'):
+    def deploy_and_initialize(self, contract_source_path='on_chain.sol'):
         controller = DeployController(self.http_provider)
+        contract_source_path = os.path.join(os.path.dirname(__file__), contract_source_path)
         controller.compile_and_deploy(contract_source_path)
         self.contract = controller.contract  # Retrieve the deployed contract to use in functions
 

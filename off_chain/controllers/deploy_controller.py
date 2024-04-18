@@ -1,11 +1,11 @@
-# Import necessary libraries from Web3.py and the Solidity compiler (solc)
 from web3 import Web3
+import os
 from solcx import compile_standard, get_installed_solc_versions, install_solc
 
 # Define a class to control on-chain operations
 class DeployController:
     # Initialize the controller with a default Ethereum node address and Solidity compiler version
-    def __init__(self, http_provider='http://ganache:8545', solc_version='0.8.0'): 
+    def __init__(self, http_provider='http://ganache:8545', solc_version='0.8.0'):
         #http://ganache:8545
         #http://127.0.0.1:8545
         self.http_provider = http_provider
@@ -14,11 +14,17 @@ class DeployController:
         assert self.w3.is_connected(), "Failed to connect to Ethereum node."  # Ensure the connection is successful
         self.contract = None  # Initialize a variable to store the contract object
 
-    # Compile and deploy a smart contract using its source file path
     def compile_and_deploy(self, contract_source_path):
-        with open(contract_source_path, 'r') as file:
-            source_code = file.read()  # Read the contract source code
-        self.compile_contract(source_code)  # Compile the smart contract
+        # Get the current file directory (which is in off_chain/controllers/)
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        # Go up two levels to get to the directory shared by on_chain and off_chain
+        shared_dir_path = os.path.dirname(os.path.dirname(dir_path))
+        # Create the full path to the Solidity file
+        contract_full_path = os.path.normpath(os.path.join(shared_dir_path, contract_source_path))
+        
+        with open(contract_full_path, 'r') as file:
+            contract_source_code = file.read()
+        self.compile_contract(contract_source_code)  # Compile the smart contract
         self.deploy_contract()  # Deploy the compiled contract
 
     # Compile a smart contract from its source code
