@@ -48,7 +48,7 @@ cur.execute('''CREATE TABLE Caregivers(
             username TEXT NOT NULL UNIQUE,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
-            patient_relationship TEXT NOT NULL,
+            relationship TEXT NOT NULL,
             phone TEXT,
             FOREIGN KEY(username) REFERENCES Credentials(username)
             FOREIGN KEY(id_caregiver) REFERENCES Credentials(id),

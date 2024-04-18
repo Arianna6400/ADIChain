@@ -20,6 +20,13 @@ class DatabaseOperations:
         self.dklen_param = 64
 
     def _create_new_table(self):
+        # self.cur.execute("DROP TABLE IF EXISTS Credentials")
+        # self.cur.execute("DROP TABLE IF EXISTS Medics")
+        # self.cur.execute("DROP TABLE IF EXISTS Patients")
+        # self.cur.execute("DROP TABLE IF EXISTS Caregivers")
+        # self.cur.execute("DROP TABLE IF EXISTS Reports")
+        # self.cur.execute("DROP TABLE IF EXISTS TreatmentPlans")
+        # self.cur.execute("DROP TABLE IF EXISTS AccessLog")
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Credentials(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
@@ -59,7 +66,7 @@ class DatabaseOperations:
             username TEXT NOT NULL UNIQUE,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
-            patient_relationship TEXT NOT NULL,
+            relationship TEXT NOT NULL,
             phone TEXT,
             FOREIGN KEY(username) REFERENCES Credentials(username)
             FOREIGN KEY(id_caregiver) REFERENCES Credentials(id),
