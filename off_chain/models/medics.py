@@ -2,9 +2,10 @@ from models.model_base import Model
 
 #Costruttore e attributi della tabella Medics
 class Medics(Model):
-    def __init__(self, name, lastname, birthday, specialization, mail, phone, id_medic=None):
+    def __init__(self, username, name, lastname, birthday, specialization, mail, phone, id_medic=None):
         super().__init__()
         self.id_medic = id_medic
+        self.username = username
         self.name = name
         self.lastname = lastname
         self.birthday = birthday
@@ -15,6 +16,9 @@ class Medics(Model):
     def get_id_medic(self):
         return self.id_medic
     
+    def get_username(self):
+        return self.username
+
     def get_name(self):
         return self.name
     
@@ -36,12 +40,12 @@ class Medics(Model):
 #Metodi ORM per interagire con il db SQLite per operazioni CRUD
     def save(self):
         if self.id_medic is None:
-            self.cur.execute('''INSERT INTO Medics (name, lastname, birthday, specialization, mail, phone)
-                                VALUES (?, ?, ?, ?, ?, ?)''', (self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone))
+            self.cur.execute('''INSERT INTO Medics (username, name, lastname, birthday, specialization, mail, phone)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)''', (self.username, self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone))
                                 #I punti interrogativi come placeholder servono per la prevenzione di attacchi SQL Injection
         else:
-            self.cur.execute('''UPDATE Medics SET name=?, lastname=?, birthday=?, specialization=?, mail=?, phone=? WHERE id_medic=?''',
-                             (self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone, self.id_medic))
+            self.cur.execute('''UPDATE Medics SET username =?, name=?, lastname=?, birthday=?, specialization=?, mail=?, phone=? WHERE id_medic=?''',
+                             (self.username, self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone, self.id_medic))
         self.conn.commit()
         self.id_medic = self.cur.lastrowid
 

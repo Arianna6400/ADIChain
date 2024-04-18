@@ -125,11 +125,11 @@ class CommandLineInterface:
             if reg_code == 0:
                 print('You have succesfully registered!\n')
                 if role == 'P':
-                    self.insert_patient_info()
+                    self.insert_patient_info(username, user_role)
                 elif role == 'M':
-                    self.insert_medic_info()
+                    self.insert_medic_info(username, user_role)
                 elif role == 'C':
-                    self.insert_caregiver_info()
+                    self.insert_caregiver_info(username, user_role)
             elif reg_code == -1:
                 print('Your username has been taken.\n')
             elif reg_code == -2:
@@ -139,13 +139,13 @@ class CommandLineInterface:
             print('Sorry, but the provided public and private key do not match to any account\n')
             return
 
-    def insert_patient_info(self):
+    def insert_patient_info(self, username):
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
         while True:
             birthday = input('Date of birth (YYYY-MM-DD): ')
-            if self.check_birthdate_format(birthday): break
+            if self.controller.check_birthdate_format(birthday): break
             else: print("Invalid birthdate or incorrect format.")
 
         birth_place = input('Birth place:')
@@ -156,50 +156,56 @@ class CommandLineInterface:
                 break
             else:
                 print('Wrong value! Insert a valid value please.')
-        phone = input('Phone number: ')
+        while True:
+            phone = input('Phone number: ')
+            if self.controller.check_phone_number_format(phone): break
+            else: print("Invalid phone number format.")
 
-        insert_code = self.controller.insert_patient_info(name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
+        insert_code = self.controller.insert_patient_info(username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
         if insert_code == 0:
             print('Information saved correctly!')
         elif insert_code == -1:
             print('Internal error!')
 
-    def insert_medic_info(self):
+    def insert_medic_info(self, username):
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
         while True:
             birthday = input('Date of birth (YYYY-MM-DD): ')
-            if self.check_birthdate_format(birthday): break
+            if self.controller.check_birthdate_format(birthday): break
             else: print("Invalid birthdate or incorrect format.")
 
         specialization = input('Specialization: ')
         while True:
             mail = input('Mail: ')
-            if self.check_email_format(mail): break
+            if self.controller.check_email_format(mail): break
             else: print("Invalid email format.")
 
         while True:
             phone = input('Phone number: ')
-            if self.check_phone_number_format(phone): break
+            if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
 
-        insert_code = self.controller.insert_medic_info(name, lastname, birthday, specialization, mail, phone)
+        insert_code = self.controller.insert_medic_info(username, name, lastname, birthday, specialization, mail, phone)
         if insert_code == 0:
             print('Information saved correctly!')
         elif insert_code == -1:
             print('Internal error!')
  
 
-    def insert_caregiver_info(self):
+    def insert_caregiver_info(self, username):
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
         id_patient = int(input('Enter the ID of the patient you are taking care of: '))
         relationship = input('What kind of relationship there is between you and the patient: ')
-        phone = input('Phone number: ')
+        while True:
+            phone = input('Phone number: ')
+            if self.controller.check_phone_number_format(phone): break
+            else: print("Invalid phone number format.")
 
-        insert_code = self.controller.insert_caregiver_info(name, lastname, id_patient, relationship, phone)
+        insert_code = self.controller.insert_caregiver_info(username, name, lastname, id_patient, relationship, phone)
         if insert_code == 0:
             print('Information saved correctly!')
         elif insert_code == -1:
@@ -208,31 +214,6 @@ class CommandLineInterface:
     def login_menu(self):
         return
     
-    def check_birthdate_format(self, date_string):
-        try:
-            date = datetime.strptime(date_string, '%Y-%m-%d')
-            current_date = datetime.now()
-            if date < current_date:
-                return True
-            else:
-                return False
-        except ValueError:
-            return False
-        
-    def check_phone_number_format(self, phone_number):
-        # Check if the phone number contains only digits and optional hyphens or spaces
-        if phone_number.replace('-', '').replace(' ', '').isdigit():
-            # Check if the length of the phone number is between 7 and 15 characters
-            if 7 <= len(phone_number) <= 15:
-                return True
-        return False
-    
-    def check_email_format(self, email):
-        # Regular expression pattern for email validation
-        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        
-        # Use the re.match function to check if the email matches the pattern
-        if re.match(email_pattern, email):
-            return True
-        else:
-            return False
+    def user_menu(self):
+        print('MENU')
+

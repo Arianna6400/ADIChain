@@ -19,6 +19,7 @@ cur.execute('''CREATE TABLE Credentials(
             );''')
 cur.execute('''CREATE TABLE Medics(
             id_medic INTEGER NOT NULL,
+            username TEXT NOT NULL UNIQUE,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             birthday TEXT NOT NULL,
@@ -26,9 +27,11 @@ cur.execute('''CREATE TABLE Medics(
             mail TEXT,
             phone TEXT,
             FOREIGN KEY(id_medic) REFERENCES Credentials(id)
+            FOREIGN KEY(username) REFERENCES Credentials(username)
             );''')
 cur.execute('''CREATE TABLE Patients(
             id_patient INTEGER NOT NULL,
+            username TEXT NOT NULL UNIQUE,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             birthday TEXT NOT NULL,
@@ -36,15 +39,18 @@ cur.execute('''CREATE TABLE Patients(
             residence TEXT NOT NULL,
             autonomous INTEGER CHECK(autonomous IN (0,1)) NOT NULL,
             phone TEXT, 
+            FOREIGN KEY(username) REFERENCES Credentials(username)
             FOREIGN KEY(id_patient) REFERENCES Credentials(id)
             );''')
 cur.execute('''CREATE TABLE Caregivers(
             id_caregiver INTEGER NOT NULL,
             id_patient INTEGER NOT NULL,
+            username TEXT NOT NULL UNIQUE,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             patient_relationship TEXT NOT NULL,
             phone TEXT,
+            FOREIGN KEY(username) REFERENCES Credentials(username)
             FOREIGN KEY(id_caregiver) REFERENCES Credentials(id),
             FOREIGN KEY(id_patient) REFERENCES Patients(id_patient)
             );''')

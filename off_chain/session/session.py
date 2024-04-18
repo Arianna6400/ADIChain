@@ -1,19 +1,18 @@
 import time
-from models.credentials import Credentials
 
 class Session:
 
     def __init__(self):
-        self.__creds = None
+        self.__user = None
         self.__attempts = 0
         self.__login_error_timestamp = 0
 
-    def get_creds(self):        
-        return self.__creds
+    def get_user(self):        
+        return self.__user
     
 
-    def set_creds(self, creds: Credentials):
-        self.__creds = creds
+    def set_user(self, user):
+        self.__user = user
 
 
     def get_attempts(self):

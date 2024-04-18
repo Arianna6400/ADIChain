@@ -2,9 +2,10 @@ from models.model_base import Model
 
 #Costruttore e attributi della tabella Patients
 class Patients(Model):
-    def __init__(self, name, lastname, birthday, birth_place, residence, autonomous, phone, id_patient=None):
+    def __init__(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone, id_patient=None):
         super().__init__()
         self.id_patient = id_patient
+        self.username = username
         self.name = name
         self.lastname = lastname
         self.birthday = birthday
@@ -16,6 +17,9 @@ class Patients(Model):
     def get_id_patient(self):
         return self.id_patient
     
+    def get_username(self):
+        return self.username
+
     def get_name(self):
         return self.name
     
@@ -40,13 +44,13 @@ class Patients(Model):
 #Metodi ORM per interagire con il db SQLite per operazioni CRUD
     def save(self):
         if self.id_patient is None:
-            self.cur.execute('''INSERT INTO Patients (name, lastname, birthday, birth_place, residence, autonomous, phone)
+            self.cur.execute('''INSERT INTO Patients (username, name, lastname, birthday, birth_place, residence, autonomous, phone)
                                 VALUES (?, ?, ?, ?, ?, ?, ?)''',
-                             (self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.autonomous, self.phone))
+                             (self.username, self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.autonomous, self.phone))
                                 #I punti interrogativi come placeholder servono per la prevenzione di attacchi SQL Injection
         else:
-            self.cur.execute('''UPDATE Patients SET name=?, lastname=?, birthday=?, birth_place=?, residence=?, autonomous=?, phone=? WHERE id_patient=?''',
-                             (self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.autonomous, self.phone, self.id_patient))
+            self.cur.execute('''UPDATE Patients SET username=?, name=?, lastname=?, birthday=?, birth_place=?, residence=?, autonomous=?, phone=? WHERE id_patient=?''',
+                             (self.username, self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.autonomous, self.phone, self.id_patient))
         self.conn.commit()
         self.id_patient = self.cur.lastrowid
 
