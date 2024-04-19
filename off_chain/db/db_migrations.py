@@ -11,7 +11,7 @@ cur.execute("DROP TABLE IF EXISTS TreatmentPlans")
 cur.execute("DROP TABLE IF EXISTS AccessLog")
 cur.execute('''CREATE TABLE Credentials(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
+            username TEXT NOT NULL,
             hash_password TEXT NOT NULL,
             role TEXT CHECK(role IN ('MEDIC', 'PATIENT', 'CAREGIVER')) NOT NULL,
             public_key TEXT NOT NULL,
@@ -19,7 +19,7 @@ cur.execute('''CREATE TABLE Credentials(
             );''')
 cur.execute('''CREATE TABLE Medics(
             id_medic INTEGER NOT NULL,
-            username TEXT NOT NULL UNIQUE,
+            username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             birthday TEXT NOT NULL,
@@ -31,7 +31,7 @@ cur.execute('''CREATE TABLE Medics(
             );''')
 cur.execute('''CREATE TABLE Patients(
             id_patient INTEGER NOT NULL,
-            username TEXT NOT NULL UNIQUE,
+            username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             birthday TEXT NOT NULL,
@@ -45,7 +45,7 @@ cur.execute('''CREATE TABLE Patients(
 cur.execute('''CREATE TABLE Caregivers(
             id_caregiver INTEGER NOT NULL,
             id_patient INTEGER NOT NULL,
-            username TEXT NOT NULL UNIQUE,
+            username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             relationship TEXT NOT NULL,
