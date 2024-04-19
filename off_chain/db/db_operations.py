@@ -27,9 +27,11 @@ class DatabaseOperations:
         # self.cur.execute("DROP TABLE IF EXISTS Reports")
         # self.cur.execute("DROP TABLE IF EXISTS TreatmentPlans")
         # self.cur.execute("DROP TABLE IF EXISTS AccessLog")
+
+        #lo username dovrebbe essere UNIQUE, senza registra correttamente
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Credentials(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
+            username TEXT NOT NULL, 
             hash_password TEXT NOT NULL,
             role TEXT CHECK(UPPER(role) IN ('MEDIC', 'PATIENT', 'CAREGIVER')) NOT NULL,
             public_key TEXT NOT NULL,
@@ -37,7 +39,7 @@ class DatabaseOperations:
             );''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Medics(
             id_medic INTEGER NOT NULL,
-            username TEXT NOT NULL UNIQUE,
+            username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             birthday TEXT NOT NULL,
@@ -49,7 +51,7 @@ class DatabaseOperations:
             );''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Patients(
             id_patient INTEGER NOT NULL,
-            username TEXT NOT NULL UNIQUE,
+            username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             birthday TEXT NOT NULL,
@@ -63,7 +65,7 @@ class DatabaseOperations:
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Caregivers(
             id_caregiver INTEGER NOT NULL,
             id_patient INTEGER NOT NULL,
-            username TEXT NOT NULL UNIQUE,
+            username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
             relationship TEXT NOT NULL,
@@ -105,6 +107,31 @@ class DatabaseOperations:
 
     def register_creds(self, username, hash_password, role, public_key, private_key):
         try:
+            # Check if the username already exists in the Credentials table
+            self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ?", (username,))
+            existing_username_count = self.cur.fetchone()[0]
+            if existing_username_count == 0:
+                # Username doesn't exist, proceed with insertion
+                hashed_passwd = self.hash_function(hash_password)
+                self.cur.execute("""
+                                INSERT INTO Credentials
+                                (username, hash_password, role, public_key, private_key) VALUES (?, ?, ?, ?, ?)""",
+                                (
+                                    username,
+                                    hashed_passwd,
+                                    role,
+                                    public_key,
+                                    private_key
+                                ))
+                self.conn.commit()
+                return 0
+            else:
+                return -1  # Username already exists
+        except sqlite3.IntegrityError:
+            return -1
+
+    '''def register_creds(self, username, hash_password, role, public_key, private_key):
+        try:
             hashed_passwd = self.hash_function(hash_password)
             self.cur.execute("""
                              INSERT INTO Credentials
@@ -118,17 +145,16 @@ class DatabaseOperations:
                              ))
             self.conn.commit()
             return 0
-        except sqlite3.DatabaseError:
-            return -1
         except sqlite3.IntegrityError:
-            return -2
+            return -1'''
         
     
     def insert_patient(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
         try:
             self.cur.execute("""
                             INSERT INTO Patients
-                            (id_patient, username, name, lastname, birthday, birth_place, residence, autonomous, phone) SELECT last_insert_rowid(), ?, ?, ?, ?, ?, ?, ?, ?
+                            (id_patient, username, name, lastname, birthday, birth_place, residence, autonomous, phone)
+                            SELECT last_insert_rowid(), ?, ?, ?, ?, ?, ?, ?, ?
                             FROM Credentials""",
                             (
                                 username,

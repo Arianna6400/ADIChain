@@ -131,8 +131,6 @@ class CommandLineInterface:
                     self.insert_caregiver_info(username, user_role)
             elif reg_code == -1:
                 print('Your username has been taken.\n')
-            elif reg_code == -2:
-                print('Internal error!')
         
         else:
             print('Sorry, but the provided public and private key do not match to any account\n')
