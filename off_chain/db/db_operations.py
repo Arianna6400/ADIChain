@@ -108,9 +108,8 @@ class DatabaseOperations:
     def register_creds(self, username, hash_password, role, public_key, private_key):
         try:
             # Check if the username already exists in the Credentials table
-            self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ?", (username,))
-            existing_username_count = self.cur.fetchone()[0]
-            if existing_username_count == 0:
+            if self.check_username(username) == 0:
+#            if existing_username_count == 0:
                 # Username doesn't exist, proceed with insertion
                 hashed_passwd = self.hash_function(hash_password)
                 self.cur.execute("""
@@ -147,8 +146,12 @@ class DatabaseOperations:
             return 0
         except sqlite3.IntegrityError:
             return -1'''
+
+    def check_username(self, username):
+        self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ?", (username,))
+        if self.cur.fetchone()[0] == 0: return 0
+        else: return -1
         
-    
     def insert_patient(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
         try:
             self.cur.execute("""

@@ -77,3 +77,6 @@ class Controller:
             return True
         else:
             return False
+        
+    def check_username(self, username):
+        return self.db_ops.check_username(username)

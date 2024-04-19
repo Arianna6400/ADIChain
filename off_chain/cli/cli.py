@@ -76,7 +76,10 @@ class CommandLineInterface:
 
             print('Enter your personal informations.')
 
-            username = input('Username: ')
+            while True:
+                username = input('Username: ')
+                if self.controller.check_username(username) == 0: break
+                else: print('Your username has been taken.\n')
 
             while True:
                 role = input("Insert your role: \n (C) if caregiver \n (M) if medic\n (P) if patient \n ").strip().upper()
@@ -106,16 +109,16 @@ class CommandLineInterface:
         
             while True:
                 password = input('Password: ')
-                confirm_password = input('Confirm password: ')
                 #password = getpass.getpass('Password: ')
-                #confirm_password = getpass.getpass('Confirm Password: ')
-                
                 passwd_regex = r'^.{8,50}$'
                 #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
-                
                 if not re.fullmatch(passwd_regex, password):
                     print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
-                elif password != confirm_password:
+                
+                confirm_password = input('Confirm password: ')
+                #confirm_password = getpass.getpass('Confirm Password: ')
+                  
+                if password != confirm_password:
                     print('Password and confirmation do not match. Try again\n')
                 else:
                     break
