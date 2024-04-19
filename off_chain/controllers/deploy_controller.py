@@ -34,11 +34,11 @@ class DeployController:
         # Compile the smart contract using specified settings
         compiled_sol = compile_standard({
             "language": "Solidity",
-            "sources": {"on_chain/on_chain.sol": {"content": solidity_source}},
+            "sources": {"on_chain/HealthCareRecords.sol": {"content": solidity_source}},
             "settings": {"outputSelection": {"*": {"*": ["abi", "evm.bytecode"]}}}
         }, solc_version=self.solc_version)
         # Extract the contract ID and interface from the compiled output
-        self.contract_id, self.contract_interface = next(iter(compiled_sol['contracts']['on_chain/on_chain.sol'].items()))
+        self.contract_id, self.contract_interface = next(iter(compiled_sol['contracts']['on_chain/HealthCareRecords.sol'].items()))
         self.abi = self.contract_interface['abi']  # Extract the ABI
         self.bytecode = self.contract_interface['evm']['bytecode']['object']  # Extract the bytecode
 
