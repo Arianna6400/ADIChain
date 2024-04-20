@@ -1,44 +1,40 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// This contract is designed to manage health care records efficiently and securely. 
-// It includes functionality for registering and managing medics, patients, caregivers, medical reports, and treatment plans.
+// This contract is designed to manage health care records including medics, patients, caregivers,
+// medical reports, and treatment plans efficiently and securely.
 contract HealthCareRecords {
-    // Defines a Medic with various attributes including registration status and an identifier for off-chain references.
+    // Structs for different entities within the health system, each with their specific attributes.
     struct Medic {
         string name;
         string lastname;
         string specialization;
         bool isRegistered;
-        uint256 offChainId; // using uint32 instead of uint256 to save gas (although this comment should match the actual type used)
+        uint256 offChainId; // Identifier for references outside the blockchain
     }
-    
-    // Defines a Patient, including a mapping to store conditions updated by authorized medics.
+
     struct Patient {
         string name;
         string lastname;
-        bool autonomous; // Indicates if the patient can manage their own records
+        bool autonomous;
         bool isRegistered;
-        uint256 offChainId;
-        mapping(address => string) authorizedMedics; // Maps medic addresses to the patient's condition as updated by them
+        uint256 offChainId; // Identifier for references outside the blockchain
+        mapping(address => string) conditions; // Conditions updated by authorized medics
     }
-    
-    // Defines a Caregiver with registration status.
+
     struct Caregiver {
         string name;
         string lastname;
         bool isRegistered;
     }
-    
-    // Defines a Report containing detailed medical reports written by medics.
+
     struct Report {
-        uint256 reportId;
-        uint256 patientId;
-        uint256 medicId;
-        string reportDetails;
+        uint256 reportId; // Unique identifier for the report.
+        uint256 patientId; // Link to the patient.
+        uint256 medicId; // Link to the medic who created the report.
+        string reportDetails; // Details of the medical report.
     }
-    
-    // Defines a Treatment Plan outlining the treatment details and medication for a patient.
+
     struct TreatmentPlan {
         uint256 planId;
         uint256 patientId;
@@ -48,94 +44,129 @@ contract HealthCareRecords {
         uint256 endDate;
     }
 
-    // Mappings to store Medics, Patients, Caregivers, Reports, and Treatment Plans.
-    mapping(uint256 => Medic) public medics;
-    mapping(uint256 => Patient) public patients;
-    mapping(uint256 => Caregiver) public caregivers;
-    mapping(uint256 => Report) public reports;
-    mapping(uint256 => TreatmentPlan) public treatmentPlans;
-
-    // Events that notify watchers of changes to the contract state.
-    event MedicRegistered(uint256 indexed medicId, string name);
-    event PatientRegistered(uint256 indexed patientId, string name);
-    event CaregiverRegistered(uint256 indexed caregiverId, string name);
-    event ReportFiled(uint256 indexed reportId, uint256 patientId, uint256 medicId);
-    event TreatmentPlanCreated(uint256 indexed planId, uint256 patientId, string treatmentDetails);
-
-    bool public paused = false; // Flag to manage contract pausability.
-    address public owner; // Address of the contract's owner.
-
-    // Modifier to restrict functions to the owner.
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not the owner");
-        _;
+    struct ActionLog {
+        uint actionId; // Unique identifier for each action taken within the system.
+        string actionType; // Could be "Create", "Update", or "Delete".
+        address initiatedBy; // Address of the user who initiated the action.
+        uint256 timestamp; // Block timestamp when the action was logged.
+        string details; // Additional details about the action
     }
 
-    // Modifier to ensure functions are callable only when the contract is not paused.
-    modifier whenNotPaused() {
-        require(!paused, "Contract is paused");
-        _;
-    }
+    uint256 private actionCounter = 0; // Counter to keep track of actions for unique IDs.
+    mapping(uint256 => Medic) public medics; // Mapping from ID to Medic struct.
+    mapping(uint256 => Patient) public patients; // Mapping from ID to Patient struct.
+    mapping(uint256 => Caregiver) public caregivers; // Mapping from ID to Caregiver struct.
+    mapping(uint256 => Report) public reports; // Mapping from ID to Report struct.
+    mapping(uint256 => TreatmentPlan) public treatmentPlans; // Mapping from ID to Treatment Plan struct.
+    mapping(uint256 => ActionLog) public actionLogs; // Mapping from ID to ActionLog struct.
+    mapping(address => bool) public authorizedEditors; // Mapping of addresses that are authorized to edit records.
+    address public owner; // Address of the contract owner.
 
-    // Contract constructor that sets the owner upon deployment.
+    // Constructor to initialize the owner and authorize them.
     constructor() {
         owner = msg.sender;
+        authorizedEditors[owner] = true;
     }
-
-    // Allows the owner to pause the contract.
-    function pause() public onlyOwner {
-        paused = true;
-    }
-
-    // Allows the owner to unpause the contract.
-    function unpause() public onlyOwner {
-        paused = false;
-    }
-
-    // Modifier to check that a medic is registered before they perform certain actions.
-    modifier onlyRegisteredMedic(uint256 _medicId) {
-        require(medics[_medicId].isRegistered, "Only registered medics can perform this action");
+    
+    // Modifier to check if the caller is authorized to perform certain actions.
+    modifier onlyAuthorized() {
+        require(authorizedEditors[msg.sender], "Unauthorized access");// Check if the caller is authorized.
         _;
     }
 
-    // Registers a medic, emitting an event upon success.
-    function registerMedic(uint256 _id, string memory _name, string memory _lastname, string memory _specialization) public onlyOwner whenNotPaused {
-        require(!medics[_id].isRegistered, "Medic is already registered");
-        medics[_id] = Medic(_name, _lastname, _specialization, true, _id);
-        emit MedicRegistered(_id, _name);
+    // Internal function to log any action taken within the contract.
+    function logAction(string memory _actionType, address _initiator, string memory _details) internal {
+        actionCounter++;
+        actionLogs[actionCounter] = ActionLog(actionCounter, _actionType, _initiator, block.timestamp, _details);
     }
 
-    // Registers a patient, emitting an event upon success.
-    function registerPatient(uint256 _id, string memory _name, string memory _lastname, bool _autonomous) public onlyOwner whenNotPaused {
-        require(!patients[_id].isRegistered, "Patient is already registered");
-        Patient storage patient = patients[_id];
-        patient.name = _name;
-        patient.lastname = _lastname;
-        patient.autonomous = _autonomous;
-        patient.isRegistered = true;
-        patient.offChainId = _id;
-        emit PatientRegistered(_id, _name);
+    // Public function to allow the owner to add an authorized editor.
+    function addEditor(address _editor) public onlyAuthorized {
+        authorizedEditors[_editor] = true;
     }
 
-    // Registers a caregiver.
-    function registerCaregiver(uint256 _id, string memory _name, string memory _lastname) public onlyOwner whenNotPaused {
-        caregivers[_id] = Caregiver(_name, _lastname, true);
+    // Public function to allow the owner to remove an authorized editor.
+    function removeEditor(address _editor) public onlyAuthorized {
+        authorizedEditors[_editor] = false;
     }
 
-    // Updates the condition of a patient, allowing updates by authorized medics only.
-    function updatePatient(uint256 _id, string memory _condition) public whenNotPaused {
-        require(patients[_id].offChainId != 0, "Patient not found");
-        patients[_id].authorizedMedics[msg.sender] = _condition;
+    // Function implementations for Medics, Patients, Caregivers, Reports, and Treatment Plans with a unique ID based on hashing of their details
+
+    function addMedic(string memory name, string memory lastname, string memory specialization) public onlyAuthorized {
+        uint256 offChainId = uint256(keccak256(abi.encodePacked(name, lastname, specialization)));
+        require(medics[offChainId].offChainId == 0, "Medic already registered");
+        medics[offChainId] = Medic(name, lastname, specialization, true, offChainId);
+        logAction("Create", msg.sender, "Medic added");
     }
 
-    // Files a medical report, restricted to registered medics.
-    function fileReport(uint256 _reportId, uint256 _patientId, uint256 _medicId, string memory _details) public onlyRegisteredMedic(_medicId) whenNotPaused {
-        require(medics[_medicId].isRegistered, "Medic not registered");
-        reports[_reportId] = Report(_reportId, _patientId, _medicId, _details);
+    function updateMedic(uint256 offChainId, string memory name, string memory lastname, string memory specialization, bool isRegistered) public onlyAuthorized {
+        require(medics[offChainId].offChainId != 0, "Medic not found");
+        Medic storage medic = medics[offChainId];
+        medic.name = name;
+        medic.lastname = lastname;
+        medic.specialization = specialization;
+        medic.isRegistered = isRegistered;
+        logAction("Update", msg.sender, "Medic updated");
     }
 
-    // Creates a treatment plan, restricted to registered medics.
-    function createTreatmentPlan(uint256 _planId, uint256 _patientId, uint256 _medicId, string memory _treatmentDetails, string memory _medication, uint256 _startDate, uint256 _endDate) public onlyRegisteredMedic(_medicId) whenNotPaused {
-        treatmentPlans[_planId] = TreatmentPlan(_planId, _patientId, _treatmentDetails, _medication, _startDate, _endDate);
+    function addPatient(string memory name, string memory lastname, bool autonomous) public onlyAuthorized {
+        uint256 offChainId = uint256(keccak256(abi.encodePacked(name, lastname)));
+        require(patients[offChainId].offChainId == 0, "Patient already registered");
+        
+        Patient storage newPatient = patients[offChainId];
+        newPatient.name = name;
+        newPatient.lastname = lastname;
+        newPatient.autonomous = autonomous;
+        newPatient.isRegistered = true;
+        newPatient.offChainId = offChainId;
+        
+        logAction("Create", msg.sender, "Patient added");
+    }
+
+    function updatePatient(uint256 offChainId, string memory name, string memory lastname, bool autonomous, bool isRegistered) public onlyAuthorized {
+        require(patients[offChainId].offChainId != 0, "Patient not found");
+        Patient storage patient = patients[offChainId];
+        patient.name = name;
+        patient.lastname = lastname;
+        patient.autonomous = autonomous;
+        patient.isRegistered = isRegistered;
+        logAction("Update", msg.sender, "Patient updated");
+    }
+
+    function addCaregiver(string memory name, string memory lastname, bool isRegistered) public onlyAuthorized {
+        uint256 id = uint256(keccak256(abi.encodePacked(name, lastname)));
+        caregivers[id] = Caregiver(name, lastname, isRegistered);
+        logAction("Create", msg.sender, "Caregiver added");
+    }
+
+    function updateCaregiver(uint256 id, bool newStatus) public onlyAuthorized {
+        require(caregivers[id].isRegistered != newStatus, "No change in status");
+        caregivers[id].isRegistered = newStatus;
+        logAction("Update", msg.sender, "Caregiver status updated");
+    }
+
+    function addReport(uint256 patientId, uint256 medicId, string memory details) public onlyAuthorized {
+        uint256 reportId = uint256(keccak256(abi.encodePacked(patientId, medicId, details)));
+        reports[reportId] = Report(reportId, patientId, medicId, details);
+        logAction("Create", msg.sender, "Report added");
+    }
+
+    function updateReport(uint256 reportId, string memory newDetails) public onlyAuthorized {
+        require(keccak256(abi.encodePacked(reports[reportId].reportDetails)) != keccak256(abi.encodePacked(newDetails)), "No change in report details");
+        reports[reportId].reportDetails = newDetails;
+        logAction("Update", msg.sender, "Report updated");
+    }
+
+    function addTreatmentPlan(uint256 patientId, string memory details, string memory medication, uint256 startDate, uint256 endDate) public onlyAuthorized {
+        uint256 planId = uint256(keccak256(abi.encodePacked(patientId, details, medication)));
+        treatmentPlans[planId] = TreatmentPlan(planId, patientId, details, medication, startDate, endDate);
+        logAction("Create", msg.sender, "Treatment plan added");
+    }
+
+    function updateTreatmentPlan(uint256 planId, string memory newDetails, string memory newMedication) public onlyAuthorized {
+        require(keccak256(abi.encodePacked(treatmentPlans[planId].treatmentDetails)) != keccak256(abi.encodePacked(newDetails)), "No change in treatment details");
+        treatmentPlans[planId].treatmentDetails = newDetails;
+        treatmentPlans[planId].medication = newMedication;
+        logAction("Update", msg.sender, "Treatment plan updated");
     }
 }

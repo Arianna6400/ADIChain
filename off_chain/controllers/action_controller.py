@@ -1,10 +1,13 @@
+from controllers.deploy_controller import DeployController
 from web3 import Web3
 import os
 import time
-from controllers.deploy_controller import DeployController  # Import the DeployController class
 
-class TransactionController:
+
+class ActionController:
     def __init__(self, http_provider='http://ganache:8545'):
+        #http://ganache:8545
+        #http://127.0.0.1:8545
         # Initialize with a HTTP provider URL for the Ethereum node (Ganache for local testing).
         self.http_provider = http_provider
         # Connect to the Ethereum node using the Web3 library.
@@ -53,45 +56,34 @@ class TransactionController:
             time.sleep(10)
 
     # The following methods interact with specific functions of the HealthCareRecords smart contract.
+    # We use a dictionary to map different types of entities based on the solidity contract ones
+    def register_entity(self, entity_type, *args, from_address):
+        entity_functions = {
+            'medic': self.contract.functions.registerMedic,
+            'patient': self.contract.functions.registerPatient,
+            'caregiver': self.contract.functions.registerCaregiver
+        }
+        return self.write_data(entity_functions[entity_type].__name__, from_address, *args)
 
-    def pause(self, tx_args):
-        # Pause operations on the smart contract.
-        tx_hash = self.contract.functions.pause().transact(tx_args)
-        receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
-        return receipt
+    def update_entity_status(self, entity_type, entity_id, new_status, from_address):
+        update_functions = {
+            'medic': self.contract.functions.updateMedic,
+            'patient': self.contract.functions.updatePatient,
+            'caregiver': self.contract.functions.updateCaregiver
+        }
+        return self.write_data(update_functions[entity_type].__name__, from_address, entity_id, new_status)
 
-    def unpause(self, tx_args):
-        # Resume operations on the smart contract.
-        tx_hash = self.contract.functions.unpause().transact(tx_args)
-        receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
-        return receipt
+    #Similar approach for reports and treatment plan, mapping different actions based on the solidity contract
+    def manage_report(self, action, *args, from_address):
+        report_functions = {
+            'add': self.contract.functions.addReport,
+            'update': self.contract.functions.updateReport
+        }
+        return self.write_data(report_functions[action].__name__, from_address, *args)
 
-    def register_medic(self, _id, _name, _lastname, _specialization, tx_args):
-        # Register a medic on the smart contract.
-        tx_hash = self.contract.functions.registerMedic(_id, _name, _lastname, _specialization).transact(tx_args)
-        receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
-        return receipt
-
-    def register_caregiver(self, _id, _name, _lastname, tx_args):
-        # Register a caregiver on the smart contract.
-        tx_hash = self.contract.functions.registerCaregiver(_id, _name, _lastname).transact(tx_args)
-        receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
-        return receipt
-
-    def update_patient(self, _id, _condition, tx_args):
-        # Update patient information in the smart contract.
-        tx_hash = self.contract.functions.updatePatient(_id, _condition).transact(tx_args)
-        receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
-        return receipt
-
-    def file_report(self, _reportId, _patientId, _medicId, _details, tx_args):
-        # File a medical report for a patient by a medic.
-        tx_hash = self.contract.functions.fileReport(_reportId, _patientId, _medicId, _details).transact(tx_args)
-        receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
-        return receipt
-
-    def create_treatment_plan(self, _planId, _patientId, _medicId, _treatmentDetails, _medication, _startDate, _endDate, tx_args):
-        # Create a treatment plan for a patient.
-        tx_hash = self.contract.functions.createTreatmentPlan(_planId, _patientId, _medicId, _treatmentDetails, _medication, _startDate, _endDate).transact(tx_args)
-        receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
-        return receipt
+    def manage_treatment_plan(self, action, *args, from_address):
+        treatment_plan_functions = {
+            'add': self.contract.functions.addTreatmentPlan,
+            'update': self.contract.functions.updateTreatmentPlan
+        }
+        return self.write_data(treatment_plan_functions[action].__name__, from_address, *args)
