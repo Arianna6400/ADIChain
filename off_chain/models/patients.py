@@ -2,7 +2,7 @@ from models.model_base import Model
 
 #Costruttore e attributi della tabella Patients
 class Patients(Model):
-    def __init__(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone, id_patient=None):
+    def __init__(self, id_patient, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
         super().__init__()
         self.id_patient = id_patient
         self.username = username

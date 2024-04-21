@@ -2,7 +2,7 @@ from models.model_base import Model
 
 #Costruttore e attributi della tabella Credentials
 class Credentials(Model):
-    def __init__(self, username, hash_password, role, public_key, private_key, id=None):
+    def __init__(self, id, username, hash_password, role, public_key, private_key):
         super().__init__()
         self.id = id
         self.username = username

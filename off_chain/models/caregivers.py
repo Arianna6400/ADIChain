@@ -2,7 +2,7 @@ from models.model_base import Model
 
 #Costruttore e attributi della tabella Caregivers
 class Caregivers(Model):
-    def __init__(self, id_patient, username, name, lastname, patient_relationship, phone, id_caregiver=None):
+    def __init__(self, id_caregiver, id_patient, username, name, lastname, patient_relationship, phone):
         super().__init__()
         self.id_caregiver = id_caregiver
         self.id_patient = id_patient
