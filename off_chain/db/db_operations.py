@@ -20,15 +20,7 @@ class DatabaseOperations:
         self.dklen_param = 64
 
     def _create_new_table(self):
-        # self.cur.execute("DROP TABLE IF EXISTS Credentials")
-        # self.cur.execute("DROP TABLE IF EXISTS Medics")
-        # self.cur.execute("DROP TABLE IF EXISTS Patients")
-        # self.cur.execute("DROP TABLE IF EXISTS Caregivers")
-        # self.cur.execute("DROP TABLE IF EXISTS Reports")
-        # self.cur.execute("DROP TABLE IF EXISTS TreatmentPlans")
-        # self.cur.execute("DROP TABLE IF EXISTS AccessLog")
 
-        #lo username dovrebbe essere UNIQUE, senza registra correttamente
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Credentials(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL, 
@@ -109,7 +101,7 @@ class DatabaseOperations:
         try:
             # Check if the username already exists in the Credentials table
             if self.check_username(username) == 0:
-#            if existing_username_count == 0:
+            #if existing_username_count == 0:
                 # Username doesn't exist, proceed with insertion
                 hashed_passwd = self.hash_function(hash_password)
                 self.cur.execute("""
@@ -128,24 +120,6 @@ class DatabaseOperations:
                 return -1  # Username already exists
         except sqlite3.IntegrityError:
             return -1
-
-    '''def register_creds(self, username, hash_password, role, public_key, private_key):
-        try:
-            hashed_passwd = self.hash_function(hash_password)
-            self.cur.execute("""
-                             INSERT INTO Credentials
-                             (username, hash_password, role, public_key, private_key) VALUES (?, ?, ?, ?, ?)""",
-                             (
-                                 username,
-                                 hashed_passwd,
-                                 role,
-                                 public_key,
-                                 private_key
-                             ))
-            self.conn.commit()
-            return 0
-        except sqlite3.IntegrityError:
-            return -1'''
 
     def check_username(self, username):
         self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ?", (username,))
