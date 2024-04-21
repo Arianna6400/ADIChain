@@ -231,7 +231,7 @@ class CommandLineInterface:
             if login_code == 0:
                 print('\nYou have succesfully logged in!\n')
             elif login_code == -1:
-                print('\nThe credentials you enter are wrong\n')
+                print('\nThe credentials you entered are wrong\n')
             elif login_code == -2:
                 print('\nToo many login attempts\n')
                 return -1

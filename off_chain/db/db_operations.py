@@ -258,7 +258,7 @@ class DatabaseOperations:
         hashed_passwd = f"{digest.hex()}${salt.hex()}${self.n_param}${self.r_param}${self.p_param}${self.dklen_param}"
         return hashed_passwd
     
-    def check_credentials(self, username, password, public_key, private_key, role):
+    def check_credentials(self, username, password, public_key, private_key):
         creds = self.get_creds_by_username(username)
         if(creds is not None and self.check_passwd(username, password) and creds.get_public_key() == public_key and private_key == creds.get_private_key()):
             return True
