@@ -255,6 +255,35 @@ class CommandLineInterface:
             print(f'You will be in timeout for: {int(self.session.get_timeout_left())} seconds\n')
             return -2
     
-    def user_menu(self):
-        print('MENU')
+    def medic_menu(self):
+        menu_options = {
+            1: "Choose patient",
+            2: "Update profile",
+            3: "Exit"
+        }
 
+        while True:
+            print("MENU")                           # Stampa il menu
+            for key, value in menu_options.items():
+                print(f"{key}. {value}")
+                                                
+            try:                                    # Richiesta input e gestione errori
+                choice = int(input("Choose an option: "))
+                if choice in menu_options:
+                    break
+                else:
+                    print("Invalid choice! Please try again.")
+            except ValueError:
+                print("Invalid Input! Please enter a valid number.")
+                
+        if choice == 1:
+            print("Visualize medical data")         # Gestisce la scelta dell'utente
+            self.controller.menu_one(self)
+       
+        elif choice == 2:                           # Inserisci qui il codice per la gestione dei pazienti
+            print("Update profile function")
+            self.controller.menu_two(self)
+    
+        elif choice == 3:                           # Inserisci qui il codice per l'aggiornamento del profilo
+            print("Thank you for using the service")
+            exit()
