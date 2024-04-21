@@ -11,7 +11,7 @@ class Controller:
         self.db_ops = DatabaseOperations()
         self.session = session
         self.__n_attempts_limit = 5
-        self.__timeout_timer = 180        
+        self.__timeout_timer = 180
 
 
     def registration(self, username: str, password: str, role: str, public_key: str, private_key: str):
@@ -39,8 +39,8 @@ class Controller:
 
         return insertion_code
     
-    def insert_caregiver_info(self, role: str, username: str, name: str, lastname: str, id_patient: int, relationship: str, phone: str):
-        insertion_code = self.db_ops.insert_caregiver(username, name, lastname, id_patient, relationship, phone)
+    def insert_caregiver_info(self, role: str, username: str, name: str, lastname: str, username_patient: int, relationship: str, phone: str):
+        insertion_code = self.db_ops.insert_caregiver(username, name, lastname, username_patient, relationship, phone)
 
         if insertion_code == 0:
             user = self.db_ops.get_user_by_username(username, role) 
@@ -80,3 +80,6 @@ class Controller:
         
     def check_username(self, username):
         return self.db_ops.check_username(username)
+    
+    def check_patient_by_username(self, username):
+        return self.db_ops.check_patient_by_username(username)

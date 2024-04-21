@@ -44,7 +44,7 @@ cur.execute('''CREATE TABLE Patients(
             );''')
 cur.execute('''CREATE TABLE Caregivers(
             id_caregiver INTEGER NOT NULL,
-            id_patient INTEGER NOT NULL,
+            username_patient TEXT NOT NULL,
             username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
@@ -52,7 +52,7 @@ cur.execute('''CREATE TABLE Caregivers(
             phone TEXT,
             FOREIGN KEY(username) REFERENCES Credentials(username)
             FOREIGN KEY(id_caregiver) REFERENCES Credentials(id),
-            FOREIGN KEY(id_patient) REFERENCES Patients(id_patient)
+            FOREIGN KEY(username_patient) REFERENCES Patients(username)
             );''')
 cur.execute('''CREATE TABLE Reports(
             id_report INTEGER PRIMARY KEY AUTOINCREMENT,

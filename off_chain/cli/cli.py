@@ -139,7 +139,7 @@ class CommandLineInterface:
             print('Sorry, but the provided public and private key do not match to any account\n')
             return
 
-    def insert_patient_info(self, username, role):
+    def insert_patient_info(self, username, role, autonomous_flag=1):
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
@@ -150,12 +150,12 @@ class CommandLineInterface:
 
         birth_place = input('Birth place:')
         residence = input('Place of residence:')
-        while True:
-            autonomous_flag = int(input('Are you autonomous? (Digit "1" if you are autonomous, "0" if you are not)'))
-            if autonomous_flag  in [0,1]:
-                break
-            else:
-                print('Wrong value! Insert a valid value please.')
+        #while True:
+        #    autonomous_flag = int(input('Are you autonomous? (Digit "1" if you are autonomous, "0" if you are not)'))
+        #    if autonomous_flag  in [0,1]:
+        #        break
+        #    else:
+        #        print('Wrong value! Insert a valid value please.')
         while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): break
@@ -192,20 +192,34 @@ class CommandLineInterface:
             print('Information saved correctly!')
         elif insert_code == -1:
             print('Internal error!')
- 
 
     def insert_caregiver_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
-        id_patient = int(input('Enter the ID of the patient you are taking care of: '))
+        while True:
+                username_patient = input('Enter the username of the patient you are taking care of: ')
+                if self.controller.check_patient_by_username(username_patient) == -1: break
+                else:
+                    print('A patient named ' + str(username_patient) + ' does not exist.')
+                    confirm = input("Do you want to create a new Patient account? (Y/n): ").strip().upper()
+                    if confirm == 'Y':
+                        confirm = input("Do yu want to keep '{}' as the Patient's username? (Y/n): ".format(username_patient)).strip().upper()
+                        if confirm != 'Y':
+                            new_value = input("Insert the new username (press Enter to mantain '{}'): ".format(username_patient))
+                            username_patient = new_value if new_value else username_patient
+                        self.insert_patient_info(username_patient, "Patient", 0) 
+                        print("Let's continue with your information.")
+                        break
+
         relationship = input('What kind of relationship there is between you and the patient: ')
+
         while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
 
-        insert_code = self.controller.insert_caregiver_info(role, username, name, lastname, id_patient, relationship, phone)
+        insert_code = self.controller.insert_caregiver_info(role, username, name, lastname, username_patient, relationship, phone)
         if insert_code == 0:
             print('Information saved correctly!')
         elif insert_code == -1:

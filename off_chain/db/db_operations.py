@@ -56,7 +56,7 @@ class DatabaseOperations:
             );''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Caregivers(
             id_caregiver INTEGER NOT NULL,
-            id_patient INTEGER NOT NULL,
+            username_patient TEXT NOT NULL,
             username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
@@ -64,7 +64,7 @@ class DatabaseOperations:
             phone TEXT,
             FOREIGN KEY(username) REFERENCES Credentials(username)
             FOREIGN KEY(id_caregiver) REFERENCES Credentials(id),
-            FOREIGN KEY(id_patient) REFERENCES Patients(id_patient)
+            FOREIGN KEY(username_patient) REFERENCES Patients(username)
             );''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Reports(
             id_report INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -168,17 +168,17 @@ class DatabaseOperations:
         except sqlite3.IntegrityError:
             return -1
 
-    def insert_caregiver(self, username, name, lastname, id_patient, relationship, phone):
+    def insert_caregiver(self, username, name, lastname, username_patient, relationship, phone):
         try:
             self.cur.execute("""
                             INSERT INTO Caregivers
-                            (id_caregiver, username, name, lastname, id_patient, relationship, phone) SELECT last_insert_rowid(), ?, ?, ?, ?, ?, ?
+                            (id_caregiver, username, name, lastname, username_patient, relationship, phone) SELECT last_insert_rowid(), ?, ?, ?, ?, ?, ?
                             FROM Credentials""",
                             (
                                 username,
                                 name, 
                                 lastname,
-                                id_patient,
+                                username_patient,
                                 relationship,
                                 phone
                             ))
@@ -186,6 +186,11 @@ class DatabaseOperations:
             return 0
         except sqlite3.IntegrityError:
             return -1
+
+    def check_patient_by_username(self, username):
+            self.cur.execute("SELECT COUNT(*) FROM Patients WHERE username = ?", (username,))
+            if self.cur.fetchone()[0] == 0: return 0
+            else: return -1
 
     def get_user_by_username(self, username, role):
         if role == 'medic':
@@ -244,4 +249,3 @@ class DatabaseOperations:
         )
         hashed_passwd = f"{digest.hex()}${salt.hex()}${self.n_param}${self.r_param}${self.p_param}${self.dklen_param}"
         return hashed_passwd
-
