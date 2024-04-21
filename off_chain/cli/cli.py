@@ -39,7 +39,9 @@ class CommandLineInterface:
                 self.registration_menu()
             elif choice == 2:
                 print('Proceed with the log in...')
-                self.login_menu()
+                res_code = self.login_menu()
+                if res_code == 0:
+                    self.print_menu()
             elif choice == 3:
                 print('Bye Bye!')
                 exit()
@@ -212,7 +214,32 @@ class CommandLineInterface:
             print('Internal error!')
        
     def login_menu(self):
-        return
+
+        if not self.controller.check_attempts() and self.session.get_timeout_left() < 0:
+            self.session.reset_attempts()
+
+        if self.session.get_timeout_left() <= 0 and self.controller.check_attempts():
+            public_key = input('Insert public key:')
+            private_key = input('Insert private key:')
+            #private_key = getpass.getpass('Private Key: ')
+            username = input('Insert username: ')
+            passwd = input('Insert password: ')
+            #passwd = getpass.getpass('Insert password: ')
+
+            login_code = self.controller.login(username, passwd, public_key, private_key)
+
+            if login_code == 0:
+                print('\nYou have succesfully logged in!\n')
+            elif login_code == -1:
+                print('\nThe credentials you enter are wrong\n')
+            elif login_code == -2:
+                print('\nToo many login attempts\n')
+                return -1
+            
+        else:
+            print('\nMax number of attemps reached\n')
+            print(f'You will be in timeout for: {int(self.session.get_timeout_left())} seconds\n')
+            return -2
     
     def user_menu(self):
         print('MENU')

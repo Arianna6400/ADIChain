@@ -3,6 +3,7 @@ import re
 
 from db.db_operations import DatabaseOperations
 from session.session import Session
+from models.credentials import Credentials
 
 
 class Controller:
@@ -18,6 +19,21 @@ class Controller:
         registration_code = self.db_ops.register_creds(username, password, role, public_key, private_key)
 
         return registration_code
+    
+    def login(self, username: str, password: str, public_key: str, private_key: str):
+        if(self.check_attempts() and self.db_ops.check_credentials(username, password, public_key, private_key)):
+            creds: Credentials = self.db_ops.get_creds_by_username(username)
+            role = creds.get_role
+            user = self.db_ops.get_user_by_username(username, role)
+            self.session.set_user(user)
+            return 0
+        elif self.check_attempts():
+            self.session.increment_attempts()
+            if self.session.get_attempts() == self.__n_attempts_limit:
+                self.session.set_error_attempts_timeout(self.__timeout_timer)
+            return -1
+        else:
+            return -2
     
     def insert_patient_info(self, role: str, username: str, name: str, lastname: str, birthday: str, birth_place: str, residence: str, autonomous: bool, phone: str):
         insertion_code = self.db_ops.insert_patient(username, name, lastname, birthday, birth_place, residence, autonomous, phone)
@@ -80,3 +96,9 @@ class Controller:
         
     def check_username(self, username):
         return self.db_ops.check_username(username)
+    
+    def check_attempts(self):
+        if self.session.get_attempts() < self.__n_attempts_limit:
+            return True
+        else:
+            return False
