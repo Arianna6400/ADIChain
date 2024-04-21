@@ -6,6 +6,7 @@ from config import config
 from models.medics import Medics
 from models.patients import Patients
 from models.caregivers import Caregivers
+from models.credentials import Credentials
 
 class DatabaseOperations:
 
@@ -192,6 +193,18 @@ class DatabaseOperations:
             if self.cur.fetchone()[0] == 0: return 0
             else: return -1
 
+    def get_creds_by_username(self, username):
+        creds = self.cur.execute("""
+                                SELECT *
+                                FROM Credentials
+                                WHERE username=?""", (username,))
+        user_attr = creds.fetchone()
+        if user_attr is not None:
+                creds = Credentials(user_attr[0], user_attr[1], user_attr[2], user_attr[3], user_attr[4], user_attr[5])
+                return creds
+        return None
+
+
     def get_user_by_username(self, username, role):
         if role == 'medic':
             user = self.cur.execute("""
@@ -249,3 +262,32 @@ class DatabaseOperations:
         )
         hashed_passwd = f"{digest.hex()}${salt.hex()}${self.n_param}${self.r_param}${self.p_param}${self.dklen_param}"
         return hashed_passwd
+
+    
+    def check_credentials(self, username, password, public_key, private_key):
+        creds = self.get_creds_by_username(username)
+        if(creds is not None and self.check_passwd(username, password) and creds.get_public_key() == public_key and private_key == creds.get_private_key()):
+            return True
+        else:
+            return False
+    
+
+    def check_passwd(self, username, password):
+
+        result = self.cur.execute("""
+                                SELECT hash_password
+                                FROM Credentials
+                                WHERE username =?""", (username,))
+        hash = result.fetchone()
+        if hash:
+            saved_hash = hash[0]
+            params = saved_hash.split('$')
+            hashed_passwd = hashlib.scrypt(
+                password.encode('utf-8'),
+                salt=bytes.fromhex(params[1]),
+                n = int(params[2]),
+                r = int(params[3]),
+                p = int(params[4]),
+                dklen= int(params[5])
+            )
+        return hashed_passwd.hex() == params[0]
