@@ -2,7 +2,7 @@ from models.model_base import Model
 
 #Costruttore e attributi della tabella Reports
 class Reports(Model):
-    def __init__(self, id_patient, id_medic, analysis, diagnosis, id_report=None):
+    def __init__(self, id_report, id_patient, id_medic, analysis, diagnosis):
         super().__init__()
         self.id_report = id_report
         self.id_patient = id_patient

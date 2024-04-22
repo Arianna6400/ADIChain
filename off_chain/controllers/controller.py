@@ -114,3 +114,6 @@ class Controller:
     
     def get_medic_by_id(self, id):
         return self.db_ops.get_medic_by_id(id)
+    
+    def get_reports_list_by_username(self, username):
+        return self.db_ops.get_reports_list_by_username(username)

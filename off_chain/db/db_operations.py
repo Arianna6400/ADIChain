@@ -8,6 +8,7 @@ from models.patients import Patients
 from models.caregivers import Caregivers
 from models.credentials import Credentials
 from models.treatmentplan import TreatmentPlans
+from models.reports import Reports
 
 class DatabaseOperations:
 
@@ -302,11 +303,10 @@ class DatabaseOperations:
         return hashed_passwd.hex() == params[0]
     
     def get_treatmentplan_by_username(self, username):
-        result = self.cur.execute("""
+        user_id = self.cur.execute("""
                                     SELECT id_patient
                                     FROM Patients
-                                    WHERE username =?""", (username,))
-        user_id = result.fetchone()[0]
+                                    WHERE username =?""", (username,)).fetchone()[0]
         treatmentplan = self.cur.execute("""
                                     SELECT *
                                     FROM TreatmentPlans
@@ -319,3 +319,15 @@ class DatabaseOperations:
                                     FROM Medics
                                     WHERE id_medic =?""", (id,)).fetchone()
         return Medics(*medic)
+    
+    def get_reports_list_by_username(self, username):
+        user_id = self.cur.execute("""
+                                    SELECT id_patient
+                                    FROM Patients
+                                    WHERE username =?""", (username,)).fetchone()[0]
+        reportslist = self.cur.execute("""
+                                    SELECT *
+                                    FROM Reports
+                                    WHERE id_patient =?""", (user_id,))
+        
+        return [Reports(*report) for report in reportslist]

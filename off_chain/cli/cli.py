@@ -355,7 +355,7 @@ class CommandLineInterface:
                 2: "Updade profile",
                 3: "Exit"
             }
-            print("MENU")
+            print("\nMENU")
             for key, value in patient_options.items():
                 print(f"{key} -- {value}")
 
@@ -375,9 +375,7 @@ class CommandLineInterface:
                             self.view_treatmentplan(user.username)
 
                         if choice == 2:
-                            # view list and select report
-                                # view report
-                            self.view_reports()
+                            self.view_reportslist_patient(user.username)
 
                         if choice == 3:
                             self.patient_menu()
@@ -387,7 +385,7 @@ class CommandLineInterface:
                         return
 
                 elif choice == 2:
-                    self.modify_informations()
+                    self.modify_credentials()
 
                 elif choice == 3:
                     print('Bye Bye!')
@@ -400,7 +398,7 @@ class CommandLineInterface:
                 return
             
 
-    def modify_informations(self):
+    def modify_credentials(self):
         user = self.session.get_user()
 
         # unificare modifica dati personali
@@ -424,8 +422,10 @@ class CommandLineInterface:
 
         #sviluppare visualizzazione
 
-    # def view_reportslist__patient(self, username):
-    #     reports_list = self.controller.get_reports_list_by_username(username) #sviluppare
+    def view_reportslist_patient(self, username):
+        reports_list = self.controller.get_reports_list_by_username(username) #sviluppare
+        print(reports_list)
+        # scelta report e invio a view_report (direttamente con model)
 
     # def view_report(self):
     #     report = self.controller.get_report(report_id)
