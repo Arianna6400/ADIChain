@@ -366,7 +366,7 @@ class CommandLineInterface:
                     print('Which type of data do you want to modify?')
                     print("1 -- Username")
                     print("2 -- Name")
-                    print("3 -- last name")
+                    print("3 -- Last name")
                     # other
                     # undo
 
