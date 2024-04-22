@@ -296,14 +296,23 @@ class CommandLineInterface:
 
     #Caregiver (bozza)
     def caregiver_menu(self, username):
-
         while True:
             # GET USER BY USERNAME!
             caregiver = self.controller.get_user_by_username(username, "caregiver")
             print(caregiver)
+
+            # Ottieni il nome del caregiver
+            patient_name = caregiver[1]
+
+            # Determina se il nome del caregiver termina con una lettera diversa da 's'
+            if patient_name[-1].lower() != 's':
+                possessive_suffix = "'s"
+            else:
+                possessive_suffix = "'"
+
             caregiver_options = {
                         1: "Choose patient",
-                        2: "Update {} profile".format(caregiver[0]),
+                        2: "Update {}{} profile".format(patient_name, possessive_suffix),
                         #2: "Update patient profile",
                         3: "Exit"
                     }
@@ -334,7 +343,7 @@ class CommandLineInterface:
             if confirm == 'Y':
                 print("Thank you for using the service!")
                 exit()
-
+            
     #Patient (bozza)
     def patient_menu(self):
 
