@@ -246,6 +246,7 @@ class CommandLineInterface:
 
             if login_code == 0:
                 print('\nYou have succesfully logged in!\n')
+                self.patient_menu()
             elif login_code == -1:
                 print('\nThe credentials you entered are wrong\n')
             elif login_code == -2:
@@ -299,7 +300,7 @@ class CommandLineInterface:
 
         while True:
             # GET USER BY USERNAME!
-            caregiver = self.controller.get_user_by_username(username, "caregiver")
+            caregiver = self.controller.get_user_by_username(username)
             print(caregiver)
             caregiver_options = {
                         1: "Choose patient",
@@ -337,6 +338,7 @@ class CommandLineInterface:
 
     #Patient (bozza)
     def patient_menu(self):
+        user = self.session.get_user()
 
         while True: 
 
@@ -355,20 +357,29 @@ class CommandLineInterface:
                 if choice == 1:
                     print('Which type of data do you want to consult?')
                     print("1 -- Treatment plan")
-                        # view treatment plan
-                    print("2 -- Reports")
-                        # view list and select report
-                            # view report
+                    print("2 -- Reports") 
                     print("3 -- Undo") 
-                        # menu
+                    
+                    try:
+                        choice = int(input('Enter your choice: '))
+
+                        if choice == 1:
+                            self.view_treatmentplan(user.username)
+
+                        if choice == 2:
+                            # view list and select report
+                                # view report
+                            self.view_reports()
+
+                        if choice == 3:
+                            self.patient_menu()
+
+                    except ValueError:
+                        print('Wrong input. Please enter a number!\n')
+                        return
 
                 elif choice == 2:
-                    print('Which type of data do you want to modify?')
-                    print("1 -- Username")
-                    print("2 -- Name")
-                    print("3 -- last name")
-                    # other
-                    # undo
+                    self.modify_informations()
 
                 elif choice == 3:
                     print('Bye Bye!')
@@ -379,6 +390,32 @@ class CommandLineInterface:
             except ValueError:
                 print('Wrong input. Please enter a number!\n')
                 return
+            
+
+    def modify_informations(self):
+        user = self.session.get_user()
+
+        # unificare modifica dati personali
+        # get_user -> 
+        print('Which type of data do you want to modify?')
+        print("1 -- Username")
+        print("2 -- Name")
+        print("3 -- Last name")
+        # other
+        # undo
+
+    def view_treatmentplan(self, username):
+        treatmentplan = self.controller.get_treatmentplan_by_username(username) #sviluppare
+        print()
+
+    # def view_reports_patient(self, username):
+    #     reports_list = self.controller.get_reports_list_by_username(username) #sviluppare
+
+    # def view_report(self):
+    #     report = self.controller.get_report(report_id)
+
+
+
 
 
 
