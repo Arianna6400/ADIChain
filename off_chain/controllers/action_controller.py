@@ -5,7 +5,7 @@ import time
 
 
 class ActionController:
-    def __init__(self, http_provider='http://127.0.0.1:8545'):
+    def __init__(self, http_provider='http://ganache:8545'):
         #http://ganache:8545
         #http://127.0.0.1:8545
         # Initialize with a HTTP provider URL for the Ethereum node (Ganache for local testing).
