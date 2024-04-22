@@ -336,6 +336,49 @@ class CommandLineInterface:
                 exit()
 
     #Patient (bozza)
+    def patient_menu(self):
+
+        while True: 
+
+            patient_options = {
+                1: "Consult medic data",
+                2: "Updade profile",
+                3: "Exit"
+            }
+            print("MENU")
+            for key, value in patient_options.items():
+                print(f"{key} -- {value}")
+
+            try:
+                choice = int(input('Enter your choice: '))
+
+                if choice == 1:
+                    print('Which type of data do you want to consult?')
+                    print("1 -- Treatment plan")
+                        # view treatment plan
+                    print("2 -- Reports")
+                        # view list and select report
+                            # view report
+                    print("3 -- Undo") 
+                        # menu
+
+                elif choice == 2:
+                    print('Which type of data do you want to modify?')
+                    print("1 -- Username")
+                    print("2 -- Name")
+                    print("3 -- last name")
+                    # other
+                    # undo
+
+                elif choice == 3:
+                    print('Bye Bye!')
+                    exit()
+                else:
+                    print('Wrong option. Please enter one of the options listed in the menu!')
+
+            except ValueError:
+                print('Wrong input. Please enter a number!\n')
+                return
 
 
 
