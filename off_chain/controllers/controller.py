@@ -97,6 +97,9 @@ class Controller:
     def check_username(self, username):
         return self.db_ops.check_username(username)
     
+    def get_user_by_username(self, username, role):
+        return self.db_ops.get_user_by_username(username, role)
+    
     def check_patient_by_username(self, username):
         return self.db_ops.check_patient_by_username(username)
     
@@ -105,4 +108,3 @@ class Controller:
             return True
         else:
             return False
-    

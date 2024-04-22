@@ -223,7 +223,9 @@ class CommandLineInterface:
 
         insert_code = self.controller.insert_caregiver_info(role, username, name, lastname, username_patient, relationship, phone)
         if insert_code == 0:
-            print('Information saved correctly!')
+            print('Information saved correctly!\n \n ')
+            self.caregiver_menu(username)
+
         elif insert_code == -1:
             print('Internal error!')
        
@@ -255,21 +257,23 @@ class CommandLineInterface:
             print(f'You will be in timeout for: {int(self.session.get_timeout_left())} seconds\n')
             return -2
     
+    #Homepages
+    #Medic
     def medic_menu(self):
-        menu_options = {
+        medic_options = {
             1: "Choose patient",
             2: "Update profile",
             3: "Exit"
         }
 
         while True:
-            print("MENU")                           # Stampa il menu
-            for key, value in menu_options.items():
-                print(f"{key}. {value}")
+            print("MENU")                           # Stampa il menù
+            for key, value in medic_options.items():
+                print(f"{key} -- {value}")
                                                 
             try:                                    # Richiesta input e gestione errori
                 choice = int(input("Choose an option: "))
-                if choice in menu_options:
+                if choice in medic_options:
                     break
                 else:
                     print("Invalid choice! Please try again.")
@@ -285,5 +289,62 @@ class CommandLineInterface:
             self.controller.menu_two(self)
     
         elif choice == 3:                           # Inserisci qui il codice per l'aggiornamento del profilo
-            print("Thank you for using the service")
-            exit()
+            confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
+            if confirm == 'Y':
+                print("Thank you for using the service!")
+                exit()
+
+    #Caregiver (bozza)
+    def caregiver_menu(self, username):
+
+        while True:
+            # GET USER BY USERNAME!
+            caregiver = self.controller.get_user_by_username(username, "caregiver")
+            print(caregiver)
+            caregiver_options = {
+                        1: "Choose patient",
+                        2: "Update {} profile".format(caregiver[0]),
+                        #2: "Update patient profile",
+                        3: "Exit"
+                    }
+
+            print("MENU")                           # Stampa il menù
+            for key, value in caregiver_options.items():
+                print(f"{key} -- {value}")
+
+            try:                                    # Richiesta input e gestione errori
+                choice = int(input("Choose an option: "))
+                if choice in caregiver_options:
+                    break
+                else:
+                    print("Invalid choice! Please try again.")
+            except ValueError:
+                print("Invalid Input! Please enter a valid number.")
+                
+        if choice == 1:
+            print("Visualize medical data")         # Gestisce la scelta dell'utente
+            self.controller.menu_one(self)
+       
+        elif choice == 2:                           # Inserisci qui il codice per la gestione dei pazienti
+            print("Update profile function")
+            self.controller.menu_two(self)
+    
+        elif choice == 3:                           # Inserisci qui il codice per l'aggiornamento del profilo
+            confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
+            if confirm == 'Y':
+                print("Thank you for using the service!")
+                exit()
+
+    #Patient (bozza)
+
+
+
+    # OPERATIONS 
+
+    # Read_patient's_data
+    # Write_patient's_data
+    # Modify_patient's_data
+    # Read_my_data
+    # Write_my_data
+    # Update_my_profile
+    # Update_someone's_profile

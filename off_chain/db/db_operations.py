@@ -204,7 +204,6 @@ class DatabaseOperations:
                 return creds
         return None
 
-
     def get_user_by_username(self, username, role):
         if role == 'medic':
             user = self.cur.execute("""
@@ -225,7 +224,7 @@ class DatabaseOperations:
                 patient = Patients(user_attr[0], user_attr[1], user_attr[2], user_attr[3], user_attr[4], user_attr[5], user_attr[6], user_attr[7], user_attr[8])
                 return patient
         elif role == 'caregiver':
-            user == self.cur.execute("""
+            user = self.cur.execute("""
                                      SELECT *
                                      FROM Caregivers
                                      WHERE Caregivers.username = ?""", (username,))
@@ -233,7 +232,7 @@ class DatabaseOperations:
             if user_attr is not None:
                 caregiver = Caregivers(user_attr[0], user_attr[1], user_attr[2], user_attr[3], user_attr[4], user_attr[5], user_attr[6])
                 return caregiver
-            
+            #return user_attr
         return None
 
     def hash_function(self, password: str):
@@ -291,3 +290,4 @@ class DatabaseOperations:
                 dklen= int(params[5])
             )
         return hashed_passwd.hex() == params[0]
+    
