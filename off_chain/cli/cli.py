@@ -414,6 +414,14 @@ class CommandLineInterface:
 
     def view_treatmentplan(self, username):
         treatmentplan = self.controller.get_treatmentplan_by_username(username)
+        medic = self.controller.get_medic_by_id(treatmentplan.get_id_medic())
+        print("\nYOUR TREATMENT PLAN\n")
+        print("Start: ", treatmentplan.get_start_date())
+        print("Finish: ", treatmentplan.get_end_date())
+        print("Medic: ", medic.get_name(), " ", medic.get_lastname())
+        print("Description: ", treatmentplan.get_description())
+        input("Press Enter to exit")
+
         #sviluppare visualizzazione
 
     # def view_reportslist__patient(self, username):

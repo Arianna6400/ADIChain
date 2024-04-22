@@ -7,6 +7,7 @@ from models.medics import Medics
 from models.patients import Patients
 from models.caregivers import Caregivers
 from models.credentials import Credentials
+from models.treatmentplan import TreatmentPlans
 
 class DatabaseOperations:
 
@@ -309,5 +310,12 @@ class DatabaseOperations:
         treatmentplan = self.cur.execute("""
                                     SELECT *
                                     FROM TreatmentPlans
-                                    WHERE id_patient =?""", (user_id,))
-        return treatmentplan.fetchone()
+                                    WHERE id_patient =?""", (user_id,)).fetchone()
+        return TreatmentPlans(*treatmentplan)
+    
+    def get_medic_by_id(self, id):
+        medic = self.cur.execute("""
+                                    SELECT *
+                                    FROM Medics
+                                    WHERE id_medic =?""", (id,)).fetchone()
+        return Medics(*medic)

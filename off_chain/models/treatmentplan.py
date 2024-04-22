@@ -2,7 +2,7 @@ from models.model_base import Model
 
 #Modello e attributi per la tabella TreatmentPlans
 class TreatmentPlans(Model):
-    def __init__(self, id_patient, id_medic, id_caregiver, description, start_date, end_date, id_treatment_plan=None):
+    def __init__(self,id_treatment_plan, id_patient, id_medic, id_caregiver, description, start_date, end_date):
         super().__init__()
         self.id_treatment_plan = id_treatment_plan
         self.id_patient = id_patient
