@@ -15,10 +15,19 @@ services:
   adichain:
     build: .
     stdin_open: true  
-    tty: true         
+    tty: true
     depends_on:
       - ganache
     restart: always
+    # command: >
+    #   sh -c "
+    #     echo 'Attendo che Ganache sia pronto...';
+    #     while ! curl -s http://ganache:8545 >/dev/null; do
+    #       sleep 1;
+    #     done;
+    #     echo 'Ganache è pronto, avvio Adichain';
+    #     python /progetto/off_chain/main.py
+    #   "
     environment:
       - ETHEREUM_NODE_URL=http://ganache:8545
     ports:

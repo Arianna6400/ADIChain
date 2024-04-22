@@ -22,9 +22,9 @@ class Controller:
     
     def login(self, username: str, password: str, public_key: str, private_key: str):
         if(self.check_attempts() and self.db_ops.check_credentials(username, password, public_key, private_key)):
-            creds: Credentials = self.db_ops.get_creds_by_username(username)
-            role = creds.get_role
-            user = self.db_ops.get_user_by_username(username, role)
+            #creds: Credentials = self.db_ops.get_creds_by_username(username)
+            #role = creds.get_role
+            user = self.db_ops.get_user_by_username(username)
             self.session.set_user(user)
             return 0
         elif self.check_attempts():
@@ -39,7 +39,7 @@ class Controller:
         insertion_code = self.db_ops.insert_patient(username, name, lastname, birthday, birth_place, residence, autonomous, phone)
 
         if insertion_code == 0:
-            user = self.db_ops.get_user_by_username(username, role) 
+            user = self.db_ops.get_user_by_username(username) 
             self.session.set_user(user)
             print('DONE')
 
@@ -49,7 +49,7 @@ class Controller:
         insertion_code = self.db_ops.insert_medic(username, name, lastname, birthday, specialization, mail, phone)
 
         if insertion_code == 0:
-            user = self.db_ops.get_user_by_username(username, role) 
+            user = self.db_ops.get_user_by_username(username) 
             self.session.set_user(user)
             print('DONE')
 
@@ -59,7 +59,7 @@ class Controller:
         insertion_code = self.db_ops.insert_caregiver(username, name, lastname, username_patient, relationship, phone)
 
         if insertion_code == 0:
-            user = self.db_ops.get_user_by_username(username, role) 
+            user = self.db_ops.get_user_by_username(username) 
             self.session.set_user(user)
             print('DONE')
         
@@ -97,8 +97,8 @@ class Controller:
     def check_username(self, username):
         return self.db_ops.check_username(username)
     
-    def get_user_by_username(self, username, role):
-        return self.db_ops.get_user_by_username(username, role)
+    def get_user_by_username(self, username):
+        return self.db_ops.get_user_by_username(username)
     
     def check_patient_by_username(self, username):
         return self.db_ops.check_patient_by_username(username)
@@ -108,3 +108,7 @@ class Controller:
             return True
         else:
             return False
+        
+    def get_treatmentplan_by_usernasme(self, username):
+        treatment_plan = self.db_ops.get_tratmentplan_by_username(username)
+        return treatment_plan
