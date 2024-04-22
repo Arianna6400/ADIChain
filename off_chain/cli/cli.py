@@ -150,8 +150,8 @@ class CommandLineInterface:
             if self.controller.check_birthdate_format(birthday): break
             else: print("Invalid birthdate or incorrect format.")
 
-        birth_place = input('Birth place:')
-        residence = input('Place of residence:')
+        birth_place = input('Birth place: ')
+        residence = input('Place of residence: ')
         #while True:
         #    autonomous_flag = int(input('Are you autonomous? (Digit "1" if you are autonomous, "0" if you are not)'))
         #    if autonomous_flag  in [0,1]:
