@@ -80,7 +80,7 @@ class DatabaseOperations:
             id_treament_plan INTEGER PRIMARY KEY AUTOINCREMENT,
             id_patient INTEGER NOT NULL,
             id_medic INTEGER NOT NULL,
-            id_caregiver INTGER,
+            id_caregiver INTEGER,
             description TEXT NOT NULL,
             start_date TEXT NOT NULL,
             end_date TEXT NOT NULL,
@@ -300,9 +300,14 @@ class DatabaseOperations:
             )
         return hashed_passwd.hex() == params[0]
     
-    def get_tratmentplan_by_username(self, username):
+    def get_treatmentplan_by_username(self, username):
+        result = self.cur.execute("""
+                                    SELECT id_patient
+                                    FROM Patients
+                                    WHERE username =?""", (username,))
+        user_id = result.fetchone()[0]
         treatmentplan = self.cur.execute("""
                                     SELECT *
                                     FROM TreatmentPlans
-                                    WHERE username =?""", (username,))
+                                    WHERE id_patient =?""", (user_id,))
         return treatmentplan.fetchone()

@@ -109,6 +109,5 @@ class Controller:
         else:
             return False
         
-    def get_treatmentplan_by_usernasme(self, username):
-        treatment_plan = self.db_ops.get_tratmentplan_by_username(username)
-        return treatment_plan
+    def get_treatmentplan_by_username(self, username):
+        return self.db_ops.get_treatmentplan_by_username(username)

@@ -413,10 +413,10 @@ class CommandLineInterface:
         # undo
 
     def view_treatmentplan(self, username):
-        treatmentplan = self.controller.get_treatmentplan_by_username(username) #sviluppare
-        print()
+        treatmentplan = self.controller.get_treatmentplan_by_username(username)
+        #sviluppare visualizzazione
 
-    # def view_reports_patient(self, username):
+    # def view_reportslist__patient(self, username):
     #     reports_list = self.controller.get_reports_list_by_username(username) #sviluppare
 
     # def view_report(self):
