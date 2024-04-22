@@ -14,6 +14,8 @@ services:
 
   adichain:
     build: .
+    stdin_open: true  
+    tty: true         
     depends_on:
       - ganache
     restart: always
