@@ -210,7 +210,7 @@ class CommandLineInterface:
                         if confirm != 'Y':
                             new_value = input("Insert the new username (press Enter to mantain '{}'): ".format(username_patient))
                             username_patient = new_value if new_value else username_patient
-                        self.insert_patient_info(username_patient, "Patient", 0) 
+                        self.insert_patient_info(username_patient, "PATIENT", 0) 
                         print("Let's continue with your information.")
                         break
 
@@ -298,7 +298,6 @@ class CommandLineInterface:
     #Caregiver (bozza)
     def caregiver_menu(self, username):
         while True:
-            # GET USER BY USERNAME!
             caregiver = self.controller.get_user_by_username(username)
             print(caregiver)
 
