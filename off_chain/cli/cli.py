@@ -166,6 +166,7 @@ class CommandLineInterface:
         insert_code = self.controller.insert_patient_info(role, username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
         if insert_code == 0:
             print('Information saved correctly!')
+            self.patient_menu(username)
         elif insert_code == -1:
             print('Internal error!')
 
@@ -192,6 +193,7 @@ class CommandLineInterface:
         insert_code = self.controller.insert_medic_info(role, username, name, lastname, birthday, specialization, mail, phone)
         if insert_code == 0:
             print('Information saved correctly!')
+            self.medic_menu(username)
         elif insert_code == -1:
             print('Internal error!')
 
@@ -246,7 +248,8 @@ class CommandLineInterface:
 
             if login_code == 0:
                 print('\nYou have succesfully logged in!\n')
-                self.patient_menu()
+                # implementare richiamo al giusto menu
+                #self.patient_menu()
             elif login_code == -1:
                 print('\nThe credentials you entered are wrong\n')
             elif login_code == -2:
@@ -375,7 +378,7 @@ class CommandLineInterface:
                             self.view_treatmentplan(user.username)
 
                         if choice == 2:
-                            self.view_reportslist_patient(user.username)
+                            self.view_reportslist_patient(user.username) # finire
 
                         if choice == 3:
                             self.patient_menu()
@@ -385,7 +388,7 @@ class CommandLineInterface:
                         return
 
                 elif choice == 2:
-                    self.modify_credentials()
+                    self.modify_credentials() #implementare
 
                 elif choice == 3:
                     print('Bye Bye!')
@@ -425,6 +428,7 @@ class CommandLineInterface:
     def view_reportslist_patient(self, username):
         reports_list = self.controller.get_reports_list_by_username(username) #sviluppare
         print(reports_list)
+        input("Press Enter to exit")
         # scelta report e invio a view_report (direttamente con model)
 
     # def view_report(self):
