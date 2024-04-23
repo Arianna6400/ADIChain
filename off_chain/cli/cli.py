@@ -1,7 +1,6 @@
 import getpass
 import re
 
-import click
 from eth_utils import *
 from eth_keys import *
 from controllers.controller import Controller
@@ -436,7 +435,22 @@ class CommandLineInterface:
         print("Description: ", treatmentplan.get_description())
         input("Press Enter to exit")
 
-        #sviluppare visualizzazione
+    
+    #Patient view
+    def view_patientview(self, username):
+        patientview = self.controller.get_user_by_username(username)
+        print("\nPATIENT INFOS\n")
+        print("Username: ", patientview.get_username())
+        print("Name: ", patientview.get_name())
+        print("Last Name: ", patientview.get_lastaname())
+        print("Birthday: ", patientview.get_birthday())
+        print("Birth Place: ", patientview.get_birth_place())
+        print("Residence: ", patientview.get_residence())
+        print("Autonomous: ", patientview.get_autonomous())
+        print("Phone: ", patientview.get_phone())
+        input("Press Enter to exit")
+      
+    #sviluppare visualizzazione
 
     def view_reportslist_patient(self, username):
         reports_list = self.controller.get_reports_list_by_username(username) #sviluppare
@@ -460,45 +474,4 @@ class CommandLineInterface:
     # Read_my_data
     # Write_my_data
     # Update_my_profile
-
-    def update_profile(self, username, role):
-        # Ottieni dati aggiornati dal'utente
-        new_data = {}
-
-        # PAZIENTE -> PASSWORD???
-        if role == "Patient":
-            patient_info = self.controller.get_patient_info(username)
-            if not patient_info:
-                click.echo("User not found.")
-                return
-
-            # Visualizza le informazioni attuali del paziente
-            click.echo("Informazioni attuali del paziente:")
-            click.echo("Username:", patient_info[0])
-            click.echo("Nome:", patient_info[1])
-            click.echo("Cognome:", patient_info[2])
-            click.echo("Data di nascita:", patient_info[3])
-            click.echo("Luogo di nascita:", patient_info[4])
-            click.echo("Residenza:", patient_info[5])
-            click.echo("Autonomia:", patient_info[6])
-            click.echo("Telefono:", patient_info[7])
-
-            # Ottieni i nuovi valori per gli attributi del profilo
-            new_data = {}
-            click.echo("\nInserisci i nuovi valori per gli attributi:")
-            new_data['username'] = click.prompt('Username', default=patient_info[0])
-            new_data['name'] = click.prompt('Nome', default=patient_info[1])
-            new_data['lastname'] = click.prompt('Cognome', default=patient_info[2])
-            new_data['birthday'] = click.prompt('Data di nascita (YYYY-MM-DD)', default=patient_info[3])
-            new_data['birth_place'] = click.prompt('Luogo di nascita', default=patient_info[4])
-            new_data['residence'] = click.prompt('Residenza', default=patient_info[5])
-            new_data['autonomous'] = click.prompt('Autonomia', default=patient_info[6])
-            new_data['phone'] = click.prompt('Telefono', default=patient_info[7])
-
-        # IF CAREGIVER:
-
-        # IF MEDIC:
-                 
-        # Inizializza il controller del database e aggiorna il profilo
-        self.controller.update_profile(username, new_data)
-        # Update_someone's_profile
+    # Update_someone's_profile
