@@ -1,5 +1,6 @@
 from datetime import datetime
 import re
+import click
 
 from db.db_operations import DatabaseOperations
 from session.session import Session
@@ -117,3 +118,20 @@ class Controller:
     
     def get_reports_list_by_username(self, username):
         return self.db_ops.get_reports_list_by_username(username)
+    
+    def get_patient_info(self, username):
+        return self.db_ops.get_patient_info(username)
+    
+    def get_caregiver_info(self, username):
+        return self.db_ops.get_caregiver_info(username)
+    
+    def get_medic_info(self, username):
+        return self.db_ops.get_medic_info(username)
+    
+    def update_profile(self, username, new_data):
+        check = self.db_ops.update_profile(username, new_data)
+        if check == -1:
+            click.echo("Username already in use. Choose another one")
+        else:
+            click.echo( check + "'s profile updated with success!")
+        return
