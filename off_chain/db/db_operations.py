@@ -129,6 +129,15 @@ class DatabaseOperations:
         self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ?", (username,))
         if self.cur.fetchone()[0] == 0: return 0
         else: return -1
+
+    def key_exists(self, public_key, private_key):
+        try:
+            query = "SELECT public_key, private_key FROM Credentials WHERE public_key=? OR private_key=?"
+            existing_users = self.cur.execute(query, (public_key, private_key)).fetchall()
+            return len(existing_users) > 0
+        except Exception as e:
+            print("An error occurred:", e)
+            return False 
         
     def insert_patient(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
         try:

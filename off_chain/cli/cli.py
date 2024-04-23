@@ -63,7 +63,10 @@ class CommandLineInterface:
             #private_key = getpass.getpass('Private Key: ')
             #confirm_private_key = getpass.getpass('Confirm Private Key: ')
             if private_key == confirm_private_key:
-                break
+                if not self.controller.check_keys(public_key, private_key):
+                    break
+                else:
+                    print('A wallet with these keys already exists. Please enter a unique set of keys.')
             else:
                 print('Private key and confirmation do not match. Try again.\n')
 
@@ -71,6 +74,9 @@ class CommandLineInterface:
             pk_bytes = decode_hex(private_key)
             priv_key = keys.PrivateKey(pk_bytes)
             pk = priv_key.public_key.to_checksum_address()
+            if pk.lower() != public_key.lower():
+                print('The provided keys do not match. Please check your entries.')
+                return
         except Exception:
             print('Oops, there is no wallet with the matching public and private key provided.\n')
             return

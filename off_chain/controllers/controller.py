@@ -98,6 +98,9 @@ class Controller:
     def check_username(self, username):
         return self.db_ops.check_username(username)
     
+    def check_keys(self, public_key, private_key):
+        return self.db_ops.key_exists(public_key, private_key)
+    
     def get_user_by_username(self, username):
         return self.db_ops.get_user_by_username(username)
     
