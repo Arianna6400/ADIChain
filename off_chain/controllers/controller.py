@@ -22,18 +22,18 @@ class Controller:
     
     def login(self, username: str, password: str, public_key: str, private_key: str):
         if(self.check_attempts() and self.db_ops.check_credentials(username, password, public_key, private_key)):
-            #creds: Credentials = self.db_ops.get_creds_by_username(username)
-            #role = creds.get_role
+            creds: Credentials = self.db_ops.get_creds_by_username(username)
+            user_role = creds.get_role()
             user = self.db_ops.get_user_by_username(username)
             self.session.set_user(user)
-            return 0
+            return 0, user_role
         elif self.check_attempts():
             self.session.increment_attempts()
             if self.session.get_attempts() == self.__n_attempts_limit:
                 self.session.set_error_attempts_timeout(self.__timeout_timer)
-            return -1
+            return -1, None
         else:
-            return -2
+            return -2, None
     
     def insert_patient_info(self, role: str, username: str, name: str, lastname: str, birthday: str, birth_place: str, residence: str, autonomous: bool, phone: str):
         insertion_code = self.db_ops.insert_patient(username, name, lastname, birthday, birth_place, residence, autonomous, phone)

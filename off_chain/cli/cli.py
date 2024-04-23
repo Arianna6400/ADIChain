@@ -244,12 +244,20 @@ class CommandLineInterface:
             passwd = input('Insert password: ')
             #passwd = getpass.getpass('Insert password: ')
 
-            login_code = self.controller.login(username, passwd, public_key, private_key)
+            login_code, user_type = self.controller.login(username, passwd, public_key, private_key)
 
             if login_code == 0:
                 print('\nYou have succesfully logged in!\n')
-                # implementare richiamo al giusto menu
-                #self.patient_menu()
+                # Redirect to the corresponding menu based on user type
+                if user_type == "MEDIC":
+                    self.medic_menu()
+                elif user_type == "CAREGIVER":
+                    self.caregiver_menu(username)
+                elif user_type == "PATIENT":
+                    self.patient_menu()
+                else:
+                    print("Error: User type is not recognized.")
+                    return -1
             elif login_code == -1:
                 print('\nThe credentials you entered are wrong\n')
             elif login_code == -2:
@@ -346,6 +354,8 @@ class CommandLineInterface:
             if confirm == 'Y':
                 print("Thank you for using the service!")
                 exit()
+            else:
+                print("Returning to the caregiver menu...")
             
     #Patient (bozza)
     def patient_menu(self):
@@ -355,7 +365,7 @@ class CommandLineInterface:
 
             patient_options = {
                 1: "Consult medic data",
-                2: "Updade profile",
+                2: "Update profile",
                 3: "Exit"
             }
             print("\nMENU")
