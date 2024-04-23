@@ -465,7 +465,7 @@ class CommandLineInterface:
         # Ottieni dati aggiornati dal'utente
         new_data = {}
 
-        # PAZIENTE
+        # PAZIENTE -> PASSWORD???
         if role == "Patient":
             patient_info = self.controller.get_patient_info(username)
             if not patient_info:
