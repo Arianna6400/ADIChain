@@ -374,8 +374,9 @@ class CommandLineInterface:
 
             patient_options = {
                 1: "Consult medic data",
-                2: "Update profile",
-                3: "Exit"
+                2: "View profile",
+                3: "Update profile",
+                4: "Exit"
             }
             print("\nMENU")
             for key, value in patient_options.items():
@@ -385,31 +386,37 @@ class CommandLineInterface:
                 choice = int(input('Enter your choice: '))
 
                 if choice == 1:
-                    print('Which type of data do you want to consult?')
-                    print("1 -- Treatment plan")
-                    print("2 -- Reports") 
-                    print("3 -- Undo") 
+
+                    while True: 
+
+                        print('\nWhich type of data do you want to consult?')
+                        print("1 -- Treatment plan")
+                        print("2 -- Reports") 
+                        print("3 -- Undo") 
+                        
+                        try:
+                            choice = int(input('Enter your choice: '))
+
+                            if choice == 1:
+                                self.view_treatmentplan(user.username)
+
+                            if choice == 2:
+                                self.view_reportslist_patient(user.username) # finire
+
+                            if choice == 3:
+                                self.patient_menu()
+
+                        except ValueError:
+                            print('Wrong input. Please enter a number!\n')
+                            return
                     
-                    try:
-                        choice = int(input('Enter your choice: '))
-
-                        if choice == 1:
-                            self.view_treatmentplan(user.username)
-
-                        if choice == 2:
-                            self.view_reportslist_patient(user.username) # finire
-
-                        if choice == 3:
-                            self.patient_menu()
-
-                    except ValueError:
-                        print('Wrong input. Please enter a number!\n')
-                        return
-
                 elif choice == 2:
-                    self.modify_credentials() #implementare
+                    self.view_patientview(user.username)
 
                 elif choice == 3:
+                    self.update_profile(user.username, "Patient") #implementare
+
+                elif choice == 4:
                     print('Bye Bye!')
                     exit()
                 else:
@@ -490,28 +497,29 @@ class CommandLineInterface:
     #sviluppare visualizzazione
 
     def view_reportslist_patient(self, username):
-        reports_list = self.controller.get_reports_list_by_username(username) #sviluppare
-        print("\nELENCO REPORTS\n")
-        for i, report in enumerate(reports_list, 1):
-            print(f"{i}. {report.get_analyses()}")
-        choice = input("Chose the report to consult: ")
-        print("Analysis: ", reports_list[choice-1].get_analyses())
-        print("Diagnosis: ", reports_list[choice-1].get_diagnosis())
-        input("Press Enter to exit")
-        input("Press Enter to exit")
-        # scelta report e invio a view_report (direttamente con model)
+        while True:
 
-    # def view_report(self):
-    #     report = self.controller.get_report(report_id)
-
-
-
+            reports_list = self.controller.get_reports_list_by_username(username)
+            print("\nELENCO REPORTS\n")
+            for i, report in enumerate(reports_list, 1):
+                print(f"{i}. {report.get_analyses()}")
+            print(f"{i+1}. Undo")
+            choice = int(input("Chose an option: "))-1
+            if choice in {indice for indice, _ in enumerate(reports_list)}:
+                print("\nREPORT")
+                print("\nAnalysis: ", reports_list[choice].get_analyses())
+                print("Diagnosis: ", reports_list[choice].get_diagnosis())
+                input("Press Enter to exit")
+            elif choice==i:
+                return  
+            else:
+                print('Wrong option. Please enter one of the options listed in the menu!')
 
 
 
     # OPERATIONS 
 
-    # Read_patient's_data
+    # Read_patient's_data 
     # Write_patient's_data
     # Modify_patient's_data
     # Read_my_data
