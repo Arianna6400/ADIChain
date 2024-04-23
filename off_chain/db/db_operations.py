@@ -237,7 +237,11 @@ class DatabaseOperations:
                                     SELECT role
                                     FROM Credentials
                                     WHERE Credentials.username = ?""", (username,))
-        return role.fetchone()[0]
+        role = self.cur.fetchone()  
+        if role:
+            return role[0]  
+        else:
+            return None
 
     def hash_function(self, password: str):
 

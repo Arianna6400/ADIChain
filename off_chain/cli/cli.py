@@ -166,7 +166,8 @@ class CommandLineInterface:
         insert_code = self.controller.insert_patient_info(role, username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
         if insert_code == 0:
             print('Information saved correctly!')
-            self.patient_menu(username)
+            if autonomous_flag == 1:
+                self.patient_menu(username)
         elif insert_code == -1:
             print('Internal error!')
 
@@ -322,10 +323,11 @@ class CommandLineInterface:
                 possessive_suffix = "'"
 
             caregiver_options = {
-                        1: "Choose patient",
-                        2: "Update {}{} profile".format(patient_name, possessive_suffix),
-                        #2: "Update patient profile",
-                        3: "Exit"
+                        1: "Consult {}{} medical data".format(patient_name, possessive_suffix),
+                        2: "Insert {}{} medical data".format(patient_name, possessive_suffix),
+                        3: "Update your profile",
+                        4: "Update {}{} profile".format(patient_name, possessive_suffix),
+                        5: "Exit"
                     }
 
             print("MENU")                           # Stampa il menù
