@@ -388,7 +388,7 @@ class CommandLineInterface:
                 if choice == 1:
 
                     while True: 
-
+                        print("\nMEDICAL DATA")
                         print('\nWhich type of data do you want to consult?')
                         print("1 -- Treatment plan")
                         print("2 -- Reports") 
@@ -407,8 +407,7 @@ class CommandLineInterface:
                                 self.patient_menu()
 
                         except ValueError:
-                            print('Wrong input. Please enter a number!\n')
-                            return
+                            print('Wrong input. Please enter a number!')
                     
                 elif choice == 2:
                     self.view_patientview(user.username)
@@ -423,8 +422,7 @@ class CommandLineInterface:
                     print('Wrong option. Please enter one of the options listed in the menu!')
 
             except ValueError:
-                print('Wrong input. Please enter a number!\n')
-                return
+                print('Wrong input. Please enter a number!')
             
 
     def update_profile(self, username, role):
@@ -504,16 +502,19 @@ class CommandLineInterface:
             for i, report in enumerate(reports_list, 1):
                 print(f"{i}. {report.get_analyses()}")
             print(f"{i+1}. Undo")
-            choice = int(input("Chose an option: "))-1
-            if choice in {indice for indice, _ in enumerate(reports_list)}:
-                print("\nREPORT")
-                print("\nAnalysis: ", reports_list[choice].get_analyses())
-                print("Diagnosis: ", reports_list[choice].get_diagnosis())
-                input("Press Enter to exit")
-            elif choice==i:
-                return  
-            else:
-                print('Wrong option. Please enter one of the options listed in the menu!')
+            try:
+                choice = int(input("Chose an option: "))-1
+                if choice in {indice for indice, _ in enumerate(reports_list)}:
+                    print("\nREPORT")
+                    print("\nAnalysis: ", reports_list[choice].get_analyses())
+                    print("Diagnosis: ", reports_list[choice].get_diagnosis())
+                    input("Press Enter to exit")
+                elif choice==i:
+                    return  
+                else:
+                    print('Wrong option. Please enter one of the options listed in the menu!')
+            except ValueError:
+                            print('Wrong input. Please enter a number!')
 
 
 

@@ -339,8 +339,6 @@ class DatabaseOperations:
         return [Reports(*report) for report in reportslist]
     
 
-
-    
     def get_patient_info(self, username):
         query = """
             SELECT * FROM Patients WHERE username = ?
