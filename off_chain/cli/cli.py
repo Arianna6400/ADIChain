@@ -1,6 +1,7 @@
 import getpass
 import re
 
+import click
 from eth_utils import *
 from eth_keys import *
 from controllers.controller import Controller
@@ -413,17 +414,47 @@ class CommandLineInterface:
                 return
             
 
-    def modify_credentials(self):
-        user = self.session.get_user()
+    def update_profile(self, username, role):
+        # Ottieni dati aggiornati dal'utente
+        new_data = {}
 
-        # unificare modifica dati personali
-        # get_user -> 
-        print('Which type of data do you want to modify?')
-        print("1 -- Username")
-        print("2 -- Name")
-        print("3 -- Last name")
-        # other
-        # undo
+        # PAZIENTE -> PASSWORD???
+        if role == "Patient":
+            patient_info = self.controller.get_patient_info(username)
+            if not patient_info:
+                click.echo("User not found.")
+                return
+
+            # Visualizza le informazioni attuali del paziente
+            click.echo("Informazioni attuali del paziente:")
+            click.echo("Username:", patient_info[0])
+            click.echo("Nome:", patient_info[1])
+            click.echo("Cognome:", patient_info[2])
+            click.echo("Data di nascita:", patient_info[3])
+            click.echo("Luogo di nascita:", patient_info[4])
+            click.echo("Residenza:", patient_info[5])
+            click.echo("Autonomia:", patient_info[6])
+            click.echo("Telefono:", patient_info[7])
+
+            # Ottieni i nuovi valori per gli attributi del profilo
+            new_data = {}
+            click.echo("\nInserisci i nuovi valori per gli attributi:")
+            new_data['username'] = click.prompt('Username', default=patient_info[0])
+            new_data['name'] = click.prompt('Nome', default=patient_info[1])
+            new_data['lastname'] = click.prompt('Cognome', default=patient_info[2])
+            new_data['birthday'] = click.prompt('Data di nascita (YYYY-MM-DD)', default=patient_info[3])
+            new_data['birth_place'] = click.prompt('Luogo di nascita', default=patient_info[4])
+            new_data['residence'] = click.prompt('Residenza', default=patient_info[5])
+            new_data['autonomous'] = click.prompt('Autonomia', default=patient_info[6])
+            new_data['phone'] = click.prompt('Telefono', default=patient_info[7])
+
+        # IF CAREGIVER:
+
+        # IF MEDIC:
+
+        # Inizializza il controller del database e aggiorna il profilo
+        self.controller.update_profile(username, new_data)
+        # Update_someone's_profile
 
     def view_treatmentplan(self, username):
         treatmentplan = self.controller.get_treatmentplan_by_username(username)
@@ -454,7 +485,13 @@ class CommandLineInterface:
 
     def view_reportslist_patient(self, username):
         reports_list = self.controller.get_reports_list_by_username(username) #sviluppare
-        print(reports_list)
+        print("\nELENCO REPORTS\n")
+        for i, report in enumerate(reports_list, 1):
+            print(f"{i}. {report.get_analyses()}")
+        choice = input("Chose the report to consult: ")
+        print("Analysis: ", reports_list[choice-1].get_analyses())
+        print("Diagnosis: ", reports_list[choice-1].get_diagnosis())
+        input("Press Enter to exit")
         input("Press Enter to exit")
         # scelta report e invio a view_report (direttamente con model)
 
