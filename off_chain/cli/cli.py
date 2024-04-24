@@ -360,7 +360,7 @@ class CommandLineInterface:
             self.patient_medical_data(username)
 
         elif choice == 2:
-            self.update_profile(username)
+            self.update_profile(username, "Caregiver")
 
         elif choice == 3:
             self.update_profile(patient_name, "Patient")
