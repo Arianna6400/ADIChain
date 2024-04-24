@@ -384,10 +384,10 @@ class DatabaseOperations:
             if role == 'CAREGIVER':
                 query = """
                     UPDATE Caregivers
-                    SET attribute1 = ?, attribute2 = ?, ...
+                    SET name = ?, lastname = ?, phone = ?
                     WHERE username = ?
                 """
-                self.cur.execute(query, (new_data['attribute1'], new_data['attribute2'], ..., username))
+                self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['phone'], username))
                 self.conn.commit()
                 return 0
 
@@ -404,13 +404,13 @@ class DatabaseOperations:
                 return 0
                 
 
-            elif role == 'DOCTOR':
+            elif role == 'MEDIC':
                 query = """
-                    UPDATE Doctors
-                    SET attribute1 = ?, attribute2 = ?, ...
+                    UPDATE Medics
+                    SET name = ?, lastname = ?, birthday = ?, specialization = ?, mail = ?, phone = ?
                     WHERE username = ?
                 """
-                self.cur.execute(query, (new_data['attribute1'], new_data['attribute2'], ..., username))
+                self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['birthday'], new_data['specialization'], new_data['mail'], new_data['phone'], username))
                 self.conn.commit()
                 return 0
             else:

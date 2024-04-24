@@ -309,7 +309,7 @@ class CommandLineInterface:
        
         elif choice == 2:                           # Inserisci qui il codice per la gestione dei pazienti
             print("Update profile function")
-            self.controller.update_profile(self, username, "Medic")
+            self.update_profile(username, "Medic")
     
         elif choice == 3:
             self.change_passwd(username)
