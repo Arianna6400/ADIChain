@@ -260,7 +260,7 @@ class CommandLineInterface:
                 print('\nYou have succesfully logged in!\n')
                 # Redirect to the corresponding menu based on user type
                 if user_type == "MEDIC":
-                    self.medic_menu()
+                    self.medic_menu(username)
                 elif user_type == "CAREGIVER":
                     self.caregiver_menu(username)
                 elif user_type == "PATIENT":
@@ -281,11 +281,12 @@ class CommandLineInterface:
     
     #Homepages
     #Medic
-    def medic_menu(self):
+    def medic_menu(self, username):
         medic_options = {
             1: "Choose patient",
             2: "Update profile",
-            3: "Exit"
+            3: "Change password",
+            4: "Exit"
         }
 
         while True:
@@ -310,7 +311,10 @@ class CommandLineInterface:
             print("Update profile function")
             self.controller.menu_two(self)
     
-        elif choice == 3:                           # Inserisci qui il codice per l'aggiornamento del profilo
+        elif choice == 3:
+            self.change_passwd(username)
+
+        elif choice == 4:                           # Inserisci qui il codice per l'aggiornamento del profilo
             confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
             if confirm == 'Y':
                 print("Thank you for using the service!")
@@ -336,7 +340,8 @@ class CommandLineInterface:
                         2: "Insert {}{} medical data".format(patient_name, possessive_suffix),
                         3: "Update your profile",
                         4: "Update {}{} profile".format(patient_name, possessive_suffix),
-                        5: "Exit"
+                        5: "Change password",
+                        6: "Exit"
                     }
 
             print("MENU")                           # Stampa il menù
@@ -367,6 +372,9 @@ class CommandLineInterface:
                 exit()
             else:
                 print("Returning to the caregiver menu...")
+
+        elif choice == 5:
+            self.change_passwd(username)
             
     #Patient (bozza)
     def patient_menu(self):
@@ -499,7 +507,7 @@ class CommandLineInterface:
     
 
         # Inizializza il controller del database e aggiorna il profilo
-        self.controller.update_profile(username, new_creds, new_info)
+        self.controller.update_profile(username, new_info)
         # Update_someone's_profile
 
     def view_treatmentplan(self, username):
