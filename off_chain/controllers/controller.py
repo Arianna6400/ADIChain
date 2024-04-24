@@ -101,6 +101,17 @@ class Controller:
     def check_keys(self, public_key, private_key):
         return self.db_ops.key_exists(public_key, private_key)
     
+    def check_passwd(self, username, password):
+        return self.db_ops.check_passwd(username, password)
+    
+    def change_passwd(self, username, old_pass, new_pass):
+        if self.db_ops.check_passwd(username, old_pass):
+            try:
+                response = self.db_ops.change_passwd(username, old_pass, new_pass)
+                return response
+            except:
+                return -2
+    
     def get_user_by_username(self, username):
         return self.db_ops.get_user_by_username(username)
     

@@ -309,6 +309,23 @@ class DatabaseOperations:
             )
         return hashed_passwd.hex() == params[0]
     
+
+    def change_passwd(self, username, old_pass, new_pass):
+        creds = self.get_creds_by_username(username)
+        if creds is not None:
+            new_hash = self.hash_function(new_pass)
+            try:
+                self.cur.execute("""
+                                UPDATE Credentials
+                                SET hash_password = ?
+                                WHERE username = ?""", (new_hash, username))
+                self.conn.commit()
+                return 0
+            except Exception as ex:
+                raise ex
+        else:
+            return -1
+    
     def get_treatmentplan_by_username(self, username):
         user_id = self.cur.execute("""
                                     SELECT id_patient
@@ -364,10 +381,10 @@ class DatabaseOperations:
         
         creds_upd = """
                 UPDATE Credentials
-                SET password = ?, public_key = ?, private_key = ?
+                SET hash_password = ?, public_key = ?, private_key = ?
                 WHERE username = ?
         """
-        self.cur.execute(creds_upd, (new_creds['password'], new_creds['public_key'], new_creds['public_key'], username))
+        self.cur.execute(creds_upd, (new_creds['hash_password'], new_creds['public_key'], new_creds['public_key'], username))
 
         role = self.get_role_by_username(username)
 

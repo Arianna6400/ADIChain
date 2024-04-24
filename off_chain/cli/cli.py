@@ -378,7 +378,8 @@ class CommandLineInterface:
                 1: "Consult medic data",
                 2: "View profile",
                 3: "Update profile",
-                4: "Exit"
+                4: "Change password",
+                5: "Exit"
             }
             print("\nMENU")
             for key, value in patient_options.items():
@@ -418,6 +419,9 @@ class CommandLineInterface:
                     self.update_profile(user.username, "Patient") #implementare
 
                 elif choice == 4:
+                    self.change_passwd(user.username)
+
+                elif choice == 5:
                     print('Bye Bye!')
                     exit()
                 else:
@@ -427,43 +431,38 @@ class CommandLineInterface:
                 print('Wrong input. Please enter a number!')
             
 
-    def update_profile(self, username, role):
-        # Ottieni dati aggiornati dal'utente
-        user_creds = self.controller.get_creds_by_username(username)
-        old_hash = user_creds.get_hash_password
-        new_creds = {}
+    def change_passwd(self, username):
 
-        print("Here are your credentials: ")
-        print("Username: ", user_creds.get_username())
-        print("Public Key: ", user_creds.get_public_key())
-        print("Private Key: ", user_creds.get_private_key())
-
-        print("Enter your new credentials... ")
         while True:
-            new_passwd = input(f'New password: {user_creds.get_hash_password()}')
+            confirmation = input('Do you want to change your password (Y/N)?')
+            if confirmation == 'Y' or confirmation == 'y':
+                old_pass = input('Old Password: ')
 
-            passwd_regex = r'^.{8,50}$'
-            #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
-            if not re.fullmatch(passwd_regex, new_passwd):
-                    print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
-                
-            new_confirm_password = input(f'Confirm new password: {user_creds.get_hash_password()}')
-                  
-            if new_passwd != new_confirm_password:
-                print('Password and confirmation do not match. Try again\n')
-            else:
-                break
+                if not self.controller.check_passwd(username, old_pass):
+                    print('\nYou entered the wrong old password.\n')
+                else:
+                    while True:
+                        new_passwd = input('New password: ')
+                        new_confirm_password = input('Confirm new password: ')
 
-            
-        new_hash = self.ops.hash_function(new_passwd)
-        if new_hash != old_hash:
-            new_creds['password'] = new_hash
-        else:
-            new_creds['password'] = old_hash
+                        passwd_regex = r'^.{8,50}$'
+                        #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
+                        if not re.fullmatch(passwd_regex, new_passwd):
+                                print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')    
+                        elif new_passwd != new_confirm_password:
+                            print('Password and confirmation do not match. Try again\n')
+                        else:
+                            break
 
-        new_creds["public_key"] = input(f'Public Key: {user_creds.get_public_key()}')
-        new_creds["private_key"] = input(f'Private Key: {user_creds.get_private_key()}')
+                    response = self.controller.change_passwd(username, old_pass, new_passwd)
+                    if response == 0:
+                        print('\nPassword changed correctly!\n')
+                    elif response == -1 or response == -2:
+                        print('\nSorry, something went wrong!\n')
+                return
 
+
+    def update_profile(self, username, role):
 
         # PAZIENTE
         if role == "Patient":
