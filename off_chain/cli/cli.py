@@ -389,41 +389,38 @@ class CommandLineInterface:
                         5: "Exit"
                     }
 
-            print("MENU")                           # Stampa il menù
+            print("\nMENU")                           # Stampa il menù
             for key, value in caregiver_options.items():
-                print(f"{key} -- {value}")
+                print(f"{key} -- {value}")        
 
             try:                                    # Richiesta input e gestione errori
-                choice = int(input("Choose an option: "))
-                if choice in caregiver_options:
-                    break
-                else:
-                    print("Invalid choice! Please try again.")
-            except ValueError:
-                print("Invalid Input! Please enter a valid number.")
+                choice = int(input("Choose an option: "))             
                 
-        if choice == 1:
-            self.patient_medical_data(username)
+                if choice == 1:
+                    self.patient_medical_data(patient_name)
 
-        elif choice == 2:
-            self.update_profile(username, "Caregiver")
+                elif choice == 2:
+                    self.update_profile(username, "Caregiver")
 
-        elif choice == 3:
-            self.update_profile(patient_name, "Patient")
+                elif choice == 3:
+                    self.update_profile(patient_name, "Patient")
 
-        elif choice == 4:
-            self.change_passwd(username)
-    
-        elif choice == 5:                           # Inserisci qui il codice per l'aggiornamento del profilo
-            confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
-            if confirm == 'Y':
-                print("Thank you for using the service!")
-                exit()
-            else:
-                print("Returning to the caregiver menu...")
+                elif choice == 4:
+                    self.change_passwd(username)
+            
+                elif choice == 5:                           # Inserisci qui il codice per l'aggiornamento del profilo
+                    confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
+                    if confirm == 'Y':
+                        print("Thank you for using the service!")
+                        exit()
+                    else:
+                        print("Returning to the caregiver menu...")
 
-        elif choice == 5:
-            self.change_passwd(username)
+                else:
+                        print("Invalid choice! Please try again.")
+
+            except ValueError:
+                    print("Invalid Input! Please enter a valid number.")
             
     #Patient (bozza)
     def patient_menu(self):
@@ -567,8 +564,8 @@ class CommandLineInterface:
                     self.view_reportslist_patient(username) # finire
 
                 if choice == 3:
-                    self.patient_menu()
-
+                    return
+                
                 else:
                     print('Wrong option. Please enter one of the options listed in the menu!')
 
