@@ -360,10 +360,14 @@ class DatabaseOperations:
         self.cur.execute(query, (username,))
         return self.cur.fetchone()
 
-    def update_profile(self, username, new_data):
+    def update_profile(self, username, new_creds, new_data):
         
-        if username != new_data['username'] and self.check_username(new_data['username']) == -1:
-            return -1
+        creds_upd = """
+                UPDATE Credentials
+                SET password = ?, public_key = ?, private_key = ?
+                WHERE username = ?
+        """
+        self.cur.execute(creds_upd, (new_creds['password'], new_creds['public_key'], new_creds['public_key'], username))
 
         role = self.get_role_by_username(username)
 
@@ -395,9 +399,9 @@ class DatabaseOperations:
             """
             self.cur.execute(query, (new_data['attribute1'], new_data['attribute2'], ..., username))
         else:
-            print("Tipo di utente non valido.")
+            print("Invalid user role!")
             return
 
         # Commit delle modifiche al database
         self.conn.commit()
-        print("Profilo aggiornato con successo per l'utente", username)
+        print("Your credentials and personal informations have been updated correctly.")

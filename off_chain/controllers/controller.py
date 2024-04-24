@@ -113,6 +113,9 @@ class Controller:
         else:
             return False
         
+    def get_creds_by_username(self, username):
+        return self.db_ops.get_creds_by_username(username)
+
     def get_treatmentplan_by_username(self, username):
         return self.db_ops.get_treatmentplan_by_username(username)
     
@@ -131,10 +134,6 @@ class Controller:
     def get_medic_info(self, username):
         return self.db_ops.get_medic_info(username)
     
-    def update_profile(self, username, new_data):
-        check = self.db_ops.update_profile(username, new_data)
-        if check == -1:
-            click.echo("Username already in use. Choose another one")
-        else:
-            click.echo( check + "'s profile updated with success!")
-        return
+    def update_profile(self, username, new_creds, new_data):
+        return self.db_ops.update_profile(username, new_creds, new_data)
+        

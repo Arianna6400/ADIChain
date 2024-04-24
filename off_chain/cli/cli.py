@@ -6,6 +6,7 @@ from eth_utils import *
 from eth_keys import *
 from controllers.controller import Controller
 from session.session import Session
+from db.db_operations import DatabaseOperations
 import re
 
 class CommandLineInterface:
@@ -13,6 +14,7 @@ class CommandLineInterface:
 
         self.controller = Controller(session)
         self.session = session
+        self.ops = DatabaseOperations()
 
         self.menu = {
             1: 'Register New Account',
@@ -55,9 +57,9 @@ class CommandLineInterface:
 
     def registration_menu(self):
         print('Please, enter your wallet credentials.')
-        public_key = input('Public Key: ')
 
         while True:
+            public_key = input('Public Key: ')
             private_key = input('Private Key: ')
             confirm_private_key = input('Confirm Private Key: ')
             #private_key = getpass.getpass('Private Key: ')
@@ -159,12 +161,12 @@ class CommandLineInterface:
 
         birth_place = input('Birth place: ')
         residence = input('Place of residence: ')
-        #while True:
-        #    autonomous_flag = int(input('Are you autonomous? (Digit "1" if you are autonomous, "0" if you are not)'))
-        #    if autonomous_flag  in [0,1]:
-        #        break
-        #    else:
-        #        print('Wrong value! Insert a valid value please.')
+        while True:
+            autonomous_flag = int(input('Are you autonomous? (Digit "1" if you are autonomous, "0" if you are not)'))
+            if autonomous_flag  in [0,1]:
+                break
+            else:
+                print('Wrong value! Insert a valid value please.')
         while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): break
@@ -427,44 +429,78 @@ class CommandLineInterface:
 
     def update_profile(self, username, role):
         # Ottieni dati aggiornati dal'utente
-        new_data = {}
+        user_creds = self.controller.get_creds_by_username(username)
+        old_hash = user_creds.get_hash_password
+        new_creds = {}
 
-        # PAZIENTE -> PASSWORD???
+        print("Here are your credentials: ")
+        print("Username: ", user_creds.get_username())
+        print("Public Key: ", user_creds.get_public_key())
+        print("Private Key: ", user_creds.get_private_key())
+
+        print("Enter your new credentials... ")
+        while True:
+            new_passwd = input(f'New password: {user_creds.get_hash_password()}')
+
+            passwd_regex = r'^.{8,50}$'
+            #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
+            if not re.fullmatch(passwd_regex, new_passwd):
+                    print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
+                
+            new_confirm_password = input(f'Confirm new password: {user_creds.get_hash_password()}')
+                  
+            if new_passwd != new_confirm_password:
+                print('Password and confirmation do not match. Try again\n')
+            else:
+                break
+
+            
+        new_hash = self.ops.hash_function(new_passwd)
+        if new_hash != old_hash:
+            new_creds['password'] = new_hash
+        else:
+            new_creds['password'] = old_hash
+
+        new_creds["public_key"] = input(f'Public Key: {user_creds.get_public_key()}')
+        new_creds["private_key"] = input(f'Private Key: {user_creds.get_private_key()}')
+
+
+        # PAZIENTE
         if role == "Patient":
             patient_info = self.controller.get_patient_info(username)
             if not patient_info:
-                click.echo("User not found.")
+                print("User not found.")
                 return
 
             # Visualizza le informazioni attuali del paziente
-            click.echo("Informazioni attuali del paziente:")
-            click.echo("Username:", patient_info[0])
-            click.echo("Nome:", patient_info[1])
-            click.echo("Cognome:", patient_info[2])
-            click.echo("Data di nascita:", patient_info[3])
-            click.echo("Luogo di nascita:", patient_info[4])
-            click.echo("Residenza:", patient_info[5])
-            click.echo("Autonomia:", patient_info[6])
-            click.echo("Telefono:", patient_info[7])
+            print("Your informations:")
+            print("Name: ", patient_info[2])
+            print("Lastname: ", patient_info[3])
+            print("Date of birth: ", patient_info[4])
+            print("Birth place: ", patient_info[5])
+            print("Residence: ", patient_info[6])
+            print("Autonomous: ", patient_info[7])
+            print("Phone: ", patient_info[8])
 
             # Ottieni i nuovi valori per gli attributi del profilo
-            new_data = {}
-            click.echo("\nInserisci i nuovi valori per gli attributi:")
-            new_data['username'] = click.prompt('Username', default=patient_info[0])
-            new_data['name'] = click.prompt('Nome', default=patient_info[1])
-            new_data['lastname'] = click.prompt('Cognome', default=patient_info[2])
-            new_data['birthday'] = click.prompt('Data di nascita (YYYY-MM-DD)', default=patient_info[3])
-            new_data['birth_place'] = click.prompt('Luogo di nascita', default=patient_info[4])
-            new_data['residence'] = click.prompt('Residenza', default=patient_info[5])
-            new_data['autonomous'] = click.prompt('Autonomia', default=patient_info[6])
-            new_data['phone'] = click.prompt('Telefono', default=patient_info[7])
+            new_info = {}
+            print("\nEnter your new informations:")
+            new_info['name'] = click.prompt('Name ', default=patient_info[2])
+            new_info['lastname'] = click.prompt('Lastname ', default=patient_info[3])
+            new_info['birthday'] = click.prompt('Date of birth (YYYY-MM-DD) ', default=patient_info[4])
+            new_info['birth_place'] = click.prompt('Birth place ', default=patient_info[5])
+            new_info['residence'] = click.prompt('Residence ', default=patient_info[6])
+            new_info['autonomous'] = click.prompt('Autonomous ', default=patient_info[7])
+            new_info['phone'] = click.prompt('Phone ', default=patient_info[8])
 
         # IF CAREGIVER:
 
         # IF MEDIC:
 
+    
+
         # Inizializza il controller del database e aggiorna il profilo
-        self.controller.update_profile(username, new_data)
+        self.controller.update_profile(username, new_creds, new_info)
         # Update_someone's_profile
 
     def view_treatmentplan(self, username):
