@@ -128,7 +128,7 @@ class CommandLineInterface:
                 
                 confirm_password = input('Confirm password: ')
                 #confirm_password = getpass.getpass('Confirm Password: ')
-                  
+                
                 if password != confirm_password:
                     print('Password and confirmation do not match. Try again\n')
                 else:
@@ -151,7 +151,58 @@ class CommandLineInterface:
             return
 
     def insert_patient_info(self, username, role, autonomous_flag=1):
-        print("Proceed with the insertion of a few personal information.")
+
+        if autonomous_flag == 0:
+            print('Please, enter {}{} wallet credentials.'.format(username, self.possessive_suffix(username)))
+
+            while True:
+                public_key = input('Insert {}{} public Key: '.format(username, self.possessive_suffix(username)))
+                private_key = input('Insert {}{} private Key: '.format(username, self.possessive_suffix(username)))
+                confirm_private_key = input('Confirm {}{} private Key: '.format(username, self.possessive_suffix(username)))
+                #private_key = getpass.getpass('Insert {}{} private Key: '.format(username, self.possessive_suffix(username)))
+                #confirm_private_key = getpass.getpass('Confirm {}{} private Key: '.format(username, self.possessive_suffix(username)))
+                if private_key == confirm_private_key:
+                    if not self.controller.check_keys(public_key, private_key):
+                        break
+                    else:
+                        print('A wallet with these keys already exists. Please enter a unique set of keys.')
+                else:
+                    print('Private key and confirmation do not match. Try again.\n')
+            try:
+                pk_bytes = decode_hex(private_key)
+                priv_key = keys.PrivateKey(pk_bytes)
+                pk = priv_key.public_key.to_checksum_address()
+                if pk.lower() != public_key.lower():
+                    print('The provided keys do not match. Please check your entries.')
+                    return
+            except Exception:
+                print('Oops, there is no wallet with the matching public and private key provided.\n')
+                return
+            
+            if is_address(public_key) and (public_key == pk):
+                while True:
+                    password = input('Insert {}{} password: '.format(username, self.possessive_suffix(username)))
+                    #password = getpass.getpass('Insert {}{} password: '.format(username, self.possessive_suffix(username)))
+                    passwd_regex = r'^.{8,50}$'
+                    #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
+                    if not re.fullmatch(passwd_regex, password):
+                        print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
+                    
+                    confirm_password = input('Confirm {}{} password: '.format(username, self.possessive_suffix(username)))
+                    #confirm_password = getpass.getpass('Confirm {}{} password: '.format(username, self.possessive_suffix(username)))
+                    
+                    if password != confirm_password:
+                        print('Password and confirmation do not match. Try again\n')
+                    else:
+                        break
+                
+                reg_code = self.controller.registration(username, password, role, public_key, private_key)
+
+                if reg_code == 0:
+                    print('You have succesfully registered {}{} account!\n'.format(username, self.possessive_suffix(username)))
+                    print("Proceed with the insertion of a few {}{} personal information.".format(username, self.possessive_suffix(username)))
+        if autonomous_flag == 1:
+            print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
         while True:
@@ -161,12 +212,12 @@ class CommandLineInterface:
 
         birth_place = input('Birth place: ')
         residence = input('Place of residence: ')
-        while True:
-            autonomous_flag = int(input('Are you autonomous? (Digit "1" if you are autonomous, "0" if you are not)'))
-            if autonomous_flag  in [0,1]:
-                break
-            else:
-                print('Wrong value! Insert a valid value please.')
+        #while True:
+        #    autonomous_flag = int(input('Are you autonomous? (Digit "1" if you are autonomous, "0" if you are not)'))
+        #    if autonomous_flag  in [0,1]:
+        #        break
+        #    else:
+        #        print('Wrong value! Insert a valid value please.')
         while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): break
@@ -222,6 +273,7 @@ class CommandLineInterface:
                         if confirm != 'Y':
                             new_value = input("Insert the new username (press Enter to mantain '{}'): ".format(username_patient))
                             username_patient = new_value if new_value else username_patient
+
                         self.insert_patient_info(username_patient, "PATIENT", 0) 
                         print("Let's continue with your information.")
                         break
@@ -329,17 +381,11 @@ class CommandLineInterface:
             # Ottieni il nome del caregiver
             patient_name = caregiver[1]
 
-            # Determina se il nome del caregiver termina con una lettera diversa da 's'
-            if patient_name[-1].lower() != 's':
-                possessive_suffix = "'s"
-            else:
-                possessive_suffix = "'"
-
             caregiver_options = {
-                        1: "Consult {}{} medical data".format(patient_name, possessive_suffix),
-                        2: "Insert {}{} medical data".format(patient_name, possessive_suffix),
+                        1: "Consult {}{} medical data".format(patient_name, self.possessive_suffix(patient_name)),
+                        2: "Insert {}{} medical data".format(patient_name, self.possessive_suffix(patient_name)),
                         3: "Update your profile",
-                        4: "Update {}{} profile".format(patient_name, possessive_suffix),
+                        4: "Update {}{} profile".format(patient_name, self.possessive_suffix(patient_name)),
                         5: "Change password",
                         6: "Exit"
                     }
@@ -559,6 +605,12 @@ class CommandLineInterface:
             except ValueError:
                             print('Wrong input. Please enter a number!')
 
+# Determina se il nome del caregiver termina con una lettera diversa da 's'
+    def possessive_suffix(self, name):
+        if name[-1].lower() != 's':
+            return"'s"
+        else:
+            return "'"
 
 
     # OPERATIONS 
