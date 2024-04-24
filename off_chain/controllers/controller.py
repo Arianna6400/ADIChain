@@ -145,6 +145,9 @@ class Controller:
     def get_medic_info(self, username):
         return self.db_ops.get_medic_info(username)
     
-    def update_profile(self, username, new_creds, new_data):
-        return self.db_ops.update_profile(username, new_creds, new_data)
+    def update_profile(self, username, new_data):
+        if self.db_ops.update_profile(username, new_data) == 0:
+            print('\nInformations modified correctly!\n')
+        else:
+            print('\nInternal error!\n')
         

@@ -361,7 +361,7 @@ class CommandLineInterface:
        
         elif choice == 2:                           # Inserisci qui il codice per la gestione dei pazienti
             print("Update profile function")
-            self.controller.menu_two(self)
+            self.update_profile(username, "Medic")
     
         elif choice == 3:
             self.change_passwd(username)
@@ -383,11 +383,10 @@ class CommandLineInterface:
 
             caregiver_options = {
                         1: "Consult {}{} medical data".format(patient_name, self.possessive_suffix(patient_name)),
-                        2: "Insert {}{} medical data".format(patient_name, self.possessive_suffix(patient_name)),
-                        3: "Update your profile",
-                        4: "Update {}{} profile".format(patient_name, self.possessive_suffix(patient_name)),
-                        5: "Change password",
-                        6: "Exit"
+                        2: "Update your profile",
+                        3: "Update {}{} profile".format(patient_name, self.possessive_suffix(patient_name)),
+                        4: "Change password",
+                        5: "Exit"
                     }
 
             print("MENU")                           # Stampa il menù
@@ -404,14 +403,18 @@ class CommandLineInterface:
                 print("Invalid Input! Please enter a valid number.")
                 
         if choice == 1:
-            print("Visualize medical data")         # Gestisce la scelta dell'utente
-            self.controller.menu_one(self)
-       
-        elif choice == 2:                           # Inserisci qui il codice per la gestione dei pazienti
-            print("Update profile function")
-            self.controller.menu_two(self)
+            self.patient_medical_data(username)
+
+        elif choice == 2:
+            self.update_profile(username, "Caregiver")
+
+        elif choice == 3:
+            self.update_profile(patient_name, "Patient")
+
+        elif choice == 4:
+            self.change_passwd(username)
     
-        elif choice == 3:                           # Inserisci qui il codice per l'aggiornamento del profilo
+        elif choice == 5:                           # Inserisci qui il codice per l'aggiornamento del profilo
             confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
             if confirm == 'Y':
                 print("Thank you for using the service!")
@@ -443,28 +446,7 @@ class CommandLineInterface:
                 choice = int(input('Enter your choice: '))
 
                 if choice == 1:
-
-                    while True: 
-                        print("\nMEDICAL DATA")
-                        print('\nWhich type of data do you want to consult?')
-                        print("1 -- Treatment plan")
-                        print("2 -- Reports") 
-                        print("3 -- Undo") 
-                        
-                        try:
-                            choice = int(input('Enter your choice: '))
-
-                            if choice == 1:
-                                self.view_treatmentplan(user.username)
-
-                            if choice == 2:
-                                self.view_reportslist_patient(user.username) # finire
-
-                            if choice == 3:
-                                self.patient_menu()
-
-                        except ValueError:
-                            print('Wrong input. Please enter a number!')
+                    self.patient_medical_data(user.username)
                     
                 elif choice == 2:
                     self.view_patientview(user.username)
@@ -517,7 +499,7 @@ class CommandLineInterface:
 
 
     def update_profile(self, username, role):
-
+        new_info = {}
         # PAZIENTE
         if role == "Patient":
             patient_info = self.controller.get_patient_info(username)
@@ -525,19 +507,9 @@ class CommandLineInterface:
                 print("User not found.")
                 return
 
-            # Visualizza le informazioni attuali del paziente
-            print("Your informations:")
-            print("Name: ", patient_info[2])
-            print("Lastname: ", patient_info[3])
-            print("Date of birth: ", patient_info[4])
-            print("Birth place: ", patient_info[5])
-            print("Residence: ", patient_info[6])
-            print("Autonomous: ", patient_info[7])
-            print("Phone: ", patient_info[8])
-
             # Ottieni i nuovi valori per gli attributi del profilo
-            new_info = {}
-            print("\nEnter your new informations:")
+            
+            print("\nEnter your new informations...")
             new_info['name'] = click.prompt('Name ', default=patient_info[2])
             new_info['lastname'] = click.prompt('Lastname ', default=patient_info[3])
             new_info['birthday'] = click.prompt('Date of birth (YYYY-MM-DD) ', default=patient_info[4])
@@ -547,14 +519,61 @@ class CommandLineInterface:
             new_info['phone'] = click.prompt('Phone ', default=patient_info[8])
 
         # IF CAREGIVER:
+        elif role == "Caregiver":
+            caregiver_info = self.controller.get_caregiver_info(username)
+            if not caregiver_info:
+                print("User not found.")
+                return
+            
+            print("\nEnter your new informations...")
+            new_info['name'] = click.prompt('Name ', default=caregiver_info[3])
+            new_info['lastname'] = click.prompt('Lastname ', default=caregiver_info[4])
+            new_info['phone'] = click.prompt('Phone ', default=caregiver_info[6])
 
         # IF MEDIC:
 
-    
+        elif role == "Medic":
+            medic_info = self.controller.get_medic_info(username)
+            if not medic_info:
+                print("User not found.")
+                return
+            
+            new_info['name'] = click.prompt('Name ', default=medic_info[2])
+            new_info['lastname'] = click.prompt('Lastname ', default=medic_info[3])
+            new_info['birthday'] = click.prompt('Date of birth (YYYY-MM-DD)', default=medic_info[4])
+            new_info['specialization'] = click.prompt('Specialization ', default=medic_info[5])
+            new_info['mail'] = click.prompt('Mail ', default=medic_info[6])
+            new_info['phone'] = click.prompt('Phone ', default=medic_info[7])
 
         # Inizializza il controller del database e aggiorna il profilo
         self.controller.update_profile(username, new_info)
         # Update_someone's_profile
+
+    def patient_medical_data(self, username):
+        while True: 
+            print("\nMEDICAL DATA")
+            print('\nWhich type of data do you want to consult?')
+            print("1 -- Treatment plan")
+            print("2 -- Reports") 
+            print("3 -- Undo") 
+            
+            try:
+                choice = int(input('Enter your choice: '))
+
+                if choice == 1:
+                    self.view_treatmentplan(username)
+
+                if choice == 2:
+                    self.view_reportslist_patient(username) # finire
+
+                if choice == 3:
+                    self.patient_menu()
+
+                else:
+                    print('Wrong option. Please enter one of the options listed in the menu!')
+
+            except ValueError:
+                print('Wrong input. Please enter a number!')
 
     def view_treatmentplan(self, username):
         treatmentplan = self.controller.get_treatmentplan_by_username(username)
@@ -564,7 +583,7 @@ class CommandLineInterface:
         print("Finish: ", treatmentplan.get_end_date())
         print("Medic: ", medic.get_name(), " ", medic.get_lastname())
         print("Description: ", treatmentplan.get_description())
-        input("Press Enter to exit")
+        input("\nPress Enter to exit\n")
 
     
     #Patient view
@@ -579,7 +598,7 @@ class CommandLineInterface:
         print("Residence: ", patientview.get_residence())
         print("Autonomous: ", patientview.get_autonomous())
         print("Phone: ", patientview.get_phone())
-        input("Press Enter to exit")
+        input("\nPress Enter to exit\n")
       
     #sviluppare visualizzazione
 
