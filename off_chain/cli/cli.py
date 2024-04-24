@@ -372,7 +372,12 @@ class CommandLineInterface:
             confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
             if confirm == 'Y':
                 print("Thank you for using the service!")
+                exit()
+            else:
+                print("Returning to the caregiver menu...")
 
+        elif choice == 5:
+            self.change_passwd(username)
             
     #Patient (bozza)
     def patient_menu(self):
