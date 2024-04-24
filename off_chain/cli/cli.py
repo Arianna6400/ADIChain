@@ -152,57 +152,58 @@ class CommandLineInterface:
 
     def insert_patient_info(self, username, role, autonomous_flag=1):
 
-        if autonomous_flag == 0:
-            print('Please, enter {}{} wallet credentials.'.format(username, self.possessive_suffix(username)))
+        # if autonomous_flag == 0:
+        #     print('Please, enter {}{} wallet credentials.'.format(username, self.possessive_suffix(username)))
 
-            while True:
-                public_key = input('Insert {}{} public Key: '.format(username, self.possessive_suffix(username)))
-                private_key = input('Insert {}{} private Key: '.format(username, self.possessive_suffix(username)))
-                confirm_private_key = input('Confirm {}{} private Key: '.format(username, self.possessive_suffix(username)))
-                #private_key = getpass.getpass('Insert {}{} private Key: '.format(username, self.possessive_suffix(username)))
-                #confirm_private_key = getpass.getpass('Confirm {}{} private Key: '.format(username, self.possessive_suffix(username)))
-                if private_key == confirm_private_key:
-                    if not self.controller.check_keys(public_key, private_key):
-                        break
-                    else:
-                        print('A wallet with these keys already exists. Please enter a unique set of keys.')
-                else:
-                    print('Private key and confirmation do not match. Try again.\n')
-            try:
-                pk_bytes = decode_hex(private_key)
-                priv_key = keys.PrivateKey(pk_bytes)
-                pk = priv_key.public_key.to_checksum_address()
-                if pk.lower() != public_key.lower():
-                    print('The provided keys do not match. Please check your entries.')
-                    return
-            except Exception:
-                print('Oops, there is no wallet with the matching public and private key provided.\n')
-                return
+        #     while True:
+        #         public_key = input('Insert {}{} public Key: '.format(username, self.possessive_suffix(username)))
+        #         private_key = input('Insert {}{} private Key: '.format(username, self.possessive_suffix(username)))
+        #         confirm_private_key = input('Confirm {}{} private Key: '.format(username, self.possessive_suffix(username)))
+        #         #private_key = getpass.getpass('Insert {}{} private Key: '.format(username, self.possessive_suffix(username)))
+        #         #confirm_private_key = getpass.getpass('Confirm {}{} private Key: '.format(username, self.possessive_suffix(username)))
+        #         if private_key == confirm_private_key:
+        #             if not self.controller.check_keys(public_key, private_key):
+        #                 break
+        #             else:
+        #                 print('A wallet with these keys already exists. Please enter a unique set of keys.')
+        #         else:
+        #             print('Private key and confirmation do not match. Try again.\n')
+        #     try:
+        #         pk_bytes = decode_hex(private_key)
+        #         priv_key = keys.PrivateKey(pk_bytes)
+        #         pk = priv_key.public_key.to_checksum_address()
+        #         if pk.lower() != public_key.lower():
+        #             print('The provided keys do not match. Please check your entries.')
+        #             return
+        #     except Exception:
+        #         print('Oops, there is no wallet with the matching public and private key provided.\n')
+        #         return
             
-            if is_address(public_key) and (public_key == pk):
-                while True:
-                    password = input('Insert {}{} password: '.format(username, self.possessive_suffix(username)))
-                    #password = getpass.getpass('Insert {}{} password: '.format(username, self.possessive_suffix(username)))
-                    passwd_regex = r'^.{8,50}$'
-                    #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
-                    if not re.fullmatch(passwd_regex, password):
-                        print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
+        #     if is_address(public_key) and (public_key == pk):
+        #         while True:
+        #             password = input('Insert {}{} password: '.format(username, self.possessive_suffix(username)))
+        #             #password = getpass.getpass('Insert {}{} password: '.format(username, self.possessive_suffix(username)))
+        #             passwd_regex = r'^.{8,50}$'
+        #             #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
+        #             if not re.fullmatch(passwd_regex, password):
+        #                 print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
                     
-                    confirm_password = input('Confirm {}{} password: '.format(username, self.possessive_suffix(username)))
-                    #confirm_password = getpass.getpass('Confirm {}{} password: '.format(username, self.possessive_suffix(username)))
+        #             confirm_password = input('Confirm {}{} password: '.format(username, self.possessive_suffix(username)))
+        #             #confirm_password = getpass.getpass('Confirm {}{} password: '.format(username, self.possessive_suffix(username)))
                     
-                    if password != confirm_password:
-                        print('Password and confirmation do not match. Try again\n')
-                    else:
-                        break
+        #             if password != confirm_password:
+        #                 print('Password and confirmation do not match. Try again\n')
+        #             else:
+        #                 break
                 
-                reg_code = self.controller.registration(username, password, role, public_key, private_key)
+        #         reg_code = self.controller.registration(username, password, role, public_key, private_key)
 
-                if reg_code == 0:
-                    print('You have succesfully registered {}{} account!\n'.format(username, self.possessive_suffix(username)))
-                    print("Proceed with the insertion of a few {}{} personal information.".format(username, self.possessive_suffix(username)))
-        if autonomous_flag == 1:
-            print("Proceed with the insertion of a few personal information.")
+        #         if reg_code == 0:
+        #             print('You have succesfully registered {}{} account!\n'.format(username, self.possessive_suffix(username)))
+        #             print("Proceed with the insertion of a few {}{} personal information.".format(username, self.possessive_suffix(username)))
+        # if autonomous_flag == 1:
+        #     print("Proceed with the insertion of a few personal information.")
+        print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
         while True:
@@ -262,21 +263,21 @@ class CommandLineInterface:
         print("Proceed with the insertion of a few personal information.")
         name = input('Name: ')
         lastname = input('Lastname: ')
-        while True:
-                username_patient = input('Enter the username of the patient you are taking care of: ')
-                if self.controller.check_patient_by_username(username_patient) == -1: break
-                else:
-                    print('A patient named ' + str(username_patient) + ' does not exist.')
-                    confirm = input("Do you want to create a new Patient account? (Y/n): ").strip().upper()
-                    if confirm == 'Y':
-                        confirm = input("Do yu want to keep '{}' as the Patient's username? (Y/n): ".format(username_patient)).strip().upper()
-                        if confirm != 'Y':
-                            new_value = input("Insert the new username (press Enter to mantain '{}'): ".format(username_patient))
-                            username_patient = new_value if new_value else username_patient
+        # while True:
+        #         username_patient = input('Enter the username of the patient you are taking care of: ')
+        #         if self.controller.check_patient_by_username(username_patient) == -1: break
+        #         else:
+        #             print('A patient named ' + str(username_patient) + ' does not exist.')
+        #             confirm = input("Do you want to create a new Patient account? (Y/n): ").strip().upper()
+        #             if confirm == 'Y':
+        #                 confirm = input("Do yu want to keep '{}' as the Patient's username? (Y/n): ".format(username_patient)).strip().upper()
+        #                 if confirm != 'Y':
+        #                     new_value = input("Insert the new username (press Enter to mantain '{}'): ".format(username_patient))
+        #                     username_patient = new_value if new_value else username_patient
 
-                        self.insert_patient_info(username_patient, "PATIENT", 0) 
-                        print("Let's continue with your information.")
-                        break
+        #                 self.insert_patient_info(username_patient, "PATIENT", 0) 
+        #                 print("Let's continue with your information.")
+        #                 break
 
         relationship = input('What kind of relationship there is between you and the patient: ')
 
@@ -284,6 +285,15 @@ class CommandLineInterface:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
+
+        print('Now register patient informations')
+        while True:
+            username_patient = input('Insert the patient username: ')
+            if self.controller.check_username(username_patient) == 0: 
+                break
+            else: 
+                print('Your username has been taken.\n')
+        self.insert_patient_info(username_patient, "PATIENT", 0)
 
         insert_code = self.controller.insert_caregiver_info(role, username, name, lastname, username_patient, relationship, phone)
         if insert_code == 0:
@@ -497,6 +507,7 @@ class CommandLineInterface:
 
     def update_profile(self, username, role):
         new_info = {}
+        #patient = self.controller.get_user_by_username(username)
         # PAZIENTE
         if role == "Patient":
             patient_info = self.controller.get_patient_info(username)
@@ -512,8 +523,18 @@ class CommandLineInterface:
             new_info['birthday'] = click.prompt('Date of birth (YYYY-MM-DD) ', default=patient_info[4])
             new_info['birth_place'] = click.prompt('Birth place ', default=patient_info[5])
             new_info['residence'] = click.prompt('Residence ', default=patient_info[6])
-            new_info['autonomous'] = click.prompt('Autonomous ', default=patient_info[7])
+            #new_info['autonomous'] = click.prompt('Autonomous ', default=patient_info[7])
             new_info['phone'] = click.prompt('Phone ', default=patient_info[8])
+
+            # patient.set_name(click.prompt('Name ', default=patient_info[2]))
+            # patient.set_lastname(click.prompt('Lastname ', default=patient_info[3]))
+            # patient.set_birthday(click.prompt('Date of birth (YYYY-MM-DD) ', default=patient_info[4]))
+            # patient.set_birth_place(click.prompt('Birth place ', default=patient_info[5]))
+            # patient.set_residence(click.prompt('Residence ', default=patient_info[6]))
+            # #patient['autonomous'] = click.prompt('Autonomous ', default=patient_info[7])
+            # patient.set_phone(click.prompt('Phone ', default=patient_info[8]))
+
+            # patient.save()
 
         # IF CAREGIVER:
         elif role == "Caregiver":
@@ -572,7 +593,7 @@ class CommandLineInterface:
             except ValueError:
                 print('Wrong input. Please enter a number!')
 
-    def view_treatmentplan(self, username):
+    def view_treatmentplan(self, username):     # checkare che esista il piano di cura
         treatmentplan = self.controller.get_treatmentplan_by_username(username)
         medic = self.controller.get_medic_by_id(treatmentplan.get_id_medic())
         print("\nYOUR TREATMENT PLAN\n")

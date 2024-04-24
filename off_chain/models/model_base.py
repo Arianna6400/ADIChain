@@ -1,4 +1,5 @@
 import sqlite3
+from config import config
 
 #Modello di base da estendere per l'implementazione degli altri Models
 class Model:
@@ -6,8 +7,8 @@ class Model:
 
     #Costruttore della classe
     def __init__(self):
-        self.con = sqlite3.connect(Model.db_path)
-        self.cur = self.con.cursor()
+        self.conn = sqlite3.connect(config.config["db_path"])
+        self.cur = self.conn.cursor()
 
     #Metodi virtuali, con le sottoclassi che implementano i metodi (classi che derivano dal modello)
     def save(self):
@@ -18,4 +19,4 @@ class Model:
     
     #Distruttore della classe
     def __del__(self):
-        self.con.close()
+        self.conn.close()

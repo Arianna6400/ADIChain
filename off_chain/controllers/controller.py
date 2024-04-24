@@ -115,7 +115,7 @@ class Controller:
     def get_user_by_username(self, username):
         return self.db_ops.get_user_by_username(username)
     
-    def check_patient_by_username(self, username):
+    def check_patient_by_username(self, username): #forse non serve
         return self.db_ops.check_patient_by_username(username)
     
     def check_attempts(self):

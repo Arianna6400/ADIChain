@@ -200,7 +200,7 @@ class DatabaseOperations:
         except sqlite3.IntegrityError:
             return -1
 
-    def check_patient_by_username(self, username):
+    def check_patient_by_username(self, username): #forse non serve
             self.cur.execute("SELECT COUNT(*) FROM Patients WHERE username = ?", (username,))
             if self.cur.fetchone()[0] == 0: return 0
             else: return -1
@@ -249,9 +249,13 @@ class DatabaseOperations:
                                     WHERE Credentials.username = ?""", (username,))
         role = self.cur.fetchone()  
         if role:
-            return role[0]  
+            return role[0]
         else:
-            return None
+            pat = self.check_patient_by_username(username)
+            if pat:
+                 return "PATIENT"
+            else:
+                return None
 
     def hash_function(self, password: str):
 
