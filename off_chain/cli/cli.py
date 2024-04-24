@@ -337,11 +337,10 @@ class CommandLineInterface:
 
             caregiver_options = {
                         1: "Consult {}{} medical data".format(patient_name, possessive_suffix),
-                        2: "Insert {}{} medical data".format(patient_name, possessive_suffix),
-                        3: "Update your profile",
-                        4: "Update {}{} profile".format(patient_name, possessive_suffix),
-                        5: "Change password",
-                        6: "Exit"
+                        2: "Update your profile",
+                        3: "Update {}{} profile".format(patient_name, possessive_suffix),
+                        4: "Change password",
+                        5: "Exit"
                     }
 
             print("MENU")                           # Stampa il menù
@@ -358,23 +357,21 @@ class CommandLineInterface:
                 print("Invalid Input! Please enter a valid number.")
                 
         if choice == 1:
-            print("Visualize medical data")         # Gestisce la scelta dell'utente
-            self.controller.menu_one(self)
-       
-        elif choice == 2:                           # Inserisci qui il codice per la gestione dei pazienti
-            print("Update profile function")
-            self.controller.menu_two(self)
+            self.patient_medical_data(username)
+
+        elif choice == 2:
+            self.update_profile(username)
+
+        elif choice == 3:
+            self.update_profile(patient_name, "Patient")
+
+        elif choice == 4:
+            self.change_passwd(username)
     
-        elif choice == 3:                           # Inserisci qui il codice per l'aggiornamento del profilo
+        elif choice == 5:                           # Inserisci qui il codice per l'aggiornamento del profilo
             confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
             if confirm == 'Y':
                 print("Thank you for using the service!")
-                exit()
-            else:
-                print("Returning to the caregiver menu...")
-
-        elif choice == 5:
-            self.change_passwd(username)
             
     #Patient (bozza)
     def patient_menu(self):
@@ -397,28 +394,7 @@ class CommandLineInterface:
                 choice = int(input('Enter your choice: '))
 
                 if choice == 1:
-
-                    while True: 
-                        print("\nMEDICAL DATA")
-                        print('\nWhich type of data do you want to consult?')
-                        print("1 -- Treatment plan")
-                        print("2 -- Reports") 
-                        print("3 -- Undo") 
-                        
-                        try:
-                            choice = int(input('Enter your choice: '))
-
-                            if choice == 1:
-                                self.view_treatmentplan(user.username)
-
-                            if choice == 2:
-                                self.view_reportslist_patient(user.username) # finire
-
-                            if choice == 3:
-                                self.patient_menu()
-
-                        except ValueError:
-                            print('Wrong input. Please enter a number!')
+                    self.patient_medical_data(user.username)
                     
                 elif choice == 2:
                     self.view_patientview(user.username)
@@ -509,6 +485,32 @@ class CommandLineInterface:
         # Inizializza il controller del database e aggiorna il profilo
         self.controller.update_profile(username, new_info)
         # Update_someone's_profile
+
+    def patient_medical_data(self, username):
+        while True: 
+            print("\nMEDICAL DATA")
+            print('\nWhich type of data do you want to consult?')
+            print("1 -- Treatment plan")
+            print("2 -- Reports") 
+            print("3 -- Undo") 
+            
+            try:
+                choice = int(input('Enter your choice: '))
+
+                if choice == 1:
+                    self.view_treatmentplan(username)
+
+                if choice == 2:
+                    self.view_reportslist_patient(username) # finire
+
+                if choice == 3:
+                    self.patient_menu()
+
+                else:
+                    print('Wrong option. Please enter one of the options listed in the menu!')
+
+            except ValueError:
+                print('Wrong input. Please enter a number!')
 
     def view_treatmentplan(self, username):
         treatmentplan = self.controller.get_treatmentplan_by_username(username)
