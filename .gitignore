@@ -7,3 +7,4 @@ truffle-config.js
 ADIChain
 *.vscode
 *.venv
+accounts.txt

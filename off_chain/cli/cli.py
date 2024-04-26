@@ -93,7 +93,7 @@ class CommandLineInterface:
                 else: print('Your username has been taken.\n')
 
             while True:
-                role = input("Insert your role: \n (C) if caregiver \n (M) if medic\n (P) if patient \n ").strip().upper()
+                role = input("Insert your role: \n (C) if caregiver \n (M) if medic\n (P) if patient \n Your choice: ").strip().upper()
                 if role == 'M':
                     user_role = 'MEDIC'
                     confirm = input("Do you confirm you're a Medic? (Y/n): ").strip().upper()

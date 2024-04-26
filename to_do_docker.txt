@@ -12,3 +12,8 @@ DOCKER-COMPOSE:
 
 docker compose up -d
 docker compose run -it adichain
+
+SCRIPT:
+chmod +x ./extract.sh
+./extract.sh
+
