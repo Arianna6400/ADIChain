@@ -357,7 +357,10 @@ class CommandLineInterface:
                     print("Invalid choice! Please try again.")
             except ValueError:
                 print("Invalid Input! Please enter a valid number.")
-        
+
+
+
+
         # RITORNA TUTTI I PAZIENTI DI QUEL DOTTORE;
         # SE VOGLIAMO CHE UN DOC POSSA VISUALIZZARE TUTTI I PAZIENTI, ELIMINARE ROBA RELATIVA A username
         if choice == 1:
@@ -371,6 +374,10 @@ class CommandLineInterface:
                 print(f"{patient[1]} - {patient[2]} {patient[3]}")
             selected_patient_username = input("Select the username of the patient:")
             # EPPOI FAI QUELLO CHE CAZZO TI PARE CON LUI
+
+
+
+
 
         elif choice == 2:                           
             print("Update profile function")
