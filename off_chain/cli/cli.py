@@ -595,7 +595,7 @@ class CommandLineInterface:
     #Patient view
     def view_patientview(self, username):
         patientview = self.controller.get_user_by_username(username)
-        print("\nPATIENT INFOS\n")
+        print("\nPATIENT INFO\n")
         print("Username: ", patientview.get_username())
         print("Name: ", patientview.get_name())
         print("Last Name: ", patientview.get_lastaname())
@@ -629,6 +629,29 @@ class CommandLineInterface:
                     print('Wrong option. Please enter one of the options listed in the menu!')
             except ValueError:
                             print('Wrong input. Please enter a number!')
+
+    def view_caregiverview(self, username):
+        caregiverview = self.controller.get_user_by_username(username)
+        print("\nCAREGIVER INFO\n")
+        print("Username: ", caregiverview.get_username())
+        print("Name: ", caregiverview.get_name())
+        print("Lastname: ", caregiverview.get_lastname())
+        print("Patient Username: ", caregiverview.username_patient())
+        print("Patient realltionship: ", caregiverview.get_patient_relationship())
+        print("Caregiver phone: ", caregiverview.get_phone())
+        input("\nPress Enter to exit\n")
+
+    def view_medicview(self, username):
+        medicview = self.controller.get_user_by_username(username)
+        print("\nMEDIC INFO\n")
+        print("Username: ", medicview.get_username())
+        print("Name: ", medicview.get_name())
+        print("Lastname: ", medicview.get_lastname())
+        print("Birthday: ", medicview.get_birthday())
+        print("Specialization: ", medicview.get_specialization())
+        print("E-mail: ", medicview.get_mail())
+        print("Phone: ",medicview.get_phone())
+        input("\nPress Enter to exit\n")
 
 # Determina se il nome del caregiver termina con una lettera diversa da 's'
     def possessive_suffix(self, name):
