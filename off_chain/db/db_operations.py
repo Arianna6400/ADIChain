@@ -103,10 +103,7 @@ class DatabaseOperations:
 
     def register_creds(self, username, hash_password, role, public_key, private_key):
         try:
-            # Check if the username already exists in the Credentials table
             if self.check_username(username) == 0:
-            #if existing_username_count == 0:
-                # Username doesn't exist, proceed with insertion
                 hashed_passwd = self.hash_function(hash_password)
                 self.cur.execute("""
                                 INSERT INTO Credentials

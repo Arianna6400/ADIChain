@@ -78,18 +78,13 @@ class Controller:
             return False
         
     def check_phone_number_format(self, phone_number):
-        # Check if the phone number contains only digits and optional hyphens or spaces
         if phone_number.replace('-', '').replace(' ', '').isdigit():
-            # Check if the length of the phone number is between 7 and 15 characters
             if 7 <= len(phone_number) <= 15:
                 return True
         return False
     
     def check_email_format(self, email):
-        # Regular expression pattern for email validation
         email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        
-        # Use the re.match function to check if the email matches the pattern
         if re.match(email_pattern, email):
             return True
         else:

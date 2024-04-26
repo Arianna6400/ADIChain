@@ -213,12 +213,6 @@ class CommandLineInterface:
 
         birth_place = input('Birth place: ')
         residence = input('Place of residence: ')
-        #while True:
-        #    autonomous_flag = int(input('Are you autonomous? (Digit "1" if you are autonomous, "0" if you are not)'))
-        #    if autonomous_flag  in [0,1]:
-        #        break
-        #    else:
-        #        print('Wrong value! Insert a valid value please.')
         while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): break
@@ -320,7 +314,6 @@ class CommandLineInterface:
 
             if login_code == 0:
                 print('\nYou have succesfully logged in!\n')
-                # Redirect to the corresponding menu based on user type
                 if user_type == "MEDIC":
                     self.medic_menu(username)
                 elif user_type == "CAREGIVER":
@@ -352,11 +345,11 @@ class CommandLineInterface:
         }
 
         while True:
-            print("MENU")                           # Stampa il menù
+            print("MENU")                           
             for key, value in medic_options.items():
                 print(f"{key} -- {value}")
                                                 
-            try:                                    # Richiesta input e gestione errori
+            try:                                    
                 choice = int(input("Choose an option: "))
                 if choice in medic_options:
                     break
@@ -366,17 +359,17 @@ class CommandLineInterface:
                 print("Invalid Input! Please enter a valid number.")
                 
         if choice == 1:
-            print("Visualize medical data")         # Gestisce la scelta dell'utente
+            print("Visualize medical data")        
             self.controller.menu_one(self)
        
-        elif choice == 2:                           # Inserisci qui il codice per la gestione dei pazienti
+        elif choice == 2:                           
             print("Update profile function")
             self.update_profile(username, "Medic")
     
         elif choice == 3:
             self.change_passwd(username)
 
-        elif choice == 4:                           # Inserisci qui il codice per l'aggiornamento del profilo
+        elif choice == 4:                          
             confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
             if confirm == 'Y':
                 print("Thank you for using the service!")
@@ -399,11 +392,11 @@ class CommandLineInterface:
                         5: "Exit"
                     }
 
-            print("\nMENU")                           # Stampa il menù
+            print("\nMENU")                           
             for key, value in caregiver_options.items():
                 print(f"{key} -- {value}")        
 
-            try:                                    # Richiesta input e gestione errori
+            try:                                    
                 choice = int(input("Choose an option: "))             
                 
                 if choice == 1:
@@ -418,7 +411,7 @@ class CommandLineInterface:
                 elif choice == 4:
                     self.change_passwd(username)
             
-                elif choice == 5:                           # Inserisci qui il codice per l'aggiornamento del profilo
+                elif choice == 5:                           
                     confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
                     if confirm == 'Y':
                         print("Thank you for using the service!")
@@ -432,7 +425,6 @@ class CommandLineInterface:
             except ValueError:
                     print("Invalid Input! Please enter a valid number.")
             
-    #Patient (bozza)
     def patient_menu(self):
         user = self.session.get_user()
 
@@ -459,7 +451,7 @@ class CommandLineInterface:
                     self.view_patientview(user.username)
 
                 elif choice == 3:
-                    self.update_profile(user.username, "Patient") #implementare
+                    self.update_profile(user.username, "Patient") 
 
                 elif choice == 4:
                     self.change_passwd(user.username)
@@ -536,7 +528,6 @@ class CommandLineInterface:
 
             # patient.save()
 
-        # IF CAREGIVER:
         elif role == "Caregiver":
             caregiver_info = self.controller.get_caregiver_info(username)
             if not caregiver_info:
@@ -548,7 +539,6 @@ class CommandLineInterface:
             new_info['lastname'] = click.prompt('Lastname ', default=caregiver_info[4])
             new_info['phone'] = click.prompt('Phone ', default=caregiver_info[6])
 
-        # IF MEDIC:
 
         elif role == "Medic":
             medic_info = self.controller.get_medic_info(username)
@@ -563,9 +553,7 @@ class CommandLineInterface:
             new_info['mail'] = click.prompt('Mail ', default=medic_info[6])
             new_info['phone'] = click.prompt('Phone ', default=medic_info[7])
 
-        # Inizializza il controller del database e aggiorna il profilo
         self.controller.update_profile(username, new_info)
-        # Update_someone's_profile
 
     def patient_medical_data(self, username):
         while True: 
