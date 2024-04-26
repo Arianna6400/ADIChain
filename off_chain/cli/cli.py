@@ -379,10 +379,9 @@ class CommandLineInterface:
     def caregiver_menu(self, username):
         while True:
             caregiver = self.controller.get_user_by_username(username)
-            print(caregiver)
 
             # Ottieni il nome del caregiver
-            patient_name = caregiver[1]
+            patient_name = caregiver.get_username_patient()
 
             caregiver_options = {
                         1: "Consult {}{} medical data".format(patient_name, self.possessive_suffix(patient_name)),
@@ -498,62 +497,78 @@ class CommandLineInterface:
 
 
     def update_profile(self, username, role):
-        new_info = {}
-        #patient = self.controller.get_user_by_username(username)
+        us = self.controller.get_user_by_username(username)
         # PAZIENTE
         if role == "Patient":
-            patient_info = self.controller.get_patient_info(username)
-            if not patient_info:
-                print("User not found.")
-                return
-
-            # Ottieni i nuovi valori per gli attributi del profilo
             
-            print("\nEnter your new informations...")
-            new_info['name'] = click.prompt('Name ', default=patient_info[2])
-            new_info['lastname'] = click.prompt('Lastname ', default=patient_info[3])
-            new_info['birthday'] = click.prompt('Date of birth (YYYY-MM-DD) ', default=patient_info[4])
-            new_info['birth_place'] = click.prompt('Birth place ', default=patient_info[5])
-            new_info['residence'] = click.prompt('Residence ', default=patient_info[6])
-            #new_info['autonomous'] = click.prompt('Autonomous ', default=patient_info[7])
-            new_info['phone'] = click.prompt('Phone ', default=patient_info[8])
+            # patient_info = self.controller.get_patient_info(username)
+            # if not patient_info:
+            #     print("user not found.")
+            #     return
 
-            # patient.set_name(click.prompt('Name ', default=patient_info[2]))
-            # patient.set_lastname(click.prompt('Lastname ', default=patient_info[3]))
-            # patient.set_birthday(click.prompt('Date of birth (YYYY-MM-DD) ', default=patient_info[4]))
-            # patient.set_birth_place(click.prompt('Birth place ', default=patient_info[5]))
-            # patient.set_residence(click.prompt('Residence ', default=patient_info[6]))
-            # #patient['autonomous'] = click.prompt('Autonomous ', default=patient_info[7])
-            # patient.set_phone(click.prompt('Phone ', default=patient_info[8]))
-
-            # patient.save()
+            us.set_name(click.prompt('Name ', default=us.get_name()))
+            us.set_lastname(click.prompt('Lastname ', default=us.get_lastaname())) 
+            while True:
+                birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
+                if self.controller.check_birthdate_format(birthday): 
+                    us.set_birthday(birthday)
+                    break
+                else: print("Invalid birthdate or incorrect format.")
+            us.set_birth_place(click.prompt('Birth place ', default=us.get_birth_place()))
+            us.set_residence(click.prompt('Residence ', default=us.get_residence()))
+            while True:
+                phone = click.prompt('Phone ', default=us.get_phone())
+                if self.controller.check_phone_number_format(phone): 
+                    us.set_phone(phone)
+                    break
+                else: print("Invalid phone number format.")
 
         elif role == "Caregiver":
-            caregiver_info = self.controller.get_caregiver_info(username)
-            if not caregiver_info:
-                print("User not found.")
-                return
+            # caregiver_info = self.controller.get_caregiver_info(username)
+            # if not caregiver_info:
+            #     print("user not found.")
+            #     return
             
             print("\nEnter your new informations...")
-            new_info['name'] = click.prompt('Name ', default=caregiver_info[3])
-            new_info['lastname'] = click.prompt('Lastname ', default=caregiver_info[4])
-            new_info['phone'] = click.prompt('Phone ', default=caregiver_info[6])
+            us.set_name(click.prompt('Name ', default=us.get_name()))
+            us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
+            while True:
+                phone = click.prompt('Phone ', default=us.get_phone())
+                if self.controller.check_phone_number_format(phone): 
+                    us.set_phone(phone)
+                    break
+                else: print("Invalid phone number format.")
 
 
         elif role == "Medic":
-            medic_info = self.controller.get_medic_info(username)
-            if not medic_info:
-                print("User not found.")
-                return
+            # medic_info = self.controller.get_medic_info(username)
+            # if not medic_info:
+            #     print("user not found.")
+            #     return
             
-            new_info['name'] = click.prompt('Name ', default=medic_info[2])
-            new_info['lastname'] = click.prompt('Lastname ', default=medic_info[3])
-            new_info['birthday'] = click.prompt('Date of birth (YYYY-MM-DD)', default=medic_info[4])
-            new_info['specialization'] = click.prompt('Specialization ', default=medic_info[5])
-            new_info['mail'] = click.prompt('Mail ', default=medic_info[6])
-            new_info['phone'] = click.prompt('Phone ', default=medic_info[7])
+            us.set_name(click.prompt('Name ', default=us.get_name()))
+            us.set_lastname(click.prompt('Lastname ', default=us.get_lastaname()))
+            while True:
+                birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
+                if self.controller.check_birthdate_format(birthday): 
+                    us.set_birthday(birthday)
+                    break
+                else: print("Invalid birthdate or incorrect format.")
+            us.set_specialization(click.prompt('Specialization ', default=us.get_specialization()))
+            while True:
+                mail = click.prompt('Mail ', default=us.get_mail())
+                if self.controller.check_email_format(mail): 
+                    us.set_mail(mail)
+                    break
+                else: print("Invalid email format.")
+            while True:
+                phone = click.prompt('Phone ', default=us.get_phone())
+                if self.controller.check_phone_number_format(phone): 
+                    us.set_phone(phone)
+                    break
+                else: print("Invalid phone number format.")
 
-        self.controller.update_profile(username, new_info)
+        us.save()
 
     def patient_medical_data(self, username):
         while True: 
@@ -584,7 +599,7 @@ class CommandLineInterface:
     def view_treatmentplan(self, username):     # checkare che esista il piano di cura
         treatmentplan = self.controller.get_treatmentplan_by_username(username)
         medic = self.controller.get_medic_by_id(treatmentplan.get_id_medic())
-        print("\nYOUR TREATMENT PLAN\n")
+        print("\nTREATMENT PLAN\n")
         print("Start: ", treatmentplan.get_start_date())
         print("Finish: ", treatmentplan.get_end_date())
         print("Medic: ", medic.get_name(), " ", medic.get_lastname())
@@ -604,6 +619,29 @@ class CommandLineInterface:
         print("Residence: ", patientview.get_residence())
         print("Autonomous: ", patientview.get_autonomous())
         print("Phone: ", patientview.get_phone())
+        input("\nPress Enter to exit\n")
+
+    def view_caregiverview(self, username):
+        caregiverview = self.controller.get_user_by_username(username)
+        print("\nCAREGIVER INFO\n")
+        print("Username: ", caregiverview.get_username())
+        print("Name: ", caregiverview.get_name())
+        print("Lastname: ", caregiverview.get_lastname())
+        print("Patient Username: ", caregiverview.username_patient())
+        print("Patient realltionship: ", caregiverview.get_patient_relationship())
+        print("Caregiver phone: ", caregiverview.get_phone())
+        input("\nPress Enter to exit\n")
+
+    def view_medicview(self, username):
+        medicview = self.controller.get_user_by_username(username)
+        print("\nMEDIC INFO\n")
+        print("Username: ", medicview.get_username())
+        print("Name: ", medicview.get_name())
+        print("Lastname: ", medicview.get_lastname())
+        print("Birthday: ", medicview.get_birthday())
+        print("Specialization: ", medicview.get_specialization())
+        print("E-mail: ", medicview.get_mail())
+        print("Phone: ",medicview.get_phone())
         input("\nPress Enter to exit\n")
       
     #sviluppare visualizzazione
@@ -629,29 +667,6 @@ class CommandLineInterface:
                     print('Wrong option. Please enter one of the options listed in the menu!')
             except ValueError:
                             print('Wrong input. Please enter a number!')
-
-    def view_caregiverview(self, username):
-        caregiverview = self.controller.get_user_by_username(username)
-        print("\nCAREGIVER INFO\n")
-        print("Username: ", caregiverview.get_username())
-        print("Name: ", caregiverview.get_name())
-        print("Lastname: ", caregiverview.get_lastname())
-        print("Patient Username: ", caregiverview.username_patient())
-        print("Patient realltionship: ", caregiverview.get_patient_relationship())
-        print("Caregiver phone: ", caregiverview.get_phone())
-        input("\nPress Enter to exit\n")
-
-    def view_medicview(self, username):
-        medicview = self.controller.get_user_by_username(username)
-        print("\nMEDIC INFO\n")
-        print("Username: ", medicview.get_username())
-        print("Name: ", medicview.get_name())
-        print("Lastname: ", medicview.get_lastname())
-        print("Birthday: ", medicview.get_birthday())
-        print("Specialization: ", medicview.get_specialization())
-        print("E-mail: ", medicview.get_mail())
-        print("Phone: ",medicview.get_phone())
-        input("\nPress Enter to exit\n")
 
 # Determina se il nome del caregiver termina con una lettera diversa da 's'
     def possessive_suffix(self, name):

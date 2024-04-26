@@ -232,11 +232,11 @@ class DatabaseOperations:
                                      SELECT *
                                      FROM Caregivers
                                      WHERE Caregivers.username = ?""", (username,)).fetchone()
-            #if user is not None:
-            #    caregiver = Caregivers(*user)
+            if user is not None:
+                return Caregivers(*user)
             #    return caregiver
             #return user
-            return user
+            #return user
         return None
     
     def get_role_by_username(self, username):

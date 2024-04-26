@@ -64,16 +64,20 @@ class Patients(Model):
 
 #Metodi ORM per interagire con il db SQLite per operazioni CRUD
     def save(self):
-        if self.id_patient is None:
-            self.cur.execute('''INSERT INTO Patients (username, name, lastname, birthday, birth_place, residence, autonomous, phone)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)''',
-                             (self.username, self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.autonomous, self.phone))
-                                #I punti interrogativi come placeholder servono per la prevenzione di attacchi SQL Injection
-        else:
-            self.cur.execute(""" UPDATE Patients SET name = ?, lastname = ?, birthday = ?, birth_place = ?, residence = ?, phone = ? WHERE username = ? """,
-                             (self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.phone, self.username))
-        self.conn.commit()
-        self.id_patient = self.cur.lastrowid
+        try:
+            if self.id_patient is None:
+                self.cur.execute('''INSERT INTO Patients (id_patient, username, name, lastname, birthday, birth_place, residence, autonomous, phone)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+                                (self.username, self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.autonomous, self.phone))
+                                    #I punti interrogativi come placeholder servono per la prevenzione di attacchi SQL Injection
+            else:
+                self.cur.execute(""" UPDATE Patients SET name = ?, lastname = ?, birthday = ?, birth_place = ?, residence = ?, phone = ? WHERE username = ? """,
+                                (self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.phone, self.username))
+            self.conn.commit()
+            self.id_patient = self.cur.lastrowid
+            print('Informations saved correctly!\n')
+        except: 
+            print('Internal error!')
 
     def delete(self):
         if self.id_patient is not None:
