@@ -356,6 +356,22 @@ class DatabaseOperations:
                                     WHERE id_patient =?""", (user_id,))       
         return [Reports(*report) for report in reportslist]
     
+    def get_patients_for_doctor(self, username):
+            query = """
+                SELECT Patients.username, Patients.name, Patients.lastname
+                FROM Patients
+                INNER JOIN DoctorPatientRelationships ON Patients.username = DoctorPatientRelationships.patient_username
+                WHERE DoctorPatientRelationships.username = ?
+            """
+            # OPPURE
+            query2 = """
+                SELECT Patients.username, Patients.name, Patients.lastname
+                FROM Patients
+            
+                WHERE Patients.medic_id = ?
+            """
+            self.cur.execute(query2, (username,))
+            return self.cur.fetchall()
 
     def get_patient_info(self, username):
         query = """

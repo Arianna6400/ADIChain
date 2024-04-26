@@ -358,10 +358,20 @@ class CommandLineInterface:
             except ValueError:
                 print("Invalid Input! Please enter a valid number.")
         
+        # RITORNA TUTTI I PAZIENTI DI QUEL DOTTORE;
+        # SE VOGLIAMO CHE UN DOC POSSA VISUALIZZARE TUTTI I PAZIENTI, ELIMINARE ROBA RELATIVA A username
         if choice == 1:
             print("Choose patient: \n")
-            self.controller.choose_patient(self)
-       
+            patients = self.controller.get_patients_for_doctor(username)
+            if not patients:
+                print("There are no patients associated to this medic.")
+                return
+            print("Patients associated to this medic:")
+            for patient in patients:
+                print(f"{patient[1]} - {patient[2]} {patient[3]}")
+            selected_patient_username = input("Select the username of the patient:")
+            # EPPOI FAI QUELLO CHE CAZZO TI PARE CON LUI
+
         elif choice == 2:                           
             print("Update profile function")
             self.update_profile(username, "Medic")
@@ -428,7 +438,6 @@ class CommandLineInterface:
         user = self.session.get_user()
 
         while True: 
-
             patient_options = {
                 1: "Consult medic data",
                 2: "View profile",
@@ -494,7 +503,6 @@ class CommandLineInterface:
                     elif response == -1 or response == -2:
                         print('\nSorry, something went wrong!\n')
                 return
-
 
     def update_profile(self, username, role):
         us = self.controller.get_user_by_username(username)
@@ -567,7 +575,6 @@ class CommandLineInterface:
                     us.set_phone(phone)
                     break
                 else: print("Invalid phone number format.")
-
         us.save()
 
     def patient_medical_data(self, username):

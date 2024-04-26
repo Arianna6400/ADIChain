@@ -140,6 +140,9 @@ class Controller:
     def get_medic_info(self, username):
         return self.db_ops.get_medic_info(username)
     
+    def get_patients_for_doctor(self, username):
+        return self.db_ops.get_patients_for_doctor(username)
+    
     def update_profile(self, username, new_data):
         if self.db_ops.update_profile(username, new_data) == 0:
             print('\nInformations modified correctly!\n')
