@@ -36,18 +36,46 @@ class Medics(Model):
     
     def get_phone(self):
         return self.phone
+    
+    def set_id_medic(self, id_medic):
+        self.id_medic = id_medic
+    
+    def set_username(self, username):
+        self.username = username
+
+    def set_name(self, name):
+        self.name = name
+    
+    def set_lastname(self, lastname):
+        self.lastname = lastname
+    
+    def set_birthday(self, birthday):
+        self.birthday = birthday
+    
+    def set_specialization(self, specialization):
+        self.specialization = specialization
+    
+    def set_mail(self, mail):
+        self.mail = mail
+    
+    def set_phone(self, phone):
+        self.phone = phone
 
 #Metodi ORM per interagire con il db SQLite per operazioni CRUD
     def save(self):
-        if self.id_medic is None:
-            self.cur.execute('''INSERT INTO Medics (username, name, lastname, birthday, specialization, mail, phone)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)''', (self.username, self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone))
-                                #I punti interrogativi come placeholder servono per la prevenzione di attacchi SQL Injection
-        else:
-            self.cur.execute('''UPDATE Medics SET username =?, name=?, lastname=?, birthday=?, specialization=?, mail=?, phone=? WHERE id_medic=?''',
-                             (self.username, self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone, self.id_medic))
-        self.conn.commit()
-        self.id_medic = self.cur.lastrowid
+        try:
+            if self.id_medic is None:
+                self.cur.execute('''INSERT INTO Medics (id_medic, username, name, lastname, birthday, specialization, mail, phone)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?)''', (self.username, self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone))
+                                    #I punti interrogativi come placeholder servono per la prevenzione di attacchi SQL Injection
+            else:
+                self.cur.execute('''UPDATE Medics SET name=?, lastname=?, birthday=?, specialization=?, mail=?, phone=? WHERE username=?''',
+                                (self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone, self.username))
+            self.conn.commit()
+            self.id_medic = self.cur.lastrowid
+            print('Informations saved correctly!\n')
+        except: 
+            print('Internal error!')
 
     def delete(self):
         if self.id_medic is not None:
