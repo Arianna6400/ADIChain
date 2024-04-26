@@ -3,7 +3,7 @@
 node_modules
 package-lock.json
 package.json
-*.js
+truffle-config.js
 ADIChain
 *.vscode
 *.venv
