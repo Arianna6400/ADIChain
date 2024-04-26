@@ -280,7 +280,7 @@ class CommandLineInterface:
             if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
 
-        print('Now register patient informations')
+        print('Now register patient information')
         while True:
             username_patient = input('Insert the patient username: ')
             if self.controller.check_username(username_patient) == 0: 
@@ -357,10 +357,10 @@ class CommandLineInterface:
                     print("Invalid choice! Please try again.")
             except ValueError:
                 print("Invalid Input! Please enter a valid number.")
-                
+        
         if choice == 1:
-            print("Visualize medical data")        
-            self.controller.menu_one(self)
+            print("Choose patient: \n")
+            self.controller.choose_patient(self)
        
         elif choice == 2:                           
             print("Update profile function")
@@ -653,7 +653,7 @@ class CommandLineInterface:
         print("Phone: ",medicview.get_phone())
         input("\nPress Enter to exit\n")
 
-# Determina se il nome del caregiver termina con una lettera diversa da 's'
+    # Determina se il nome del caregiver termina con una lettera diversa da 's'
     def possessive_suffix(self, name):
         if name[-1].lower() != 's':
             return"'s"
