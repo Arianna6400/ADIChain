@@ -253,6 +253,27 @@ class DatabaseOperations:
                  return "PATIENT"
             else:
                 return None
+            
+    def get_public_key_by_username(self, username):
+        """
+        Retrieve the public key for a given username from the Credentials table.
+
+        Args:
+            username (str): The username of the user whose public key is to be retrieved.
+
+        Returns:
+            str: The public key of the user if found, None otherwise.
+        """
+        try:
+            self.cur.execute("SELECT public_key FROM Credentials WHERE username = ?", (username,))
+            result = self.cur.fetchone()
+            if result:
+                return result[0]  # Return the public key
+            else:
+                return None  # Public key not found
+        except Exception as e:
+            print("An error occurred while retrieving public key:", e)
+            return None
 
     def hash_function(self, password: str):
 

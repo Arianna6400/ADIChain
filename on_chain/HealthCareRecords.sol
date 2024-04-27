@@ -16,7 +16,7 @@ contract HealthCareRecords {
     struct Patient {
         string name;
         string lastname;
-        bool autonomous;
+        uint8 autonomous;
         bool isRegistered;
         uint256 offChainId; // Identifier for references outside the blockchain
         mapping(address => string) conditions; // Conditions updated by authorized medics
@@ -109,7 +109,7 @@ contract HealthCareRecords {
         logAction("Update", msg.sender, "Medic updated");
     }
 
-    function addPatient(string memory name, string memory lastname, bool autonomous) public onlyAuthorized {
+    function addPatient(string memory name, string memory lastname, uint8 autonomous) public onlyAuthorized {
         uint256 offChainId = uint256(keccak256(abi.encodePacked(name, lastname)));
         require(patients[offChainId].offChainId == 0, "Patient already registered");
         
@@ -123,7 +123,7 @@ contract HealthCareRecords {
         logAction("Create", msg.sender, "Patient added");
     }
 
-    function updatePatient(uint256 offChainId, string memory name, string memory lastname, bool autonomous, bool isRegistered) public onlyAuthorized {
+    function updatePatient(uint256 offChainId, string memory name, string memory lastname, uint8 autonomous, bool isRegistered) public onlyAuthorized {
         require(patients[offChainId].offChainId != 0, "Patient not found");
         Patient storage patient = patients[offChainId];
         patient.name = name;
