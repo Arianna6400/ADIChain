@@ -448,7 +448,7 @@ class CommandLineInterface:
             except ValueError:
                     print("Invalid Input! Please enter a valid number.")
             
-    def patient_menu(self):
+    def patient_menu(self, username):
         user = self.session.get_user()
 
         while True: 
