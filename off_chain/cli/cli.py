@@ -220,16 +220,11 @@ class CommandLineInterface:
             if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
 
-        #from_address = self.controller.get_public_key_by_username(username)
-
+        from_address_patient = self.controller.get_public_key_by_username(username)
+        self.act_controller.register_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
         insert_code = self.controller.insert_patient_info(role, username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
         if insert_code == 0:
             print('Information saved correctly!')
-            # insert_onchain = self.act_controller.register_entity('patient', name, lastname, autonomous_flag, from_address=from_address)
-            # if insert_onchain:
-            #     print("User also recorded on the blockchain.")
-            # else:
-            #     print("Failed to record user information on the blockchain.")
             if autonomous_flag == 1:
                 self.patient_menu(username)
         elif insert_code == -1:
@@ -255,16 +250,11 @@ class CommandLineInterface:
             if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
 
-        from_address = self.controller.get_public_key_by_username(username)
-
+        from_address_medic = self.controller.get_public_key_by_username(username)
+        self.act_controller.register_entity('medic', name, lastname, specialization, from_address=from_address_medic)
         insert_code = self.controller.insert_medic_info(role, username, name, lastname, birthday, specialization, mail, phone)
         if insert_code == 0:
             print('Information saved correctly!')
-            insert_onchain = self.act_controller.register_entity('medic', name, lastname, specialization, from_address=from_address)
-            if insert_onchain:
-                print("User also recorded on the blockchain.")
-            else:
-                print("Failed to record user information on the blockchain.")
             self.medic_menu(username)
         elif insert_code == -1:
             print('Internal error!')
@@ -303,20 +293,14 @@ class CommandLineInterface:
                 break
             else: 
                 print('Your username has been taken.\n')
-        self.insert_patient_info(username_patient, "PATIENT", 0)
+            self.insert_patient_info(username_patient, "PATIENT", 0)
 
-        #from_address = self.controller.get_public_key_by_username(username)
-
+        from_address_caregiver = self.controller.get_public_key_by_username(username)
+        self.act_controller.register_entity('caregiver', name, lastname, from_address=from_address_caregiver)
         insert_code = self.controller.insert_caregiver_info(role, username, name, lastname, username_patient, relationship, phone)
         if insert_code == 0:
-            print('Information saved correctly!\n \n ')
-            # insert_onchain = self.act_controller.register_entity('caregiver', name, lastname, from_address=from_address)
-            # if insert_onchain:
-            #     print("User also recorded on the blockchain.")
-            # else:
-            #     print("Failed to record user information on the blockchain.")
+            print('Information saved correctly!\n')
             self.caregiver_menu(username)
-
         elif insert_code == -1:
             print('Internal error!')
        

@@ -133,9 +133,9 @@ contract HealthCareRecords {
         logAction("Update", msg.sender, "Patient updated");
     }
 
-    function addCaregiver(string memory name, string memory lastname, bool isRegistered) public onlyAuthorized {
+    function addCaregiver(string memory name, string memory lastname) public onlyAuthorized {
         uint256 id = uint256(keccak256(abi.encodePacked(name, lastname)));
-        caregivers[id] = Caregiver(name, lastname, isRegistered);
+        caregivers[id] = Caregiver(name, lastname, true);
         logAction("Create", msg.sender, "Caregiver added");
     }
 
