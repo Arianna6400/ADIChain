@@ -44,9 +44,19 @@ class DeployController:
 
     # Deploy the compiled contract to the blockchain
     def deploy_contract(self):
-        account = self.w3.eth.accounts[0]  # Use the first account available
-        contract = self.w3.eth.contract(abi=self.abi, bytecode=self.bytecode)  # Create a contract object
-        tx_hash = contract.constructor().transact({'from': account})  # Send the contract creation transaction
-        tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)  # Wait for the transaction to be mined
-        self.contract = self.w3.eth.contract(address=tx_receipt.contractAddress, abi=self.abi)  # Update the contract object with the deployed address
-        print(f'Contract deployed at {tx_receipt.contractAddress}')  # Print the deployment address
+        account = self.w3.eth.accounts[0]
+        try:
+            # Create contract object
+            contract = self.w3.eth.contract(abi=self.abi, bytecode=self.bytecode)
+            # Send create transaction
+            tx_hash = contract.constructor().transact({'from': account})
+            # Wait for transaction to be mined
+            tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            # Update contract with deployed address
+            self.contract = self.w3.eth.contract(address=tx_receipt.contractAddress, abi=self.abi)
+            # Print deployed contract address
+            print(f'Contract deployed at {tx_receipt.contractAddress}')
+
+        except Exception as e:
+            # Handle errors during deploy
+            print(f"An error occurred while deploying the contract from account {account}: {e}")

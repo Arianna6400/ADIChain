@@ -6,6 +6,8 @@ import json
 
 class ActionController:
     def __init__(self, http_provider='http://127.0.0.1:8545'):
+        #http://ganache:8545
+        #http://127.0.0.1:8545
         self.http_provider = http_provider
         self.w3 = Web3(Web3.HTTPProvider(self.http_provider))
         assert self.w3.is_connected(), "Failed to connect to Ethereum node."
