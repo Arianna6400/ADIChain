@@ -433,7 +433,6 @@ class CommandLineInterface:
             self.current_page += 1
             self.show_page(patients)
 
-
     def go_to_previous_page(self, patients):
         if self.current_page > 0:
             self.current_page -= 1
@@ -557,8 +556,8 @@ class CommandLineInterface:
     def change_passwd(self, username):
 
         while True:
-            confirmation = input('Do you want to change your password (Y/N)?')
-            if confirmation == 'Y' or confirmation == 'y':
+            confirmation = input("Do you want to change your password (Y/n): ").strip().upper()
+            if confirmation == 'Y':
                 old_pass = input('Old Password: ')
 
                 if not self.controller.check_passwd(username, old_pass):
@@ -582,6 +581,9 @@ class CommandLineInterface:
                         print('\nPassword changed correctly!\n')
                     elif response == -1 or response == -2:
                         print('\nSorry, something went wrong!\n')
+                return
+            else:
+                print("Okay\n")
                 return
 
     def update_profile(self, username, role):
