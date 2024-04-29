@@ -229,9 +229,10 @@ class CommandLineInterface:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): break
             else: print("Invalid phone number format.")
-
-        from_address_patient = self.controller.get_public_key_by_username(username)
-        self.act_controller.register_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
+        
+        if autonomous_flag == 1:
+            from_address_patient = self.controller.get_public_key_by_username(username)
+            self.act_controller.register_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
         insert_code = self.controller.insert_patient_info(role, username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
         if insert_code == 0:
             print('Information saved correctly!')
