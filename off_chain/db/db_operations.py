@@ -393,6 +393,14 @@ class DatabaseOperations:
             """
             self.cur.execute(query2, (username,))
             return self.cur.fetchall()
+    
+    def get_patients(self):
+            query = """
+                SELECT Patients.username, Patients.name, Patients.lastname
+                FROM Patients
+            """
+            self.cur.execute(query)
+            return self.cur.fetchall()
 
     def get_patient_info(self, username):
         query = """

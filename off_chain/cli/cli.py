@@ -370,15 +370,16 @@ class CommandLineInterface:
         # SE VOGLIAMO CHE UN DOC POSSA VISUALIZZARE TUTTI I PAZIENTI, ELIMINARE ROBA RELATIVA A username
         if choice == 1:
             print("Choose patient: \n")
-            patients = self.controller.get_patients_for_doctor(username)
+            #patients = self.controller.get_patients_for_doctor(username)
+            patients = self.controller.get_patients()
+
             if not patients:
-                print("There are no patients associated to this medic.")
+                print("There are no patients in the system.")
                 return
-            print("Patients associated to this medic:")
+            print("List of patients:")
             for patient in patients:
                 print(f"{patient[1]} - {patient[2]} {patient[3]}")
-            selected_patient_username = input("Select the username of the patient:")
-            # EPPOI FAI QUELLO CHE CAZZO TI PARE CON LUI
+
 
 
 
@@ -391,7 +392,7 @@ class CommandLineInterface:
         elif choice == 3:
             self.change_passwd(username)
 
-        elif choice == 4:                          
+        elif choice == 4:
             confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
             if confirm == 'Y':
                 print("Thank you for using the service!")
@@ -418,7 +419,7 @@ class CommandLineInterface:
                 print(f"{key} -- {value}")        
 
             try:                                    
-                choice = int(input("Choose an option: "))             
+                choice = int(input("Choose an option: "))
                 
                 if choice == 1:
                     self.patient_medical_data(patient_name)
