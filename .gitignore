@@ -8,3 +8,5 @@ ADIChain
 *.vscode
 *.venv
 accounts.txt
+*contract_address.txt
+*contract_abi.json

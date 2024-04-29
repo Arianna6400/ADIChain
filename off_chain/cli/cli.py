@@ -1,10 +1,12 @@
 import getpass
+import math
 import re
 
 import click
 from eth_utils import *
 from eth_keys import *
 from controllers.controller import Controller
+from controllers.action_controller import ActionController
 from session.session import Session
 from db.db_operations import DatabaseOperations
 import re
@@ -13,6 +15,7 @@ class CommandLineInterface:
     def __init__(self, session: Session):
 
         self.controller = Controller(session)
+        self.act_controller = ActionController()
         self.session = session
         self.ops = DatabaseOperations()
 
@@ -21,6 +24,14 @@ class CommandLineInterface:
             2: 'Log In',
             3: 'Exit',
         }
+
+
+
+    PAGE_SIZE = 3
+
+    current_page = 0
+
+
 
     def print_menu(self):
 
@@ -308,8 +319,8 @@ class CommandLineInterface:
             self.session.reset_attempts()
 
         if self.session.get_timeout_left() <= 0 and self.controller.check_attempts():
-            public_key = input('Insert public key:')
-            private_key = input('Insert private key:')
+            public_key = input('Insert public key: ')
+            private_key = input('Insert private key: ')
             #private_key = getpass.getpass('Private Key: ')
             username = input('Insert username: ')
             passwd = input('Insert password: ')
@@ -324,7 +335,7 @@ class CommandLineInterface:
                 elif user_type == "CAREGIVER":
                     self.caregiver_menu(username)
                 elif user_type == "PATIENT":
-                    self.patient_menu()
+                    self.patient_menu(username)
                 else:
                     print("Error: User type is not recognized.")
                     return -1
@@ -363,25 +374,28 @@ class CommandLineInterface:
             except ValueError:
                 print("Invalid Input! Please enter a valid number.")
 
-
-
-
-        # RITORNA TUTTI I PAZIENTI DI QUEL DOTTORE;
-        # SE VOGLIAMO CHE UN DOC POSSA VISUALIZZARE TUTTI I PAZIENTI, ELIMINARE ROBA RELATIVA A username
         if choice == 1:
-            print("Choose patient: \n")
-            #patients = self.controller.get_patients_for_doctor(username)
+
             patients = self.controller.get_patients()
 
-            if not patients:
-                print("There are no patients in the system.")
-                return
-            print("List of patients:")
-            for patient in patients:
-                print(f"{patient[1]} - {patient[2]} {patient[3]}")
+            self.show_page(patients)
 
+            while len(patients) > 0:
 
+                action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: ")
 
+                if action == "n":
+                    self.go_to_next_page(patients)
+                elif action == "p":
+                    self.go_to_previous_page(patients)
+                elif action == "s":
+                    self.handle_selection(patients)
+                elif action == "q":
+                    print("Exiting...\n")
+                    self.medic_menu(username)
+                else:
+                    print("Invalid input. Please try again. \n")
+            self.medic_menu(username)
 
 
 
@@ -397,6 +411,60 @@ class CommandLineInterface:
             if confirm == 'Y':
                 print("Thank you for using the service!")
                 exit()
+
+    def get_page_records(self, page_index, patients):
+        start_index = page_index * self.PAGE_SIZE
+        end_index = start_index + self.PAGE_SIZE
+
+        if not patients:
+            print("\nThere are no patients in the system. \n")
+            return
+        print("\nList of patients: \n")
+        return patients[start_index:end_index]
+
+    def display_records(self, records):
+        for i, patient in enumerate(records, start=1):
+            print(f"{i}. Username: {patient['1']}, Name: {patient['2']}, Last name: {patient['3']}")
+
+    def go_to_next_page(self, patients):
+
+        total_pages = math.ceil(len(patients) / self.PAGE_SIZE)
+        if self.current_page < total_pages - 1:
+            self.current_page += 1
+            self.show_page(patients)
+
+
+    def go_to_previous_page(self, patients):
+        if self.current_page > 0:
+            self.current_page -= 1
+            self.show_page(patients)
+
+    def show_patient_details(self, patient):
+
+        print("\nPatient Details:")
+        print(f"Username: {patient['1']}")
+        print(f"Name: {patient['2']}")
+        print(f"Last Name: {patient['3']}")
+        #print(f"Age: {patient['age']}")
+        #print(f"Gender: {patient['gender']}")
+        #print(f"Condition: {patient['condition']}")
+
+
+    def handle_selection(self, patients):
+        records = self.get_page_records(self.current_page, patients)
+        print("\nSelect a patient's username to view details:")
+        for i, patient in enumerate(records, start=1):
+            print(f"{i}. {patient['1']}")
+        selection = input("Enter patient number (or '0' to cancel): ")
+        if selection.isdigit():
+            selection_index = int(selection) - 1
+            if 0 <= selection_index < len(records):
+                self.show_patient_details(records[selection_index])
+
+    def show_page(self, patients):
+        records = self.get_page_records(self.current_page, patients)
+        if records is not None:
+            self.display_records(records)
 
     #Caregiver (bozza)
     def caregiver_menu(self, username):
@@ -448,7 +516,6 @@ class CommandLineInterface:
                     print("Invalid Input! Please enter a valid number.")
             
     def patient_menu(self, username):
-        user = self.session.get_user()
 
         while True: 
             patient_options = {
@@ -466,16 +533,16 @@ class CommandLineInterface:
                 choice = int(input('Enter your choice: '))
 
                 if choice == 1:
-                    self.patient_medical_data(user.username)
+                    self.patient_medical_data(username)
                     
                 elif choice == 2:
-                    self.view_patientview(user.username)
+                    self.view_patientview(username)
 
                 elif choice == 3:
-                    self.update_profile(user.username, "Patient") 
+                    self.update_profile(username, "Patient") 
 
                 elif choice == 4:
-                    self.change_passwd(user.username)
+                    self.change_passwd(username)
 
                 elif choice == 5:
                     print('Bye Bye!')

@@ -15,7 +15,6 @@ class Controller:
         self.__n_attempts_limit = 5
         self.__timeout_timer = 180
 
-
     def registration(self, username: str, password: str, role: str, public_key: str, private_key: str):
         registration_code = self.db_ops.register_creds(username, password, role, public_key, private_key)
 
