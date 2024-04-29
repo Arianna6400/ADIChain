@@ -67,6 +67,7 @@ class CommandLineInterface:
             return
 
     def registration_menu(self):
+        self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
         print('Please, enter your wallet credentials.')
 
         while True:
@@ -302,7 +303,7 @@ class CommandLineInterface:
                 break
             else: 
                 print('Your username has been taken.\n')
-            self.insert_patient_info(username_patient, "PATIENT", 0)
+        self.insert_patient_info(username_patient, "PATIENT", 0)
 
         from_address_caregiver = self.controller.get_public_key_by_username(username)
         self.act_controller.register_entity('caregiver', name, lastname, from_address=from_address_caregiver)
@@ -357,7 +358,7 @@ class CommandLineInterface:
             1: "Choose patient",
             2: "Update profile",
             3: "Change password",
-            4: "Exit"
+            4: "Log out"
         }
 
         while True:
@@ -410,7 +411,7 @@ class CommandLineInterface:
             confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
             if confirm == 'Y':
                 print("Thank you for using the service!")
-                exit()
+                self.print_menu()
 
     def get_page_records(self, page_index, patients):
         start_index = page_index * self.PAGE_SIZE
@@ -478,7 +479,7 @@ class CommandLineInterface:
                         2: "Update your profile",
                         3: "Update {}{} profile".format(patient_name, self.possessive_suffix(patient_name)),
                         4: "Change password",
-                        5: "Exit"
+                        5: "Log out"
                     }
 
             print("\nMENU")                           
@@ -504,7 +505,7 @@ class CommandLineInterface:
                     confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
                     if confirm == 'Y':
                         print("Thank you for using the service!")
-                        exit()
+                        self.print_menu()
                     else:
                         print("Returning to the caregiver menu...")
 
@@ -522,7 +523,7 @@ class CommandLineInterface:
                 2: "View profile",
                 3: "Update profile",
                 4: "Change password",
-                5: "Exit"
+                5: "Log out"
             }
             print("\nMENU")
             for key, value in patient_options.items():
@@ -545,7 +546,7 @@ class CommandLineInterface:
 
                 elif choice == 5:
                     print('Bye Bye!')
-                    exit()
+                    self.print_menu()
                 else:
                     print('Wrong option. Please enter one of the options listed in the menu!')
 
