@@ -66,7 +66,7 @@ class Medics(Model):
                                 (self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone, self.username))
             self.conn.commit()
             self.username = self.cur.lastrowid
-            print('Informations saved correctly!\n')
+            print('Information saved correctly!\n')
         except: 
             print('Internal error!')
 

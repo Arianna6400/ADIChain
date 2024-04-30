@@ -150,7 +150,7 @@ class Controller:
     
     def update_profile(self, username, new_data):
         if self.db_ops.update_profile(username, new_data) == 0:
-            print('\nInformations modified correctly!\n')
+            print('\nInformation modified correctly!\n')
         else:
             print('\nInternal error!\n')
         

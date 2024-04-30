@@ -19,7 +19,7 @@ class Patients(Model):
     def get_name(self):
         return self.name
     
-    def get_lastaname(self):
+    def get_lastname(self):
         return self.lastname
     
     def get_birthday(self):
@@ -71,7 +71,7 @@ class Patients(Model):
                                 (self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.phone, self.username))
             self.conn.commit()
             self.username = self.cur.lastrowid
-            print('Informations saved correctly!\n')
+            print('Information saved correctly!\n')
         except Exception as e: 
             print (e)
             print('Internal error!')

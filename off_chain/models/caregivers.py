@@ -60,7 +60,7 @@ class Caregivers(Model):
                                 (self.username_patient, self.name, self.lastname, self.relationship, self.phone, self.username))
             self.conn.commit()
             self.username = self.cur.lastrowid
-            print('Informations saved correctly!\n')
+            print('Information saved correctly!\n')
         except: 
             print('Internal error!')
 

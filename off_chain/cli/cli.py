@@ -97,7 +97,7 @@ class CommandLineInterface:
         
         if is_address(public_key) and (public_key == pk):
 
-            print('Enter your personal informations.')
+            print('Enter your personal information.')
 
             while True:
                 username = input('Username: ')
@@ -426,7 +426,7 @@ class CommandLineInterface:
 
     def display_records(self, records):
         for i, patient in enumerate(records, start=1):
-            print(f"{i}. Username: {patient['1']}, Name: {patient['2']}, Last name: {patient['3']}")
+            print(f"{i}. Username: {patient['0']}, Name: {patient['1']}, Last name: {patient['2']}")
 
     def go_to_next_page(self, patients):
 
@@ -599,7 +599,7 @@ class CommandLineInterface:
             #     return
 
             us.set_name(click.prompt('Name ', default=us.get_name()))
-            us.set_lastname(click.prompt('Lastname ', default=us.get_lastaname())) 
+            us.set_lastname(click.prompt('Lastname ', default=us.get_lastname())) 
             while True:
                 birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
                 if self.controller.check_birthdate_format(birthday): 
@@ -621,7 +621,7 @@ class CommandLineInterface:
             #     print("user not found.")
             #     return
             
-            print("\nEnter your new informations...")
+            print("\nEnter your new Information...")
             us.set_name(click.prompt('Name ', default=us.get_name()))
             us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
             while True:
@@ -639,7 +639,7 @@ class CommandLineInterface:
             #     return
             
             us.set_name(click.prompt('Name ', default=us.get_name()))
-            us.set_lastname(click.prompt('Lastname ', default=us.get_lastaname()))
+            us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
             while True:
                 birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
                 if self.controller.check_birthdate_format(birthday): 
@@ -704,7 +704,7 @@ class CommandLineInterface:
         print("\nPATIENT INFO\n")
         print("Username: ", patientview.get_username())
         print("Name: ", patientview.get_name())
-        print("Last Name: ", patientview.get_lastaname())
+        print("Last Name: ", patientview.get_lastname())
         print("Birthday: ", patientview.get_birthday())
         print("Birth Place: ", patientview.get_birth_place())
         print("Residence: ", patientview.get_residence())
