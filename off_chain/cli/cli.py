@@ -67,7 +67,14 @@ class CommandLineInterface:
             return
 
     def registration_menu(self):
-        self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
+        has_keys = input("Do you already have the keys? (Y/n): ")
+        if has_keys.strip().upper() == "N":
+            proceed = input("You need to deploy and initialize the contract. Do you want to proceed with deployment? (Y/n): ")
+            if proceed.strip().upper() == "Y":
+                self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
+            else:
+                print("Deployment cancelled. Please deploy the contract when you are ready to register.")
+                return
         print('Please, enter your wallet credentials.')
 
         while True:
