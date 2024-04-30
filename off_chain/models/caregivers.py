@@ -2,18 +2,14 @@ from models.model_base import Model
 
 #Costruttore e attributi della tabella Caregivers
 class Caregivers(Model):
-    def __init__(self, id_caregiver, username_patient, username, name, lastname, relationship, phone):
+    def __init__(self, username_patient, username, name, lastname, relationship, phone):
         super().__init__()
-        self.id_caregiver = id_caregiver
         self.username_patient = username_patient
         self.username = username
         self.name = name
         self.lastname = lastname
         self.relationship = relationship
         self.phone = phone
-
-    def get_id_caregiver(self):
-        return self.id_caregiver
 
     def get_username_patient(self):
         return self.username_patient
@@ -32,9 +28,6 @@ class Caregivers(Model):
 
     def get_phone(self):
         return self.phone 
-
-    def set_id_caregiver(self, id_caregiver):
-        self.id_caregiver = id_caregiver
     
     def set_username_patient(self, username_patient):
         self.username_patient = username_patient
@@ -54,11 +47,11 @@ class Caregivers(Model):
     def set_phone(self, phone):
         self.phone = phone   
 
-#Metodi ORM per interagire con il db SQLite per operazioni CRUD
+# Metodi ORM per interagire con il db SQLite per operazioni CRUD
     def save(self):
         try: 
-            if self.id_caregiver is None:
-                self.cur.execute('''INSERT INTO Caregivers (id_caregiver, username_patient, username, name, lastname, relationship, phone)
+            if self.username is None:
+                self.cur.execute('''INSERT INTO Caregivers (username_patient, username, name, lastname, relationship, phone)
                                     VALUES (?, ?, ?, ?, ?, ?)''',
                                 (self.username_patient, self.username, self.name, self.lastname, self.relationship, self.phone))
                                     #I punti interrogativi come placeholder servono per la prevenzione di attacchi SQL Injection
@@ -66,12 +59,12 @@ class Caregivers(Model):
                 self.cur.execute('''UPDATE Caregivers SET username_patient=?, name=?, lastname=?, relationship=?, phone=? WHERE username=?''',
                                 (self.username_patient, self.name, self.lastname, self.relationship, self.phone, self.username))
             self.conn.commit()
-            self.id_caregiver = self.cur.lastrowid
+            self.username = self.cur.lastrowid
             print('Informations saved correctly!\n')
         except: 
             print('Internal error!')
 
     def delete(self):
-        if self.id_caregiver is not None:
-            self.cur.execute('DELETE FROM Caregivers WHERE id_caregiver=?', (self.id_caregiver,))
+        if self.username is not None:
+            self.cur.execute('DELETE FROM Caregivers WHERE username=?', (self.username,))
             self.conn.commit()

@@ -2,9 +2,8 @@ from models.model_base import Model
 
 #Costruttore e attributi della tabella Patients
 class Patients(Model):
-    def __init__(self, id_patient, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
+    def __init__(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
         super().__init__()
-        self.id_patient = id_patient
         self.username = username
         self.name = name
         self.lastname = lastname
@@ -13,9 +12,6 @@ class Patients(Model):
         self.residence = residence
         self.autonomous = autonomous
         self.phone = phone
-    
-    def get_id_patient(self):
-        return self.id_patient
     
     def get_username(self):
         return self.username
@@ -65,8 +61,8 @@ class Patients(Model):
 #Metodi ORM per interagire con il db SQLite per operazioni CRUD
     def save(self):
         try:
-            if self.id_patient is None:
-                self.cur.execute('''INSERT INTO Patients (id_patient, username, name, lastname, birthday, birth_place, residence, autonomous, phone)
+            if self.username is None:
+                self.cur.execute('''INSERT INTO Patients (username, name, lastname, birthday, birth_place, residence, autonomous, phone)
                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
                                 (self.username, self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.autonomous, self.phone))
                                     #I punti interrogativi come placeholder servono per la prevenzione di attacchi SQL Injection
@@ -74,13 +70,13 @@ class Patients(Model):
                 self.cur.execute(""" UPDATE Patients SET name = ?, lastname = ?, birthday = ?, birth_place = ?, residence = ?, phone = ? WHERE username = ? """,
                                 (self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.phone, self.username))
             self.conn.commit()
-            self.id_patient = self.cur.lastrowid
+            self.username = self.cur.lastrowid
             print('Informations saved correctly!\n')
         except Exception as e: 
             print (e)
             print('Internal error!')
 
     def delete(self):
-        if self.id_patient is not None:
-            self.cur.execute('DELETE FROM Patients WHERE id_patient=?', (self.id_patient,))
+        if self.username is not None:
+            self.cur.execute('DELETE FROM Patients WHERE username=?', (self.username,))
             self.conn.commit()

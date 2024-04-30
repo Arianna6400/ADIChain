@@ -689,7 +689,7 @@ class CommandLineInterface:
 
     def view_treatmentplan(self, username):     # checkare che esista il piano di cura
         treatmentplan = self.controller.get_treatmentplan_by_username(username)
-        medic = self.controller.get_medic_by_id(treatmentplan.get_id_medic())
+        medic = self.controller.get_medic_by_username(treatmentplan.get_username_medic())
         print("\nTREATMENT PLAN\n")
         print("Start: ", treatmentplan.get_start_date())
         print("Finish: ", treatmentplan.get_end_date())

@@ -33,7 +33,7 @@ class DatabaseOperations:
             public_key TEXT NOT NULL,
             private_key TEXT NOT NULL
             );''')
-        self.cur.execute('''CREATE TABLE Medics(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS Medics(
             username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
@@ -43,7 +43,7 @@ class DatabaseOperations:
             phone TEXT,
             FOREIGN KEY(username) REFERENCES Credentials(username)
             );''')
-        self.cur.execute('''CREATE TABLE Patients(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS Patients(
             username TEXT NOT NULL,
             name TEXT NOT NULL,
             lastname TEXT NOT NULL,
@@ -54,7 +54,7 @@ class DatabaseOperations:
             phone TEXT, 
             FOREIGN KEY(username) REFERENCES Credentials(username)
             );''')
-        self.cur.execute('''CREATE TABLE Caregivers(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS Caregivers(
             username_patient TEXT NOT NULL,
             username TEXT NOT NULL,
             name TEXT NOT NULL,
@@ -64,7 +64,7 @@ class DatabaseOperations:
             FOREIGN KEY(username) REFERENCES Credentials(username)
             FOREIGN KEY(username_patient) REFERENCES Patients(username)
             );''')
-        self.cur.execute('''CREATE TABLE Reports(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS Reports(
             id_report INTEGER PRIMARY KEY AUTOINCREMENT,
             username_patient TEXT NOT NULL,
             username_medic TEXT NOT NULL,
@@ -73,7 +73,7 @@ class DatabaseOperations:
             FOREIGN KEY(username_patient) REFERENCES Patients(username),
             FOREIGN KEY(username_medic) REFERENCES Medics(username)
             );''')
-        self.cur.execute('''CREATE TABLE TreatmentPlans(
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS TreatmentPlans(
             id_treament_plan INTEGER PRIMARY KEY AUTOINCREMENT,
             username_patient TEXT NOT NULL,
             username_medic TEXT NOT NULL,
@@ -134,8 +134,8 @@ class DatabaseOperations:
         try:
             self.cur.execute("""
                             INSERT INTO Patients
-                            (id_patient, username, name, lastname, birthday, birth_place, residence, autonomous, phone)
-                            SELECT last_insert_rowid(), ?, ?, ?, ?, ?, ?, ?, ?
+                            (username, name, lastname, birthday, birth_place, residence, autonomous, phone)
+                            SELECT ?, ?, ?, ?, ?, ?, ?, ?
                             FROM Credentials""",
                             (
                                 username,
@@ -156,7 +156,7 @@ class DatabaseOperations:
         try:
             self.cur.execute("""
                             INSERT INTO Medics
-                            (id_medic, username, name, lastname, birthday, specialization, mail, phone) SELECT last_insert_rowid(), ?, ?, ?, ?, ?, ?, ?
+                            (username, name, lastname, birthday, specialization, mail, phone) SELECT ?, ?, ?, ?, ?, ?, ?
                             FROM Credentials""",
                             (
                                 username,
@@ -176,7 +176,7 @@ class DatabaseOperations:
         try:
             self.cur.execute("""
                             INSERT INTO Caregivers
-                            (id_caregiver, username, name, lastname, username_patient, relationship, phone) SELECT last_insert_rowid(), ?, ?, ?, ?, ?, ?
+                            (username, name, lastname, username_patient, relationship, phone) SELECT ?, ?, ?, ?, ?, ?
                             FROM Credentials""",
                             (
                                 username,
@@ -343,32 +343,24 @@ class DatabaseOperations:
             return -1
     
     def get_treatmentplan_by_username(self, username):
-        user_id = self.cur.execute("""
-                                    SELECT id_patient
-                                    FROM Patients
-                                    WHERE username =?""", (username,)).fetchone()[0]
         treatmentplan = self.cur.execute("""
                                     SELECT *
                                     FROM TreatmentPlans
-                                    WHERE id_patient =?""", (user_id,)).fetchone()
+                                    WHERE username_patient =?""", (username,)).fetchone()
         return TreatmentPlans(*treatmentplan)
-    
-    def get_medic_by_id(self, id):
+
+    def get_medic_by_username(self, username):
         medic = self.cur.execute("""
                                     SELECT *
                                     FROM Medics
-                                    WHERE id_medic =?""", (id,)).fetchone()
+                                    WHERE username =?""", (username,)).fetchone()
         return Medics(*medic)
     
     def get_reports_list_by_username(self, username):
-        user_id = self.cur.execute("""
-                                    SELECT id_patient
-                                    FROM Patients
-                                    WHERE username =?""", (username,)).fetchone()[0]
         reportslist = self.cur.execute("""
                                     SELECT *
                                     FROM Reports
-                                    WHERE id_patient =?""", (user_id,))       
+                                    WHERE username_patient =?""", (username,))       
         return [Reports(*report) for report in reportslist]
     
     def get_patients_for_doctor(self, username):
