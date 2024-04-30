@@ -572,7 +572,7 @@ class CommandLineInterface:
                         passwd_regex = r'^.{8,50}$'
                         #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
                         if not re.fullmatch(passwd_regex, new_passwd):
-                                print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')    
+                            print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')    
                         elif new_passwd != new_confirm_password:
                             print('Password and confirmation do not match. Try again\n')
                         else:
@@ -592,7 +592,7 @@ class CommandLineInterface:
         us = self.controller.get_user_by_username(username)
         # PAZIENTE
         if role == "Patient":
-            
+
             # patient_info = self.controller.get_patient_info(username)
             # if not patient_info:
             #     print("user not found.")

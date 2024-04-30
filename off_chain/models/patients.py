@@ -76,7 +76,8 @@ class Patients(Model):
             self.conn.commit()
             self.id_patient = self.cur.lastrowid
             print('Informations saved correctly!\n')
-        except: 
+        except Exception as e: 
+            print (e)
             print('Internal error!')
 
     def delete(self):
