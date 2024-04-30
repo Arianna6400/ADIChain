@@ -41,6 +41,6 @@ class DeployController:
             tx_hash = contract.constructor().transact({'from': account})
             tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
             self.contract = self.w3.eth.contract(address=tx_receipt.contractAddress, abi=self.abi)
-            print(f'Contract deployed at {tx_receipt.contractAddress}')
+            print(f'Contract deployed at {tx_receipt.contractAddress} from {account}')
         except Exception as e:
             print(f"An error occurred while deploying the contract from account {account}: {e}")
