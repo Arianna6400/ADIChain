@@ -89,6 +89,12 @@ class Controller:
         else:
             return False
         
+    def possessive_suffix(self, name):
+        if name[-1].lower() != 's':
+            return"'s"
+        else:
+            return "'"
+        
     def check_username(self, username):
         return self.db_ops.check_username(username)
     
