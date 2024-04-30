@@ -62,6 +62,8 @@ contract HealthCareRecords {
     mapping(address => bool) public authorizedEditors; // Mapping of addresses that are authorized to edit records.
     address public owner; // Address of the contract owner.
 
+    event ActionLogged(uint indexed actionId, string actionType, address initiator, uint timestamp, string details);
+
     // Constructor to initialize the owner and authorize them.
     constructor() {
         owner = msg.sender;
@@ -78,6 +80,7 @@ contract HealthCareRecords {
     function logAction(string memory _actionType, address _initiator, string memory _details) internal {
         actionCounter++;
         actionLogs[actionCounter] = ActionLog(actionCounter, _actionType, _initiator, block.timestamp, _details);
+        emit ActionLogged(actionCounter, _actionType, _initiator, block.timestamp, _details);
     }
 
     // Public function to allow the owner to add an authorized editor.

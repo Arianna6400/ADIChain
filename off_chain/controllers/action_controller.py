@@ -55,12 +55,18 @@ class ActionController:
         receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
         return receipt
 
-    def listen_to_event(self, event_name, callback):
-        event_filter = self.contract.events[event_name].createFilter(fromBlock='latest')
+    def listen_to_event(self):
+        event_filter = self.contract.events.ActionLogged.createFilter(fromBlock='latest')
         while True:
             for event in event_filter.get_new_entries():
-                callback(event)
+                self.handle_action_logged(event)
             time.sleep(10)
+
+    def handle_action_logged(self, event):
+        log_message = f"New Action Logged: {event['args']}\n"
+
+        with open(os.path.join(self.log_dir, 'action_logs.txt'), 'a') as log_file:
+            log_file.write(log_message)
 
     def register_entity(self, entity_type, *args, from_address):
         if not from_address:
@@ -75,7 +81,7 @@ class ActionController:
             raise ValueError(f"No function available for entity type {entity_type}")
         return self.write_data(function_name, from_address, *args)
 
-    def update_entity_status(self, entity_type, entity_id, new_status, from_address):
+    def update_entity(self, entity_type, *args, from_address):
         if not from_address:
             raise ValueError("A valid Ethereum address must be provided as 'from_address'.")
         update_functions = {
@@ -86,7 +92,7 @@ class ActionController:
         function_name = update_functions.get(entity_type)
         if not function_name:
             raise ValueError(f"No function available for entity type {entity_type}")
-        return self.write_data(function_name, from_address, entity_id, new_status)
+        return self.write_data(function_name, from_address, *args)
 
     def manage_report(self, action, *args, from_address):
         if not from_address:
