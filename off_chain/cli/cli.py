@@ -317,57 +317,54 @@ class CommandLineInterface:
         }
 
         while True:
-            print("MENU")                           
+            print("\nMENU")                           
             for key, value in medic_options.items():
                 print(f"{key} -- {value}")
                                                 
             try:                                    
                 choice = int(input("Choose an option: "))
                 if choice in medic_options:
-                    break
-                else:
-                    print("Invalid choice! Please try again.")
+                    if choice == 1:
+
+                        patients = self.controller.get_patients()
+
+                        self.util.show_page(patients)
+
+                        while len(patients) > 0:
+
+                            action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: ")
+
+                            if action == "n":
+                                self.util.go_to_next_page(patients)
+                            elif action == "p":
+                                self.util.go_to_previous_page(patients)
+                            elif action == "s":
+                                self.util.handle_selection(patients)
+                            elif action == "q":
+                                print("Exiting...\n")
+                                self.medic_menu(username)
+                            else:
+                                print("Invalid input. Please try again. \n")
+                        self.medic_menu(username)
+
+
+                    elif choice == 2:                           
+                        print("Update profile function")
+                        self.util.update_profile(username, "Medic")
+                
+                    elif choice == 3:
+                        self.util.change_passwd(username, "Medic")
+
+                    elif choice == 4:
+                        confirm = input("\nDo you really want to leave? (Y/n): ").strip().upper()
+                        if confirm == 'Y':
+                            print("\nThank you for using the service!\n")
+                            self.print_menu()
+                        else:
+                            print("Invalid choice! Please try again.")
+
             except ValueError:
                 print("Invalid Input! Please enter a valid number.")
-
-        if choice == 1:
-
-            patients = self.controller.get_patients()
-
-            self.util.show_page(patients)
-
-            while len(patients) > 0:
-
-                action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: ")
-
-                if action == "n":
-                    self.util.go_to_next_page(patients)
-                elif action == "p":
-                    self.util.go_to_previous_page(patients)
-                elif action == "s":
-                    self.util.handle_selection(patients)
-                elif action == "q":
-                    print("Exiting...\n")
-                    self.medic_menu(username)
-                else:
-                    print("Invalid input. Please try again. \n")
-            self.medic_menu(username)
-
-
-        elif choice == 2:                           
-            print("Update profile function")
-            self.util.update_profile(username, "Medic")
-    
-        elif choice == 3:
-            self.util.change_passwd(username)
-
-        elif choice == 4:
-            confirm = input("\nDo you really want to leave? (Y/n): ").strip().upper()
-            if confirm == 'Y':
-                print("\nThank you for using the service!\n")
-                self.print_menu()
-
-
 
     #Caregiver (bozza)
     def caregiver_menu(self, username):
@@ -402,7 +399,7 @@ class CommandLineInterface:
                     self.util.update_profile(patient_name, "Patient")
 
                 elif choice == 4:
-                    self.util.change_passwd(username)
+                    self.util.change_passwd(username, "Caregiver")
             
                 elif choice == 5:                           
                     confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
@@ -445,7 +442,7 @@ class CommandLineInterface:
                     self.util.update_profile(username, "Patient") 
 
                 elif choice == 4:
-                    self.util.change_passwd(username)
+                    self.util.change_passwd(username, "Patient")
 
                 elif choice == 5:
                     print('Bye Bye!')
@@ -555,10 +552,6 @@ class CommandLineInterface:
                     print('Wrong option. Please enter one of the options listed in the menu!')
             except ValueError:
                             print('Wrong input. Please enter a number!')
-
-
-
-
 
     # OPERATIONS 
 

@@ -16,41 +16,38 @@ class Utils:
 
         self.controller = Controller(session)
 
-
-    def change_passwd(self, username):
+    def change_passwd(self, username, role):
 
         while True:
             confirmation = input("Do you want to change your password (Y/n): ").strip().upper()
             if confirmation == 'Y':
-                old_pass = input('Old Password: ')
+                while True:
+                    old_pass = input('Old Password: ')
+                    if not self.controller.check_passwd(username, old_pass):
+                        print('\nYou entered the wrong old password.\n')
+                        break
+                    else:
+                        while True:
+                            new_passwd = input('New password: ')
+                            new_confirm_password = input('Confirm new password: ')
 
-                if not self.controller.check_passwd(username, old_pass):
-                    print('\nYou entered the wrong old password.\n')
-                else:
-                    while True:
-                        new_passwd = input('New password: ')
-                        new_confirm_password = input('Confirm new password: ')
-
-                        passwd_regex = r'^.{8,50}$'
-                        #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
-                        if not re.fullmatch(passwd_regex, new_passwd):
-                            print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')    
-                        elif new_passwd != new_confirm_password:
-                            print('Password and confirmation do not match. Try again\n')
-                        else:
-                            break
-
-                    response = self.controller.change_passwd(username, old_pass, new_passwd)
-                    if response == 0:
-                        print('\nPassword changed correctly!\n')
-                    elif response == -1 or response == -2:
-                        print('\nSorry, something went wrong!\n')
-                return
+                            passwd_regex = r'^.{8,50}$'
+                            #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
+                            if not re.fullmatch(passwd_regex, new_passwd):
+                                print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')    
+                            elif new_passwd != new_confirm_password:
+                                print('Password and confirmation do not match. Try again\n')
+                            else:
+                                response = self.controller.change_passwd(username, old_pass, new_passwd)
+                                if response == 0:
+                                    print('\nPassword changed correctly!\n')
+                                elif response == -1 or response == -2:
+                                    print('\nSorry, something went wrong!\n')
+                                break
+                        break
             else:
                 print("Okay\n")
-                return
-            
-
+            break
             
     def update_profile(self, username, role):
         us = self.controller.get_user_by_username(username)
