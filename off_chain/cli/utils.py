@@ -116,7 +116,7 @@ class Utils:
     '''
     -----------------------------------------------------
     Funzioni di gestione della visualizzazione del menù
-    'Visualizzaza paziente' del medico
+    'Visualizzazione pazienti' del medico
     '''
 
     def get_page_records(self, page_index, patients):
