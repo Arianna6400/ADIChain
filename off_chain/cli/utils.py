@@ -1,3 +1,4 @@
+import math
 import re
 import click
 
@@ -6,9 +7,15 @@ from session.session import Session
 
 class Utils:
 
+    
+    PAGE_SIZE = 3
+
+    current_page = 0
+
     def __init__(self, session: Session):
 
         self.controller = Controller(session)
+
 
     def change_passwd(self, username):
 
@@ -104,3 +111,65 @@ class Utils:
                     break
                 else: print("Invalid phone number format.")
         us.save()
+
+
+    '''
+    -----------------------------------------------------
+    Funzioni di gestione della visualizzazione del menù
+    'Visualizzaza paziente' del medico
+    '''
+
+    def get_page_records(self, page_index, patients):
+        start_index = page_index * self.PAGE_SIZE
+        end_index = start_index + self.PAGE_SIZE
+
+        if not patients:
+            print("\nThere are no patients in the system. \n")
+            return
+        print("\nList of patients: \n")
+        return patients[start_index:end_index]
+
+    def display_records(self, records):
+        for i, patient in enumerate(records, start=1):
+            print(f"{i}. Username: {patient['0']}, Name: {patient['1']}, Last name: {patient['2']}")
+
+    def go_to_next_page(self, patients):
+
+        total_pages = math.ceil(len(patients) / self.PAGE_SIZE)
+        if self.current_page < total_pages - 1:
+            self.current_page += 1
+            self.show_page(patients)
+
+    def go_to_previous_page(self, patients):
+        if self.current_page > 0:
+            self.current_page -= 1
+            self.show_page(patients)
+
+    def show_patient_details(self, patient):
+
+        print("\nPatient Details:")
+        print(f"Username: {patient['1']}")
+        print(f"Name: {patient['2']}")
+        print(f"Last Name: {patient['3']}")
+        #print(f"Age: {patient['age']}")
+        #print(f"Gender: {patient['gender']}")
+        #print(f"Condition: {patient['condition']}")
+
+
+    def handle_selection(self, patients):
+        records = self.get_page_records(self.current_page, patients)
+        print("\nSelect a patient's username to view details:")
+        for i, patient in enumerate(records, start=1):
+            print(f"{i}. {patient['1']}")
+        selection = input("Enter patient number (or '0' to cancel): ")
+        if selection.isdigit():
+            selection_index = int(selection) - 1
+            if 0 <= selection_index < len(records):
+                self.show_patient_details(records[selection_index])
+
+    def show_page(self, patients):
+        records = self.get_page_records(self.current_page, patients)
+        if records is not None:
+            self.display_records(records)
+
+    '''--------------------------------------------------'''
