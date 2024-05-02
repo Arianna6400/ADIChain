@@ -26,6 +26,7 @@ contract HealthCareRecords {
         string name;
         string lastname;
         bool isRegistered;
+        uint256 offChainId;
     }
 
     struct Report {
@@ -71,9 +72,19 @@ contract HealthCareRecords {
     }
     
     // Modifier to check if the caller is authorized to perform certain actions.
-    modifier onlyAuthorized() {
-        require(authorizedEditors[msg.sender], "Unauthorized access");// Check if the caller is authorized.
+    modifier onlyOwner() {
+        require(msg.sender == owner, "This function is restricted to the contract owner.");
         _;
+    }
+
+    // Function to authorize a new editor
+    function authorizeEditor(address _editor) public onlyOwner {
+        authorizedEditors[_editor] = true;
+    }
+
+    // Function to revoke an editor's authorization
+    function revokeEditor(address _editor) public onlyOwner {
+        authorizedEditors[_editor] = false;
     }
 
     // Internal function to log any action taken within the contract.
@@ -83,90 +94,84 @@ contract HealthCareRecords {
         emit ActionLogged(actionCounter, _actionType, _initiator, block.timestamp, _details);
     }
 
-    // Public function to allow the owner to add an authorized editor.
-    function addEditor(address _editor) public onlyAuthorized {
-        authorizedEditors[_editor] = true;
-    }
-
-    // Public function to allow the owner to remove an authorized editor.
-    function removeEditor(address _editor) public onlyAuthorized {
-        authorizedEditors[_editor] = false;
-    }
-
     // Function implementations for Medics, Patients, Caregivers, Reports, and Treatment Plans with a unique ID based on hashing of their details
 
-    function addMedic(string memory name, string memory lastname, string memory specialization) public onlyAuthorized {
+    function addMedic(string memory name, string memory lastname, string memory specialization) public onlyOwner {
         uint256 offChainId = uint256(keccak256(abi.encodePacked(name, lastname, specialization)));
         require(medics[offChainId].offChainId == 0, "Medic already registered");
         medics[offChainId] = Medic(name, lastname, specialization, true, offChainId);
         logAction("Create", msg.sender, "Medic added");
     }
 
-    function updateMedic(uint256 offChainId, string memory name, string memory lastname, string memory specialization, bool isRegistered) public onlyAuthorized {
+    function updateMedic(string memory name, string memory lastname, string memory specialization) public {
+        uint256 offChainId = uint256(keccak256(abi.encodePacked(name, lastname, specialization)));
         require(medics[offChainId].offChainId != 0, "Medic not found");
         Medic storage medic = medics[offChainId];
         medic.name = name;
         medic.lastname = lastname;
         medic.specialization = specialization;
-        medic.isRegistered = isRegistered;
         logAction("Update", msg.sender, "Medic updated");
     }
 
-    function addPatient(string memory name, string memory lastname, uint8 autonomous) public onlyAuthorized {
+    function addPatient(string memory name, string memory lastname, uint8 autonomous) public onlyOwner {
         uint256 offChainId = uint256(keccak256(abi.encodePacked(name, lastname)));
         require(patients[offChainId].offChainId == 0, "Patient already registered");
         
-        Patient storage newPatient = patients[offChainId];
-        newPatient.name = name;
-        newPatient.lastname = lastname;
-        newPatient.autonomous = autonomous;
-        newPatient.isRegistered = true;
-        newPatient.offChainId = offChainId;
+        Patient storage patient = patients[offChainId];
+        patient.name = name;
+        patient.lastname = lastname;
+        patient.autonomous = autonomous;
+        patient.isRegistered = true;
+        patient.offChainId = offChainId;
         
         logAction("Create", msg.sender, "Patient added");
     }
 
-    function updatePatient(uint256 offChainId, string memory name, string memory lastname, uint8 autonomous, bool isRegistered) public onlyAuthorized {
+    function updatePatient(string memory name, string memory lastname, uint8 autonomous) public {
+        uint256 offChainId = uint256(keccak256(abi.encodePacked(name, lastname)));
         require(patients[offChainId].offChainId != 0, "Patient not found");
         Patient storage patient = patients[offChainId];
         patient.name = name;
         patient.lastname = lastname;
         patient.autonomous = autonomous;
-        patient.isRegistered = isRegistered;
         logAction("Update", msg.sender, "Patient updated");
     }
 
-    function addCaregiver(string memory name, string memory lastname) public onlyAuthorized {
-        uint256 id = uint256(keccak256(abi.encodePacked(name, lastname)));
-        caregivers[id] = Caregiver(name, lastname, true);
+    function addCaregiver(string memory name, string memory lastname) public onlyOwner {
+        uint256 offChainId = uint256(keccak256(abi.encodePacked(name, lastname)));
+        require(caregivers[offChainId].offChainId == 0, "Caregiver already registered");
+        caregivers[offChainId] = Caregiver(name, lastname, true, offChainId);
         logAction("Create", msg.sender, "Caregiver added");
     }
 
-    function updateCaregiver(uint256 id, bool newStatus) public onlyAuthorized {
-        require(caregivers[id].isRegistered != newStatus, "No change in status");
-        caregivers[id].isRegistered = newStatus;
+    function updateCaregiver(string memory name, string memory lastname) public {
+        uint256 offChainid = uint256(keccak256(abi.encodePacked(name, lastname)));
+        require(caregivers[offChainid].offChainId != 0, "Caregiver not found");
+        Caregiver storage caregiver = caregivers[offChainid];
+        caregiver.name = name;
+        caregiver.lastname = lastname;
         logAction("Update", msg.sender, "Caregiver status updated");
     }
 
-    function addReport(uint256 patientId, uint256 medicId, string memory details) public onlyAuthorized {
+    function addReport(uint256 patientId, uint256 medicId, string memory details) public onlyOwner {
         uint256 reportId = uint256(keccak256(abi.encodePacked(patientId, medicId, details)));
         reports[reportId] = Report(reportId, patientId, medicId, details);
         logAction("Create", msg.sender, "Report added");
     }
 
-    function updateReport(uint256 reportId, string memory newDetails) public onlyAuthorized {
+    function updateReport(uint256 reportId, string memory newDetails) public {
         require(keccak256(abi.encodePacked(reports[reportId].reportDetails)) != keccak256(abi.encodePacked(newDetails)), "No change in report details");
         reports[reportId].reportDetails = newDetails;
         logAction("Update", msg.sender, "Report updated");
     }
 
-    function addTreatmentPlan(uint256 patientId, string memory details, string memory medication, uint256 startDate, uint256 endDate) public onlyAuthorized {
+    function addTreatmentPlan(uint256 patientId, string memory details, string memory medication, uint256 startDate, uint256 endDate) public onlyOwner {
         uint256 planId = uint256(keccak256(abi.encodePacked(patientId, details, medication)));
         treatmentPlans[planId] = TreatmentPlan(planId, patientId, details, medication, startDate, endDate);
         logAction("Create", msg.sender, "Treatment plan added");
     }
 
-    function updateTreatmentPlan(uint256 planId, string memory newDetails, string memory newMedication) public onlyAuthorized {
+    function updateTreatmentPlan(uint256 planId, string memory newDetails, string memory newMedication) public {
         require(keccak256(abi.encodePacked(treatmentPlans[planId].treatmentDetails)) != keccak256(abi.encodePacked(newDetails)), "No change in treatment details");
         treatmentPlans[planId].treatmentDetails = newDetails;
         treatmentPlans[planId].medication = newMedication;

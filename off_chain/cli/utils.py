@@ -1,8 +1,10 @@
 import math
 import re
 import click
+from numpy import uint8
 
 from controllers.controller import Controller
+from controllers.action_controller import ActionController
 from session.session import Session
 
 class Utils:
@@ -15,6 +17,7 @@ class Utils:
     def __init__(self, session: Session):
 
         self.controller = Controller(session)
+        self.act_controller = ActionController()
 
     def change_passwd(self, username, role):
 
@@ -50,12 +53,16 @@ class Utils:
             break
             
     def update_profile(self, username, role):
+        
         us = self.controller.get_user_by_username(username)
+        us.set_name(click.prompt('Name ', default=us.get_name()))
+        us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
 
         if role == "Patient":
 
-            us.set_name(click.prompt('Name ', default=us.get_name()))
-            us.set_lastname(click.prompt('Lastname ', default=us.get_lastname())) 
+            print("\nEnter your new Information...")
+            # us.set_name(click.prompt('Name ', default=us.get_name()))
+            # us.set_lastname(click.prompt('Lastname ', default=us.get_lastname())) 
             while True:
                 birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
                 if self.controller.check_birthdate_format(birthday): 
@@ -71,23 +78,36 @@ class Utils:
                     break
                 else: print("Invalid phone number format.")
 
+            autonomous_flag = int(us.get_autonomous())
+            name = us.get_name()
+            lastname = us.get_lastname()
+            if autonomous_flag == 1:
+                from_address_patient = self.controller.get_public_key_by_username(username)
+                self.act_controller.update_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
+
         elif role == "Caregiver":
   
             print("\nEnter your new Information...")
-            us.set_name(click.prompt('Name ', default=us.get_name()))
-            us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
+            # us.set_name(click.prompt('Name ', default=us.get_name()))
+            # us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
             while True:
                 phone = click.prompt('Phone ', default=us.get_phone())
                 if self.controller.check_phone_number_format(phone): 
                     us.set_phone(phone)
                     break
                 else: print("Invalid phone number format.")
+            
+            name = us.get_name()
+            lastname = us.get_lastname()
+            from_address_caregiver = self.controller.get_public_key_by_username(username)
+            self.act_controller.update_entity('caregiver', name, lastname, from_address=from_address_caregiver)
 
 
         elif role == "Medic":
             
-            us.set_name(click.prompt('Name ', default=us.get_name()))
-            us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
+            print("\nEnter your new Information...")
+            # us.set_name(click.prompt('Name ', default=us.get_name()))
+            # us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
             while True:
                 birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
                 if self.controller.check_birthdate_format(birthday): 
@@ -107,6 +127,13 @@ class Utils:
                     us.set_phone(phone)
                     break
                 else: print("Invalid phone number format.")
+            
+            name = us.get_name()
+            lastname = us.get_lastname()
+            specialization = us.get_specialization()
+            from_address_medic = self.controller.get_public_key_by_username(username)
+            self.act_controller.update_entity('medic', name, lastname, specialization, from_address=from_address_medic)
+
         us.save()
 
 
