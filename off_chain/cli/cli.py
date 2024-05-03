@@ -249,6 +249,7 @@ class CommandLineInterface:
                 if self.controller.check_unique_email(mail) == 0: break
                 else: print("This e-mail has already been inserted. \n")
             else: print("Invalid e-mail format.\n")
+
         while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): 

@@ -1,21 +1,29 @@
 import math
 import re
 import click
+from colorama import Fore, Style
+from rich.console import Console
+from rich.table import Table
+
+   
+
 from numpy import uint8
 
 from controllers.controller import Controller
 from controllers.action_controller import ActionController
 from session.session import Session
+from session.logging import log_error
+
 
 class Utils:
 
     
     PAGE_SIZE = 3
-
     current_page = 0
 
     def __init__(self, session: Session):
 
+        
         self.controller = Controller(session)
         self.act_controller = ActionController()
 
@@ -61,8 +69,6 @@ class Utils:
         if role == "Patient":
 
             print("\nEnter your new Information...")
-            # us.set_name(click.prompt('Name ', default=us.get_name()))
-            # us.set_lastname(click.prompt('Lastname ', default=us.get_lastname())) 
             while True:
                 birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
                 if self.controller.check_birthdate_format(birthday): 
@@ -86,12 +92,11 @@ class Utils:
                     from_address_patient = self.controller.get_public_key_by_username(username)
                     self.act_controller.update_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
                 except Exception as e:
-                    print(f"Transaction failed: {e}")
+                    log_error(e)
+
         elif role == "Caregiver":
   
             print("\nEnter your new Information...")
-            # us.set_name(click.prompt('Name ', default=us.get_name()))
-            # us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
             while True:
                 phone = click.prompt('Phone ', default=us.get_phone())
                 if self.controller.check_phone_number_format(phone): 
@@ -105,13 +110,11 @@ class Utils:
                 from_address_caregiver = self.controller.get_public_key_by_username(username)
                 self.act_controller.update_entity('caregiver', name, lastname, from_address=from_address_caregiver)
             except Exception as e:
-                print(f"Transaction failed: {e}")
+                log_error(e)
 
         elif role == "Medic":
             
             print("\nEnter your new Information...")
-            # us.set_name(click.prompt('Name ', default=us.get_name()))
-            # us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
             while True:
                 birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
                 if self.controller.check_birthdate_format(birthday): 
@@ -139,7 +142,7 @@ class Utils:
                 from_address_medic = self.controller.get_public_key_by_username(username)
                 self.act_controller.update_entity('medic', name, lastname, specialization, from_address=from_address_medic)
             except Exception as e:
-                print(f"Transaction failed: {e}")
+                log_error(e)
 
         us.save()
 
@@ -157,12 +160,23 @@ class Utils:
         if not patients:
             print("\nThere are no patients in the system. \n")
             return
-        print("\nList of patients: \n")
         return patients[start_index:end_index]
 
     def display_records(self, records):
-        for i, patient in enumerate(records, start=1):
-            print(f"{i}. Username: {patient['0']}, Name: {patient['1']}, Last name: {patient['2']}")
+
+        table = Table(title="Patients")
+
+        columns = ["Username", "Name", "Last Name", "Date of Birth", "Place of Birth","Residence"]
+
+        for column in columns:
+            table.add_column(column)
+
+        for patient in records:
+            row = [patient[0], patient[1], patient[2], patient[3], patient[4], patient[5]]
+            table.add_row(*row, style = 'bright_green')
+
+        console = Console()
+        console.print(table)
 
     def go_to_next_page(self, patients):
 
@@ -170,28 +184,35 @@ class Utils:
         if self.current_page < total_pages - 1:
             self.current_page += 1
             self.show_page(patients)
+        else:
+            self.show_page(patients)
+            print(Fore.RED + "\nNo more patients in the system." + Style.RESET_ALL)
+            return
 
     def go_to_previous_page(self, patients):
         if self.current_page > 0:
             self.current_page -= 1
             self.show_page(patients)
+        else:
+            self.show_page(patients)
+            print(Fore.RED + "\nInvalid action!" + Style.RESET_ALL)
 
     def show_patient_details(self, patient):
 
         print("\nPatient Details:")
-        print(f"Username: {patient['1']}")
-        print(f"Name: {patient['2']}")
-        print(f"Last Name: {patient['3']}")
-        #print(f"Age: {patient['age']}")
-        #print(f"Gender: {patient['gender']}")
-        #print(f"Condition: {patient['condition']}")
+        print(f"Username: {patient[0]}")
+        print(f"Name: {patient[1]}")
+        print(f"Last Name: {patient[2]}")
+        print(f"Age: {patient[3]}")
+        print(f"Gender: {patient[4]}")
+        print(f"Condition: {patient[5]}")
 
 
     def handle_selection(self, patients):
         records = self.get_page_records(self.current_page, patients)
         print("\nSelect a patient's username to view details:")
         for i, patient in enumerate(records, start=1):
-            print(f"{i}. {patient['1']}")
+            print(f"{i}. {patient[1]}")
         selection = input("Enter patient number (or '0' to cancel): ")
         if selection.isdigit():
             selection_index = int(selection) - 1
@@ -204,3 +225,5 @@ class Utils:
             self.display_records(records)
 
     '''--------------------------------------------------'''
+
+
