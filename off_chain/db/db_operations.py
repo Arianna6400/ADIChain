@@ -381,7 +381,7 @@ class DatabaseOperations:
     
     def get_patients(self):
             query = """
-                SELECT Patients.username, Patients.name, Patients.lastname
+                SELECT 
                 FROM Patients
             """
             self.cur.execute(query)

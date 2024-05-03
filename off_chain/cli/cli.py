@@ -332,7 +332,7 @@ class CommandLineInterface:
 
                         while len(patients) > 0:
 
-                            action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: ")
+                            action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: \n")
 
                             if action == "n":
                                 self.util.go_to_next_page(patients)
