@@ -82,9 +82,11 @@ class Utils:
             name = us.get_name()
             lastname = us.get_lastname()
             if autonomous_flag == 1:
-                from_address_patient = self.controller.get_public_key_by_username(username)
-                self.act_controller.update_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
-
+                try:
+                    from_address_patient = self.controller.get_public_key_by_username(username)
+                    self.act_controller.update_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
+                except Exception as e:
+                    print(f"Transaction failed: {e}")
         elif role == "Caregiver":
   
             print("\nEnter your new Information...")
@@ -99,9 +101,11 @@ class Utils:
             
             name = us.get_name()
             lastname = us.get_lastname()
-            from_address_caregiver = self.controller.get_public_key_by_username(username)
-            self.act_controller.update_entity('caregiver', name, lastname, from_address=from_address_caregiver)
-
+            try:
+                from_address_caregiver = self.controller.get_public_key_by_username(username)
+                self.act_controller.update_entity('caregiver', name, lastname, from_address=from_address_caregiver)
+            except Exception as e:
+                print(f"Transaction failed: {e}")
 
         elif role == "Medic":
             
@@ -131,8 +135,11 @@ class Utils:
             name = us.get_name()
             lastname = us.get_lastname()
             specialization = us.get_specialization()
-            from_address_medic = self.controller.get_public_key_by_username(username)
-            self.act_controller.update_entity('medic', name, lastname, specialization, from_address=from_address_medic)
+            try:
+                from_address_medic = self.controller.get_public_key_by_username(username)
+                self.act_controller.update_entity('medic', name, lastname, specialization, from_address=from_address_medic)
+            except Exception as e:
+                print(f"Transaction failed: {e}")
 
         us.save()
 
