@@ -65,6 +65,11 @@ class Controller:
         
         return insertion_code
 
+    def check_null_info(self, info):
+        if info: return True
+        else: return False
+        
+
     def check_birthdate_format(self, date_string):
         try:
             date = datetime.strptime(date_string, '%Y-%m-%d')
@@ -104,6 +109,12 @@ class Controller:
     def check_passwd(self, username, password):
         return self.db_ops.check_passwd(username, password)
     
+    def check_unique_phone_number(self, phone):
+        return self.db_ops.check_unique_phone_number(phone)
+    
+    def check_unique_email(self, mail):
+        return self.db_ops.check_unique_email(mail)
+    
     def change_passwd(self, username, old_pass, new_pass):
         if self.db_ops.check_passwd(username, old_pass):
             try:
@@ -139,14 +150,14 @@ class Controller:
     def get_reports_list_by_username(self, username):
         return self.db_ops.get_reports_list_by_username(username)
     
-    def get_patient_info(self, username):
-        return self.db_ops.get_patient_info(username)
+    # def get_patient_info(self, username):
+    #     return self.db_ops.get_patient_info(username)
     
-    def get_caregiver_info(self, username):
-        return self.db_ops.get_caregiver_info(username)
+    # def get_caregiver_info(self, username):
+    #     return self.db_ops.get_caregiver_info(username)
     
-    def get_medic_info(self, username):
-        return self.db_ops.get_medic_info(username)
+    # def get_medic_info(self, username):
+    #     return self.db_ops.get_medic_info(username)
     
     #def get_patients_for_doctor(self, username):
     #    return self.db_ops.get_patients_for_doctor(username)
@@ -154,9 +165,9 @@ class Controller:
     def get_patients(self):
         return self.db_ops.get_patients()
     
-    def update_profile(self, username, new_data):
-        if self.db_ops.update_profile(username, new_data) == 0:
-            print('\nInformation modified correctly!\n')
-        else:
-            print('\nInternal error!\n')
+    # def update_profile(self, username, new_data):
+    #     if self.db_ops.update_profile(username, new_data) == 0:
+    #         print('\nInformation modified correctly!\n')
+    #     else:
+    #         print('\nInternal error!\n')
         

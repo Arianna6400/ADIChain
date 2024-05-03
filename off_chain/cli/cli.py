@@ -71,16 +71,26 @@ class CommandLineInterface:
 
 
     def registration_menu(self):
-        has_keys = input("Do you already have the keys? (Y/n): ")
-        if has_keys.strip().upper() == "N":
-            proceed = input("You need to deploy and initialize the contract. Do you want to proceed with deployment? (Y/n): ")
-            if proceed.strip().upper() == "Y":
-                self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
+        exit_flag = True
+        while exit_flag:
+            has_keys = input("Do you already have the keys? (Y/n): ")
+            if has_keys.strip().upper() == "N":
+                while True:
+                    proceed = input("You need to deploy and initialize the contract. Do you want to proceed with deployment? (Y/n): ")
+                    if proceed.strip().upper() == "Y":
+                        self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
+                        exit_flag = False
+                        break
+                    elif proceed.strip().upper() == "N":
+                        print("Deployment cancelled. Please deploy the contract when you are ready to register.")
+                        return
+                    else: 
+                        print('Wrong input, please insert y or n!')
+            elif has_keys.strip().upper() == "Y":
+                break
             else:
-                print("Deployment cancelled. Please deploy the contract when you are ready to register.")
-                return
+                print('Wrong input, please insert y or n!')
         print('Please, enter your wallet credentials.')
-
         while True:
             public_key = input('Public Key: ')
             private_key = input('Private Key: ')
@@ -89,22 +99,21 @@ class CommandLineInterface:
             #confirm_private_key = getpass.getpass('Confirm Private Key: ')
             if private_key == confirm_private_key:
                 if not self.controller.check_keys(public_key, private_key):
-                    break
+                    try:
+                        pk_bytes = decode_hex(private_key)
+                        priv_key = keys.PrivateKey(pk_bytes)
+                        pk = priv_key.public_key.to_checksum_address()
+                        if pk.lower() != public_key.lower():
+                            print('The provided keys do not match. Please check your entries.')
+                        else:
+                            break
+                    except Exception:
+                        print('Oops, there is no wallet with the matching public and private key provided.\n')
                 else:
                     print('A wallet with these keys already exists. Please enter a unique set of keys.')
             else:
                 print('Private key and confirmation do not match. Try again.\n')
 
-        try:
-            pk_bytes = decode_hex(private_key)
-            priv_key = keys.PrivateKey(pk_bytes)
-            pk = priv_key.public_key.to_checksum_address()
-            if pk.lower() != public_key.lower():
-                print('The provided keys do not match. Please check your entries.')
-                return
-        except Exception:
-            print('Oops, there is no wallet with the matching public and private key provided.\n')
-            return
         
         if is_address(public_key) and (public_key == pk):
 
@@ -171,26 +180,38 @@ class CommandLineInterface:
         
         else:
             print('Sorry, but the provided public and private key do not match to any account\n')
-            return
-
+            return 
 
 
     def insert_patient_info(self, username, role, autonomous_flag=1):
 
         print("Proceed with the insertion of a few personal information.")
-        name = input('Name: ')
-        lastname = input('Lastname: ')
+        while True:
+            name = input('Name: ')
+            if self.controller.check_null_info(name): break
+            else: print('Please insert information.')
+        while True:
+            lastname = input('Lastname: ')
+            if self.controller.check_null_info(lastname): break
+            else: print('Please insert information.')
         while True:
             birthday = input('Date of birth (YYYY-MM-DD): ')
             if self.controller.check_birthdate_format(birthday): break
             else: print("Invalid birthdate or incorrect format.")
-
-        birth_place = input('Birth place: ')
-        residence = input('Place of residence: ')
+        while True:
+            birth_place = input('Birth place: ')
+            if self.controller.check_null_info(birth_place): break
+            else: print('Please insert information.')
+        while True:
+            residence = input('Place of residence: ')
+            if self.controller.check_null_info(residence): break
+            else: print('Please insert information.')
         while True:
             phone = input('Phone number: ')
-            if self.controller.check_phone_number_format(phone): break
-            else: print("Invalid phone number format.")
+            if self.controller.check_phone_number_format(phone): 
+                if self.controller.check_unique_phone_number(phone) == 0: break
+                else: print("This phone number has already been inserted. \n")
+            else: print("Invalid phone number format.\n")
         
         if autonomous_flag == 1:
             from_address_patient = self.controller.get_public_key_by_username(username)
@@ -204,27 +225,36 @@ class CommandLineInterface:
             print('Internal error!')
 
 
-
-
     def insert_medic_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
-        name = input('Name: ')
-        lastname = input('Lastname: ')
+        while True:
+            name = input('Name: ')
+            if self.controller.check_null_info(name): break
+            else: print('Please insert information.')
+        while True:
+            lastname = input('Lastname: ')
+            if self.controller.check_null_info(lastname): break
+            else: print('Please insert information.')
         while True:
             birthday = input('Date of birth (YYYY-MM-DD): ')
             if self.controller.check_birthdate_format(birthday): break
             else: print("Invalid birthdate or incorrect format.")
-
-        specialization = input('Specialization: ')
         while True:
-            mail = input('Mail: ')
-            if self.controller.check_email_format(mail): break
-            else: print("Invalid email format.")
-
+            specialization = input('Specialization: ')
+            if self.controller.check_null_info(specialization): break
+            else: print('Please insert information.')
+        while True:
+            mail = input('E-mail: ')
+            if self.controller.check_email_format(mail): 
+                if self.controller.check_unique_email(mail) == 0: break
+                else: print("This e-mail has already been inserted. \n")
+            else: print("Invalid e-mail format.\n")
         while True:
             phone = input('Phone number: ')
-            if self.controller.check_phone_number_format(phone): break
-            else: print("Invalid phone number format.")
+            if self.controller.check_phone_number_format(phone): 
+                if self.controller.check_unique_phone_number(phone) == 0: break
+                else: print("This phone number has already been inserted. \n")
+            else: print("Invalid phone number format.\n")
 
         from_address_medic = self.controller.get_public_key_by_username(username)
         self.act_controller.register_entity('medic', name, lastname, specialization, from_address=from_address_medic)
@@ -236,26 +266,32 @@ class CommandLineInterface:
             print('Internal error!')
 
 
-
-
     def insert_caregiver_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
-        name = input('Name: ')
-        lastname = input('Lastname: ')
-        relationship = input('What kind of relationship there is between you and the patient: ')
-
+        while True:
+            name = input('Name: ')
+            if self.controller.check_null_info(name): break
+            else: print('Please insert information.')
+        while True:
+            lastname = input('Lastname: ')
+            if self.controller.check_null_info(lastname): break
+            else: print('Please insert information.')
+        while True:
+            relationship = input('What kind of relationship there is between you and the patient: ')
+            if self.controller.check_null_info(relationship): break
+            else: print('Please insert information.')
         while True:
             phone = input('Phone number: ')
-            if self.controller.check_phone_number_format(phone): break
-            else: print("Invalid phone number format.")
+            if self.controller.check_phone_number_format(phone): 
+                if self.controller.check_unique_phone_number(phone) == 0: break
+                else: print("This phone number has already been inserted. \n")
+            else: print("Invalid phone number format.\n")
 
         print('Now register patient information')
         while True:
             username_patient = input('Insert the patient username: ')
-            if self.controller.check_username(username_patient) == 0: 
-                break
-            else: 
-                print('Your username has been taken.\n')
+            if self.controller.check_username(username_patient) == 0: break
+            else: print('Your username has been taken.\n')
         self.insert_patient_info(username_patient, "PATIENT", 0)
 
         from_address_caregiver = self.controller.get_public_key_by_username(username)
@@ -332,7 +368,7 @@ class CommandLineInterface:
 
                         while len(patients) > 0:
 
-                            action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: ")
+                            action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: \n")
 
                             if action == "n":
                                 self.util.go_to_next_page(patients)

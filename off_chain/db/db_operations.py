@@ -121,6 +121,43 @@ class DatabaseOperations:
         if self.cur.fetchone()[0] == 0: return 0
         else: return -1
 
+    def check_unique_phone_number(self, phone):
+        query_patients = "SELECT COUNT(*) FROM Patients WHERE phone = ?"
+        self.cur.execute(query_patients, (phone,))
+        count_patients = self.cur.fetchone()[0]
+
+        query_medics = "SELECT COUNT(*) FROM Medics WHERE phone = ?"
+        self.cur.execute(query_medics, (phone,))
+        count_medics = self.cur.fetchone()[0]
+
+        query_caregivers = "SELECT COUNT(*) FROM Caregivers WHERE phone = ?"
+        self.cur.execute(query_caregivers, (phone,))
+        count_caregivers = self.cur.fetchone()[0]
+
+        if count_patients == 0 and count_medics == 0 and count_caregivers == 0:
+            return 0 
+        else:
+            return -1  
+        
+    def check_unique_email(self, mail):
+        query_patients = "SELECT COUNT(*) FROM Patients WHERE mail = ?"
+        self.cur.execute(query_patients, (mail,))
+        count_patients = self.cur.fetchone()[0]
+
+        query_medics = "SELECT COUNT(*) FROM Medics WHERE mail = ?"
+        self.cur.execute(query_medics, (mail,))
+        count_medics = self.cur.fetchone()[0]
+
+        query_caregivers = "SELECT COUNT(*) FROM Caregivers WHERE mail = ?"
+        self.cur.execute(query_caregivers, (mail,))
+        count_caregivers = self.cur.fetchone()[0]
+
+        if count_patients == 0 and count_medics == 0 and count_caregivers == 0:
+            return 0 
+        else:
+            return -1
+
+
     def key_exists(self, public_key, private_key):
         try:
             query = "SELECT public_key, private_key FROM Credentials WHERE public_key=? OR private_key=?"
@@ -387,65 +424,65 @@ class DatabaseOperations:
             self.cur.execute(query)
             return self.cur.fetchall()
 
-    def get_patient_info(self, username):
-        query = """
-            SELECT * FROM Patients WHERE username = ?
-        """
-        self.cur.execute(query, (username,))
-        return self.cur.fetchone()
+    # def get_patient_info(self, username):
+    #     query = """
+    #         SELECT * FROM Patients WHERE username = ?
+    #     """
+    #     self.cur.execute(query, (username,))
+    #     return self.cur.fetchone()
     
-    def get_caregiver_info(self, username):
-        query = """
-            SELECT * FROM Caregivers WHERE username = ?
-        """
-        self.cur.execute(query, (username,))
-        return self.cur.fetchone()
+    # def get_caregiver_info(self, username):
+    #     query = """
+    #         SELECT * FROM Caregivers WHERE username = ?
+    #     """
+    #     self.cur.execute(query, (username,))
+    #     return self.cur.fetchone()
     
-    def get_medic_info(self, username):
-        query = """
-            SELECT * FROM Medics WHERE username = ?
-        """
-        self.cur.execute(query, (username,))
-        return self.cur.fetchone()
+    # def get_medic_info(self, username):
+    #     query = """
+    #         SELECT * FROM Medics WHERE username = ?
+    #     """
+    #     self.cur.execute(query, (username,))
+    #     return self.cur.fetchone()
 
-    def update_profile(self, username, new_data):
+    # def update_profile(self, username, new_data):
         
-        role = self.get_role_by_username(username)
-        try:
-            if role == 'CAREGIVER':
-                query = """
-                    UPDATE Caregivers
-                    SET name = ?, lastname = ?, phone = ?
-                    WHERE username = ?
-                """
-                self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['phone'], username))
-                self.conn.commit()
-                return 0
+    #     role = self.get_role_by_username(username)
+    #     try:
+    #         if role == 'CAREGIVER':
+    #             query = """
+    #                 UPDATE Caregivers
+    #                 SET name = ?, lastname = ?, phone = ?
+    #                 WHERE username = ?
+    #             """
+    #             self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['phone'], username))
+    #             self.conn.commit()
+    #             return 0
 
-            elif role == 'PATIENT':
-                query = """
-                    UPDATE Patients
-                    SET name = ?, lastname = ?, birthday = ?, birth_place = ?, residence = ?, autonomous = ?, phone = ?
-                    WHERE username = ?
-                """
-                self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['birthday'], 
-                                    new_data['birth_place'], new_data['residence'], new_data['autonomous'], 
-                                    new_data['phone'], username))
-                self.conn.commit()
-                return 0
+    #         elif role == 'PATIENT':
+    #             query = """
+    #                 UPDATE Patients
+    #                 SET name = ?, lastname = ?, birthday = ?, birth_place = ?, residence = ?, autonomous = ?, phone = ?
+    #                 WHERE username = ?
+    #             """
+    #             self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['birthday'], 
+    #                                 new_data['birth_place'], new_data['residence'], new_data['autonomous'], 
+    #                                 new_data['phone'], username))
+    #             self.conn.commit()
+    #             return 0
                 
 
-            elif role == 'MEDIC':
-                query = """
-                    UPDATE Medics
-                    SET name = ?, lastname = ?, birthday = ?, specialization = ?, mail = ?, phone = ?
-                    WHERE username = ?
-                """
-                self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['birthday'], new_data['specialization'], new_data['mail'], new_data['phone'], username))
-                self.conn.commit()
-                return 0
-            else:
-                print("Invalid user role!")
-                return 
-        except: 
-            return -1
+    #         elif role == 'MEDIC':
+    #             query = """
+    #                 UPDATE Medics
+    #                 SET name = ?, lastname = ?, birthday = ?, specialization = ?, mail = ?, phone = ?
+    #                 WHERE username = ?
+    #             """
+    #             self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['birthday'], new_data['specialization'], new_data['mail'], new_data['phone'], username))
+    #             self.conn.commit()
+    #             return 0
+    #         else:
+    #             print("Invalid user role!")
+    #             return 
+    #     except: 
+    #         return -1
