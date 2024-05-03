@@ -213,10 +213,13 @@ class CommandLineInterface:
             else: print("Invalid birthdate or incorrect format.")
 
         specialization = input('Specialization: ')
+
         while True:
-            mail = input('Mail: ')
-            if self.controller.check_email_format(mail): break
-            else: print("Invalid email format.")
+            mail = input('E-mail: ')
+            if self.controller.check_email_format(mail): 
+                if self.controller.check_unique_email(mail) == 0: break
+                else: print("This e-mail has already been inserted. \n")
+            else: print("Invalid e-mail format.\n")
 
         while True:
             phone = input('Phone number: ')
@@ -233,9 +236,6 @@ class CommandLineInterface:
             self.medic_menu(username)
         elif insert_code == -1:
             print('Internal error!')
-
-
-
 
     def insert_caregiver_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")

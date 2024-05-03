@@ -107,6 +107,9 @@ class Controller:
     def check_unique_phone_number(self, phone):
         return self.db_ops.check_unique_phone_number(phone)
     
+    def check_unique_email(self, mail):
+        return self.db_ops.check_unique_email(mail)
+    
     def change_passwd(self, username, old_pass, new_pass):
         if self.db_ops.check_passwd(username, old_pass):
             try:
