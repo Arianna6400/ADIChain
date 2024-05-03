@@ -12,6 +12,7 @@ from numpy import uint8
 from controllers.controller import Controller
 from controllers.action_controller import ActionController
 from session.session import Session
+from session.logging import log_error
 
 
 class Utils:
@@ -68,8 +69,6 @@ class Utils:
         if role == "Patient":
 
             print("\nEnter your new Information...")
-            # us.set_name(click.prompt('Name ', default=us.get_name()))
-            # us.set_lastname(click.prompt('Lastname ', default=us.get_lastname())) 
             while True:
                 birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
                 if self.controller.check_birthdate_format(birthday): 
@@ -93,12 +92,11 @@ class Utils:
                     from_address_patient = self.controller.get_public_key_by_username(username)
                     self.act_controller.update_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
                 except Exception as e:
-                    print(f"Transaction failed: {e}")
+                    log_error(e)
+
         elif role == "Caregiver":
   
             print("\nEnter your new Information...")
-            # us.set_name(click.prompt('Name ', default=us.get_name()))
-            # us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
             while True:
                 phone = click.prompt('Phone ', default=us.get_phone())
                 if self.controller.check_phone_number_format(phone): 
@@ -112,13 +110,11 @@ class Utils:
                 from_address_caregiver = self.controller.get_public_key_by_username(username)
                 self.act_controller.update_entity('caregiver', name, lastname, from_address=from_address_caregiver)
             except Exception as e:
-                print(f"Transaction failed: {e}")
+                log_error(e)
 
         elif role == "Medic":
             
             print("\nEnter your new Information...")
-            # us.set_name(click.prompt('Name ', default=us.get_name()))
-            # us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
             while True:
                 birthday = click.prompt('Date of birth (YYYY-MM-DD) ', default=us.get_birthday())
                 if self.controller.check_birthdate_format(birthday): 
@@ -146,7 +142,7 @@ class Utils:
                 from_address_medic = self.controller.get_public_key_by_username(username)
                 self.act_controller.update_entity('medic', name, lastname, specialization, from_address=from_address_medic)
             except Exception as e:
-                print(f"Transaction failed: {e}")
+                log_error(e)
 
         us.save()
 
