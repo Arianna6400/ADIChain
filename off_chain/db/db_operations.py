@@ -121,6 +121,24 @@ class DatabaseOperations:
         if self.cur.fetchone()[0] == 0: return 0
         else: return -1
 
+    def check_unique_phone_number(self, phone):
+        query_patients = "SELECT COUNT(*) FROM Patients WHERE phone = ?"
+        self.cur.execute(query_patients, (phone,))
+        count_patients = self.cur.fetchone()[0]
+
+        query_medics = "SELECT COUNT(*) FROM Medics WHERE phone = ?"
+        self.cur.execute(query_medics, (phone,))
+        count_medics = self.cur.fetchone()[0]
+
+        query_caregivers = "SELECT COUNT(*) FROM Caregivers WHERE phone = ?"
+        self.cur.execute(query_caregivers, (phone,))
+        count_caregivers = self.cur.fetchone()[0]
+
+        if count_patients == 0 and count_medics == 0 and count_caregivers == 0:
+            return 0 
+        else:
+            return -1  
+
     def key_exists(self, public_key, private_key):
         try:
             query = "SELECT public_key, private_key FROM Credentials WHERE public_key=? OR private_key=?"

@@ -173,8 +173,6 @@ class CommandLineInterface:
             print('Sorry, but the provided public and private key do not match to any account\n')
             return
 
-
-
     def insert_patient_info(self, username, role, autonomous_flag=1):
 
         print("Proceed with the insertion of a few personal information.")
@@ -189,8 +187,10 @@ class CommandLineInterface:
         residence = input('Place of residence: ')
         while True:
             phone = input('Phone number: ')
-            if self.controller.check_phone_number_format(phone): break
-            else: print("Invalid phone number format.")
+            if self.controller.check_phone_number_format(phone): 
+                if self.controller.check_unique_phone_number(phone) == 0: break
+                else: print("This phone number has already been inserted. \n")
+            else: print("Invalid phone number format.\n")
         
         if autonomous_flag == 1:
             from_address_patient = self.controller.get_public_key_by_username(username)
@@ -202,9 +202,6 @@ class CommandLineInterface:
                 self.patient_menu(username)
         elif insert_code == -1:
             print('Internal error!')
-
-
-
 
     def insert_medic_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
@@ -223,8 +220,10 @@ class CommandLineInterface:
 
         while True:
             phone = input('Phone number: ')
-            if self.controller.check_phone_number_format(phone): break
-            else: print("Invalid phone number format.")
+            if self.controller.check_phone_number_format(phone): 
+                if self.controller.check_unique_phone_number(phone) == 0: break
+                else: print("This phone number has already been inserted. \n")
+            else: print("Invalid phone number format.\n")
 
         from_address_medic = self.controller.get_public_key_by_username(username)
         self.act_controller.register_entity('medic', name, lastname, specialization, from_address=from_address_medic)
@@ -246,8 +245,10 @@ class CommandLineInterface:
 
         while True:
             phone = input('Phone number: ')
-            if self.controller.check_phone_number_format(phone): break
-            else: print("Invalid phone number format.")
+            if self.controller.check_phone_number_format(phone): 
+                if self.controller.check_unique_phone_number(phone) == 0: break
+                else: print("This phone number has already been inserted. \n")
+            else: print("Invalid phone number format.\n")
 
         print('Now register patient information')
         while True:

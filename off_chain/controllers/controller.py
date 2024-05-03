@@ -104,6 +104,9 @@ class Controller:
     def check_passwd(self, username, password):
         return self.db_ops.check_passwd(username, password)
     
+    def check_unique_phone_number(self, phone):
+        return self.db_ops.check_unique_phone_number(phone)
+    
     def change_passwd(self, username, old_pass, new_pass):
         if self.db_ops.check_passwd(username, old_pass):
             try:
