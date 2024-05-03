@@ -117,7 +117,7 @@ class DatabaseOperations:
             return -1
 
     def check_username(self, username):
-        self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ?", (username,))
+        self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ? UNION ALL SELECT COUNT(*) FROM Patients WHERE username = ?", (username, username,))
         if self.cur.fetchone()[0] == 0: return 0
         else: return -1
 
