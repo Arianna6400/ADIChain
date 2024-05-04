@@ -5,7 +5,7 @@ from colorama import Fore, Style
 from rich.console import Console
 from rich.table import Table
 
-   
+
 
 from numpy import uint8
 

@@ -417,7 +417,7 @@ class DatabaseOperations:
     
     def get_patients(self):
             query = """
-                SELECT 
+                SELECT *
                 FROM Patients
             """
             self.cur.execute(query)
