@@ -27,13 +27,9 @@ class CommandLineInterface:
             3: 'Exit',
         }
 
-
-
     PAGE_SIZE = 3
 
     current_page = 0
-
-
 
     def print_menu(self):
 
@@ -67,8 +63,6 @@ class CommandLineInterface:
         except ValueError:
             print('Wrong input. Please enter a number!\n')
             return
-
-
 
     def registration_menu(self):
         exit_flag = True
@@ -182,7 +176,6 @@ class CommandLineInterface:
             print('Sorry, but the provided public and private key do not match to any account\n')
             return 
 
-
     def insert_patient_info(self, username, role, autonomous_flag=1):
 
         print("Proceed with the insertion of a few personal information.")
@@ -223,7 +216,6 @@ class CommandLineInterface:
                 self.patient_menu(username)
         elif insert_code == -1:
             print('Internal error!')
-
 
     def insert_medic_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
@@ -266,7 +258,6 @@ class CommandLineInterface:
         elif insert_code == -1:
             print('Internal error!')
 
-
     def insert_caregiver_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
         while True:
@@ -303,46 +294,44 @@ class CommandLineInterface:
             self.caregiver_menu(username)
         elif insert_code == -1:
             print('Internal error!')
-       
-
 
     def login_menu(self):
+        while True:
+            if not self.controller.check_attempts() and self.session.get_timeout_left() < 0:
+                self.session.reset_attempts()
 
-        if not self.controller.check_attempts() and self.session.get_timeout_left() < 0:
-            self.session.reset_attempts()
+            if self.session.get_timeout_left() <= 0 and self.controller.check_attempts():
+                public_key = input('Insert public key: ')
+                private_key = input('Insert private key: ')
+                #private_key = getpass.getpass('Private Key: ')
+                username = input('Insert username: ')
+                passwd = input('Insert password: ')
+                #passwd = getpass.getpass('Insert password: ')
 
-        if self.session.get_timeout_left() <= 0 and self.controller.check_attempts():
-            public_key = input('Insert public key: ')
-            private_key = input('Insert private key: ')
-            #private_key = getpass.getpass('Private Key: ')
-            username = input('Insert username: ')
-            passwd = input('Insert password: ')
-            #passwd = getpass.getpass('Insert password: ')
+                login_code, user_type = self.controller.login(username, passwd, public_key, private_key)
 
-            login_code, user_type = self.controller.login(username, passwd, public_key, private_key)
-
-            if login_code == 0:
-                print('\nYou have succesfully logged in!\n')
-                if user_type == "MEDIC":
-                    self.medic_menu(username)
-                elif user_type == "CAREGIVER":
-                    self.caregiver_menu(username)
-                elif user_type == "PATIENT":
-                    self.patient_menu(username)
-                else:
-                    print("Error: User type is not recognized.")
+                if login_code == 0:
+                    print('\nYou have succesfully logged in!\n')
+                    if user_type == "MEDIC":
+                        self.medic_menu(username)
+                    elif user_type == "CAREGIVER":
+                        self.caregiver_menu(username)
+                    elif user_type == "PATIENT":
+                        self.patient_menu(username)
+                    else:
+                        print("Error: User type is not recognized.")
+                        return -1
+                elif login_code == -1:
+                    print('\nThe credentials you entered are wrong\n')
+                elif login_code == -2:
+                    print('\nToo many login attempts\n')
                     return -1
-            elif login_code == -1:
-                print('\nThe credentials you entered are wrong\n')
-            elif login_code == -2:
-                print('\nToo many login attempts\n')
-                return -1
-            
-        else:
-            print('\nMax number of attemps reached\n')
-            print(f'You will be in timeout for: {int(self.session.get_timeout_left())} seconds\n')
-            return -2
-    
+                
+            else:
+                print('\nMax number of attemps reached\n')
+                print(f'You will be in timeout for: {int(self.session.get_timeout_left())} seconds\n')
+                return -2
+
     #Homepages
     #Medic
     def medic_menu(self, username):
@@ -384,7 +373,6 @@ class CommandLineInterface:
                                 print("Invalid input. Please try again. \n")
                         self.medic_menu(username)
 
-
                     elif choice == 2:                           
                         print("Update profile function")
                         self.util.update_profile(username, "Medic")
@@ -403,12 +391,10 @@ class CommandLineInterface:
             except ValueError:
                 print("Invalid Input! Please enter a valid number.")
 
-    #Caregiver (bozza)
+    #Caregiver
     def caregiver_menu(self, username):
         while True:
             caregiver = self.controller.get_user_by_username(username)
-
-            # Ottieni il nome del caregiver
             patient_name = caregiver.get_username_patient()
 
             caregiver_options = {
@@ -489,8 +475,6 @@ class CommandLineInterface:
 
             except ValueError:
                 print('Wrong input. Please enter a number!')
-            
-
 
     def patient_medical_data(self, username):
         while True: 
@@ -528,7 +512,6 @@ class CommandLineInterface:
         print("Description: ", treatmentplan.get_description())
         input("\nPress Enter to exit\n")
 
-    
     #Patient view
     def view_patientview(self, username):
         patientview = self.controller.get_user_by_username(username)

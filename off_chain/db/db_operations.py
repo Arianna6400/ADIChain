@@ -117,7 +117,7 @@ class DatabaseOperations:
             return -1
 
     def check_username(self, username):
-        self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ?", (username,))
+        self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ? UNION ALL SELECT COUNT(*) FROM Patients WHERE username = ?", (username, username,))
         if self.cur.fetchone()[0] == 0: return 0
         else: return -1
 
@@ -140,19 +140,11 @@ class DatabaseOperations:
             return -1  
         
     def check_unique_email(self, mail):
-        query_patients = "SELECT COUNT(*) FROM Patients WHERE mail = ?"
-        self.cur.execute(query_patients, (mail,))
-        count_patients = self.cur.fetchone()[0]
-
         query_medics = "SELECT COUNT(*) FROM Medics WHERE mail = ?"
         self.cur.execute(query_medics, (mail,))
         count_medics = self.cur.fetchone()[0]
 
-        query_caregivers = "SELECT COUNT(*) FROM Caregivers WHERE mail = ?"
-        self.cur.execute(query_caregivers, (mail,))
-        count_caregivers = self.cur.fetchone()[0]
-
-        if count_patients == 0 and count_medics == 0 and count_caregivers == 0:
+        if count_medics == 0:
             return 0 
         else:
             return -1
