@@ -178,16 +178,16 @@ class DatabaseOperations:
         except sqlite3.IntegrityError:
             return -1
         
-    def insert_report(self, username_patient, username_medic, analysis, diagnosis):
+    def insert_report(self, username_patient, username_medic, analyses, diagnosis):
         try:
             self.cur.execute("""
                             INSERT INTO Reports
-                            (username_patient, username_medic, analysis, diagnosis)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?) """,
+                            (username_patient, username_medic, analyses, diagnosis)
+                            VALUES (?, ?, ?, ?) """,
                             (
                                 username_patient, 
                                 username_medic,
-                                analysis,
+                                analyses,
                                 diagnosis
                             ))
             self.conn.commit()

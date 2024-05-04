@@ -536,7 +536,7 @@ class CommandLineInterface:
                 choice = int(input("Chose an option: "))-1
                 if choice in {indice for indice, _ in enumerate(reports_list)}:
                     print("\nREPORT")
-                    print("\nAnalysis: ", reports_list[choice].get_analyses())
+                    print("\nAnalyses: ", reports_list[choice].get_analyses())
                     print("Diagnosis: ", reports_list[choice].get_diagnosis())
                     input("Press Enter to exit")
                 elif choice==i:

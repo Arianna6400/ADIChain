@@ -25,7 +25,7 @@ class Utils:
 
     def __init__(self, session: Session):
 
-
+        
         self.controller = Controller(session)
         self.act_controller = ActionController()
 
@@ -208,7 +208,7 @@ class Utils:
             table.add_column(column)
 
         for report in reports:
-            row = [report[0], report[1], report[2], report[3], report[4]]
+            row = [str(report.get_id_report()), report.get_username_patient(), report.get_username_medic(), report.get_analyses(), report.get_diagnosis()]
             table.add_row(*row, style = 'bright_green')
 
         console = Console()

@@ -65,8 +65,8 @@ class Controller:
         
         return insertion_code
     
-    def insert_report(self, username_patient: str,  username_medic: str, analysis: str, diagnosis: str):
-        insertion_code = self.db_ops.insert_report(username_patient, username_medic, analysis, diagnosis)
+    def insert_report(self, username_patient: str,  username_medic: str, analyses: str, diagnosis: str):
+        insertion_code = self.db_ops.insert_report(username_patient, username_medic, analyses, diagnosis)
 
         if insertion_code == 0:
             print('Report inserted correctly.')
