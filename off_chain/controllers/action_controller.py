@@ -1,4 +1,5 @@
 from controllers.deploy_controller import DeployController
+from session.logging import log_msg
 from web3 import Web3
 import os
 import time
@@ -36,7 +37,7 @@ class ActionController:
             file.write(self.contract.address)
         with open('on_chain/contract_abi.json', 'w') as file:
             json.dump(self.contract.abi, file)
-
+        
     def read_data(self, function_name, *args):
         function = self.contract.functions[function_name](*args)
         return function.call()
@@ -56,17 +57,15 @@ class ActionController:
         return receipt
 
     def listen_to_event(self):
-        event_filter = self.contract.events.ActionLogged.createFilter(fromBlock='latest')
+        event_filter = self.contract.events.ActionLogged.create_filter(fromBlock='latest')
         while True:
-            for event in event_filter.get_new_entries():
+            entries = event_filter.get_new_entries()
+            for event in entries:
                 self.handle_action_logged(event)
             time.sleep(10)
 
     def handle_action_logged(self, event):
-        log_message = f"New Action Logged: {event['args']}\n"
-
-        with open(os.path.join(self.log_dir, 'action_logs.txt'), 'a') as log_file:
-            log_file.write(log_message)
+        log_msg(f"New Action Logged: {event['args']}")
 
     def register_entity(self, entity_type, *args, from_address):
         if not from_address:

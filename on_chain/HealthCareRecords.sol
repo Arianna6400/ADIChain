@@ -42,7 +42,7 @@ contract HealthCareRecords {
     }
 
     struct ActionLog {
-        uint actionId;
+        uint256 actionId;
         string actionType;
         address initiatedBy;
         uint256 timestamp;
@@ -59,7 +59,7 @@ contract HealthCareRecords {
     mapping(address => bool) public authorizedEditors;
     address public owner;
 
-    event ActionLogged(uint indexed actionId, string actionType, address initiator, uint timestamp, string details);
+    event ActionLogged(uint256 indexed actionId, string actionType, address indexed initiator, uint256 indexed timestamp, string details);
 
     constructor() {
         owner = msg.sender;
