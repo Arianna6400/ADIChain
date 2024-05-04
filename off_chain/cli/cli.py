@@ -27,13 +27,9 @@ class CommandLineInterface:
             3: 'Exit',
         }
 
-
-
     PAGE_SIZE = 3
 
     current_page = 0
-
-
 
     def print_menu(self):
 
@@ -67,8 +63,6 @@ class CommandLineInterface:
         except ValueError:
             print('Wrong input. Please enter a number!\n')
             return
-
-
 
     def registration_menu(self):
         exit_flag = True
@@ -182,7 +176,6 @@ class CommandLineInterface:
             print('Sorry, but the provided public and private key do not match to any account\n')
             return 
 
-
     def insert_patient_info(self, username, role, autonomous_flag=1):
 
         print("Proceed with the insertion of a few personal information.")
@@ -223,7 +216,6 @@ class CommandLineInterface:
                 self.patient_menu(username)
         elif insert_code == -1:
             print('Internal error!')
-
 
     def insert_medic_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
@@ -266,7 +258,6 @@ class CommandLineInterface:
         elif insert_code == -1:
             print('Internal error!')
 
-
     def insert_caregiver_info(self, username, role):
         print("Proceed with the insertion of a few personal information.")
         while True:
@@ -303,13 +294,9 @@ class CommandLineInterface:
             self.caregiver_menu(username)
         elif insert_code == -1:
             print('Internal error!')
-       
-
 
     def login_menu(self):
-
         while True:
-
             if not self.controller.check_attempts() and self.session.get_timeout_left() < 0:
                 self.session.reset_attempts()
 
@@ -344,7 +331,7 @@ class CommandLineInterface:
                 print('\nMax number of attemps reached\n')
                 print(f'You will be in timeout for: {int(self.session.get_timeout_left())} seconds\n')
                 return -2
-    
+
     #Homepages
     #Medic
     def medic_menu(self, username):
@@ -385,7 +372,6 @@ class CommandLineInterface:
                             else:
                                 print("Invalid input. Please try again. \n")
                         self.medic_menu(username)
-
 
                     elif choice == 2:                           
                         print("Update profile function")
@@ -489,8 +475,6 @@ class CommandLineInterface:
 
             except ValueError:
                 print('Wrong input. Please enter a number!')
-            
-
 
     def patient_medical_data(self, username):
         while True: 
@@ -528,7 +512,6 @@ class CommandLineInterface:
         print("Description: ", treatmentplan.get_description())
         input("\nPress Enter to exit\n")
 
-    
     #Patient view
     def view_patientview(self, username):
         patientview = self.controller.get_user_by_username(username)

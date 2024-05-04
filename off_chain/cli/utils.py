@@ -200,9 +200,8 @@ class Utils:
         print(f"Name: {patient[1]}")
         print(f"Last Name: {patient[2]}")
         print(f"Age: {patient[3]}")
-        print(f"Gender: {patient[4]}")
-        print(f"Condition: {patient[5]}")
-
+        print(f"Place of birth: {patient[4]}")
+        print(f"Residence: {patient[5]}")
 
     def handle_selection(self, patients):
         records = self.get_page_records(self.current_page, patients)
@@ -214,6 +213,8 @@ class Utils:
             selection_index = int(selection) - 1
             if 0 <= selection_index < len(records):
                 self.show_patient_details(records[selection_index])
+                
+        # VISUALIZZA REPORTS E TREAT.PLAN come i pazienti
 
     def show_page(self, patients):
         records = self.get_page_records(self.current_page, patients)

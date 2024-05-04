@@ -8,7 +8,9 @@ class TreatmentPlans(Model):
         self.username_patient = username_patient
         self.username_medic = username_medic
         self.username_caregiver = username_caregiver
+        #if autonomous == 0
         self.description = description
+        # DATA (oggi?)
         self.start_date = start_date
         self.end_date = end_date
 

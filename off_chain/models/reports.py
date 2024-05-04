@@ -9,6 +9,7 @@ class Reports(Model):
         self.username_medic = username_medic
         self.analysis = analysis
         self.diagnosis = diagnosis
+        #DATA da inserire (oggi?)
 
     def get_id_report(self):
         return self.id_report
