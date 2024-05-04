@@ -1,7 +1,7 @@
 import math
 import re
 import click
-from colorama import Fore, Style
+from colorama import Fore, Style, init
 from rich.console import Console
 from rich.table import Table
 
@@ -17,13 +17,15 @@ from session.logging import log_error
 
 class Utils:
 
+    init(convert=True)
+
     
     PAGE_SIZE = 3
     current_page = 0
 
     def __init__(self, session: Session):
 
-        
+
         self.controller = Controller(session)
         self.act_controller = ActionController()
 
