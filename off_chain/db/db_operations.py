@@ -94,7 +94,6 @@ class DatabaseOperations:
             );''')
         self.conn.commit()
     
-
     def register_creds(self, username, hash_password, role, public_key, private_key):
         try:
             if self.check_username(username) == 0:
@@ -173,6 +172,23 @@ class DatabaseOperations:
                                 residence,
                                 autonomous,
                                 phone
+                            ))
+            self.conn.commit()
+            return 0
+        except sqlite3.IntegrityError:
+            return -1
+        
+    def insert_report(self, username_patient, username_medic, analysis, diagnosis):
+        try:
+            self.cur.execute("""
+                            INSERT INTO Reports
+                            (username_patient, username_medic, analysis, diagnosis)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?) """,
+                            (
+                                username_patient, 
+                                username_medic,
+                                analysis,
+                                diagnosis
                             ))
             self.conn.commit()
             return 0

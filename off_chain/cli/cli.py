@@ -476,32 +476,6 @@ class CommandLineInterface:
             except ValueError:
                 print('Wrong input. Please enter a number!')
 
-    def patient_medical_data(self, username):
-        while True: 
-            print("\nMEDICAL DATA")
-            print('\nWhich type of data do you want to consult?')
-            print("1 -- Treatment plan")
-            print("2 -- Reports") 
-            print("3 -- Undo") 
-            
-            try:
-                choice = int(input('Enter your choice: '))
-
-                if choice == 1:
-                    self.view_treatmentplan(username)
-
-                if choice == 2:
-                    self.view_reportslist_patient(username) # finire
-
-                if choice == 3:
-                    return
-                
-                else:
-                    print('Wrong option. Please enter one of the options listed in the menu!')
-
-            except ValueError:
-                print('Wrong input. Please enter a number!')
-
     def view_treatmentplan(self, username):     # checkare che esista il piano di cura
         treatmentplan = self.controller.get_treatmentplan_by_username(username)
         medic = self.controller.get_medic_by_username(treatmentplan.get_username_medic())
@@ -553,7 +527,6 @@ class CommandLineInterface:
 
     def view_reportslist_patient(self, username):
         while True:
-
             reports_list = self.controller.get_reports_list_by_username(username)
             print("\nELENCO REPORTS\n")
             for i, report in enumerate(reports_list, 1):
@@ -571,7 +544,7 @@ class CommandLineInterface:
                 else:
                     print('Wrong option. Please enter one of the options listed in the menu!')
             except ValueError:
-                            print('Wrong input. Please enter a number!')
+                    print('Wrong input. Please enter a number!')
 
     # OPERATIONS 
 

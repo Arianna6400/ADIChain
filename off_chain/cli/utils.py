@@ -19,7 +19,6 @@ class Utils:
 
     def __init__(self, session: Session):
 
-        
         self.controller = Controller(session)
         self.act_controller = ActionController()
 
@@ -158,6 +157,23 @@ class Utils:
             return
         return patients[start_index:end_index]
 
+    def get_page_reports(self, page_index, username):
+        start_index = page_index * self.PAGE_SIZE
+        end_index = start_index + self.PAGE_SIZE
+
+        reports = self.controller.get_reports_list_by_username(username)
+        if not reports:
+            print(f"\n{username} doesn't have reports yet.")
+            while True:
+                new_report = input("\nDo you want to add one? (Y/n) ").strip().upper()
+                if new_report == 'Y':
+                    analysis = input("\nInsert analysis: ")
+                    diagnosis = input("\nInsert diagnosis: ")
+                    self.controller.insert_report(username, "medico", analysis, diagnosis)
+                    break
+                return
+        return reports[start_index:end_index]
+
     def display_records(self, records):
 
         table = Table(title="Patients")
@@ -169,6 +185,23 @@ class Utils:
 
         for patient in records:
             row = [patient[0], patient[1], patient[2], patient[3], patient[4], patient[5]]
+            table.add_row(*row, style = 'bright_green')
+
+        console = Console()
+        console.print(table)
+
+    def display_reports(self, reports, username):
+
+        possessive_suffix = self.controller.possessive_suffix(username)
+        table = Table(title=f"{username}{possessive_suffix} reports")
+
+        columns = ["id_report", "username_patient", "username_medic", "analysis", "diagnosis"]
+
+        for column in columns:
+            table.add_column(column)
+
+        for report in reports:
+            row = [report[0], report[1], report[2], report[3], report[4]]
             table.add_row(*row, style = 'bright_green')
 
         console = Console()
@@ -213,13 +246,60 @@ class Utils:
             selection_index = int(selection) - 1
             if 0 <= selection_index < len(records):
                 self.show_patient_details(records[selection_index])
-                
+                self.patient_medical_data(records[selection_index][0])
+        
         # VISUALIZZA REPORTS E TREAT.PLAN come i pazienti
 
     def show_page(self, patients):
         records = self.get_page_records(self.current_page, patients)
         if records is not None:
             self.display_records(records)
+
+    def patient_medical_data(self, username):
+        while True: 
+            print("\nMEDICAL DATA")
+            print('\nWhich type of data do you want to consult?')
+            print("1 -- Reports ")
+            print("2 -- Treatment plans") 
+            print("3 -- Undo") 
+            
+            try:
+                choice = int(input('Enter your choice: '))
+
+                if choice == 1:
+                    reports = self.get_page_reports(self.current_page, username)
+                    if reports is not None:
+                        self.display_reports(reports, username)
+                        while len(reports) > 0:
+
+                            action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: \n")
+
+                            if action == "n":
+                                self.go_to_next_page(reports)
+                            elif action == "p":
+                                self.go_to_previous_page(reports)
+                            elif action == "s":
+                                self.handle_selection(reports)
+                            elif action == "q":
+                                print("Exiting...\n")
+                                #self.medic_menu(username)
+                            else:
+                                print("Invalid input. Please try again. \n")
+                        #self.medic_menu(username)
+
+                    #self.view_treatmentplan(username)
+
+                if choice == 2:
+                    self.view_reportslist_patient(username) # finire
+
+                if choice == 3:
+                    return
+                
+                else:
+                    print('Wrong option. Please enter one of the options listed in the menu!')
+
+            except ValueError:
+                print('Wrong input. Please enter a number!')
 
     '''--------------------------------------------------'''
 

@@ -52,7 +52,7 @@ cur.execute('''CREATE TABLE Reports(
             id_report INTEGER PRIMARY KEY AUTOINCREMENT,
             username_patient TEXT NOT NULL,
             username_medic TEXT NOT NULL,
-            analyses TEXT NOT NULL,
+            analysis TEXT NOT NULL,
             diagnosis TEXT NOT NULL,
             FOREIGN KEY(username_patient) REFERENCES Patients(username),
             FOREIGN KEY(username_medic) REFERENCES Medics(username)
