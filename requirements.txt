@@ -6,3 +6,4 @@ py-solc-x
 click
 rich
 colorama
+faker
