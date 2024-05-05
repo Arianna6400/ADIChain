@@ -292,7 +292,7 @@ class Utils:
                                 self.go_to_previous_page(reports, 1, username)
                             elif action == "a" or action == "A":
                                 self.add_report(username)
-                                self.display_reports(reports)
+                                self.display_reports(reports, username)
                             elif action == "q" or action == "Q":
                                 print("Exiting...\n")
                                 break
