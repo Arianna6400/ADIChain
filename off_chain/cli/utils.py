@@ -214,23 +214,23 @@ class Utils:
         console = Console()
         console.print(table)
 
-    def go_to_next_page(self, list):
+    def go_to_next_page(self, list, flag, username):
 
         total_pages = math.ceil(len(list) / self.PAGE_SIZE)
         if self.current_page < total_pages - 1:
             self.current_page += 1
-            self.show_page(list)
+            self.show_page(list, flag, username)
         else:
-            self.show_page(list)
-            print(Fore.RED + "\nNo more patients in the system." + Style.RESET_ALL)
+            self.show_page(list, flag, username)
+            print(Fore.RED + "\nNo more results found." + Style.RESET_ALL)
             return
 
-    def go_to_previous_page(self, list):
+    def go_to_previous_page(self, list, flag, username):
         if self.current_page > 0:
             self.current_page -= 1
-            self.show_page(list)
+            self.show_page(list, flag, username)
         else:
-            self.show_page(list)
+            self.show_page(list, flag, username)
             print(Fore.RED + "\nInvalid action!" + Style.RESET_ALL)
 
     def show_patient_details(self, patient):
@@ -253,16 +253,21 @@ class Utils:
             selection_index = int(selection) - 1
             if 0 <= selection_index < len(patients):
                 self.show_patient_details(patients[selection_index])
-                self.patient_medical_data(patients[selection_index][0], patients)
+                self.patient_medical_data(patients[selection_index][0])
         
         # VISUALIZZA REPORTS E TREAT.PLAN come i pazienti
 
-    def show_page(self, patients):
-        records = self.get_page_records(self.current_page, patients)
-        if records is not None:
+    def show_page(self, list, flag, username):
+        if flag == 0:
+            records = self.get_page_records(self.current_page, list)
+        elif flag == 1:
+            records = list     
+        if records is not None and flag == 0:
             self.display_records(records)
+        elif records is not None and flag == 1:
+            self.display_reports(records, username)
 
-    def patient_medical_data(self, username, patients):
+    def patient_medical_data(self, username):
         while True: 
             print("\nMEDICAL DATA")
             print('\nWhich type of data do you want to consult?')
@@ -282,9 +287,9 @@ class Utils:
                             action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, or 'q' to quit: \n")
 
                             if action == "n" or action == "N":
-                                self.go_to_next_page(reports)
+                                self.go_to_next_page(reports, 1, username)
                             elif action == "p" or action == "P":
-                                self.go_to_previous_page(reports)
+                                self.go_to_previous_page(reports, 1, username)
                             elif action == "a" or action == "A":
                                 self.add_report(username)
                                 self.display_reports(reports)
@@ -301,7 +306,6 @@ class Utils:
                     self.view_treatmentplan_patient(username) # finire
 
                 if choice == 3:
-                    self.show_page(patients)
                     return
                 
                 else:

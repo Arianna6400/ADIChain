@@ -354,16 +354,16 @@ class CommandLineInterface:
 
                         patients = self.controller.get_patients()
 
-                        self.util.show_page(patients)
+                        self.util.show_page(patients, 0, username)
 
                         while len(patients) > 0:
 
                             action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: \n")
 
                             if action == "n" or action == "N":
-                                self.util.go_to_next_page(patients)
+                                self.util.go_to_next_page(patients, 0, username)
                             elif action == "p" or action == "P":
-                                self.util.go_to_previous_page(patients)
+                                self.util.go_to_previous_page(patients, 0, username)
                             elif action == "s" or action == "S":
                                 self.util.handle_selection(patients)
                             elif action == "q" or action == "Q":
@@ -413,7 +413,7 @@ class CommandLineInterface:
                 choice = int(input("Choose an option: "))
                 
                 if choice == 1:
-                    self.patient_medical_data(patient_name)
+                    self.util.patient_medical_data(patient_name)
 
                 elif choice == 2:
                     self.util.update_profile(username, "Caregiver")
@@ -456,7 +456,7 @@ class CommandLineInterface:
                 choice = int(input('Enter your choice: '))
 
                 if choice == 1:
-                    self.patient_medical_data(username)
+                    self.util.patient_medical_data(username)
                     
                 elif choice == 2:
                     self.view_patientview(username)
