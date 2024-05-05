@@ -298,7 +298,7 @@ class Utils:
                     #self.view_treatmentplan(username)
 
                 if choice == 2:
-                    self.view_reportslist_patient(username) # finire
+                    self.view_treatmentplan_patient(username) # finire
 
                 if choice == 3:
                     self.show_page(patients)
