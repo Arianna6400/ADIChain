@@ -360,13 +360,13 @@ class CommandLineInterface:
 
                             action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: \n")
 
-                            if action == "n":
+                            if action == "n" or action == "N":
                                 self.util.go_to_next_page(patients)
-                            elif action == "p":
+                            elif action == "p" or action == "P":
                                 self.util.go_to_previous_page(patients)
-                            elif action == "s":
+                            elif action == "s" or action == "S":
                                 self.util.handle_selection(patients)
-                            elif action == "q":
+                            elif action == "q" or action == "Q":
                                 print("Exiting...\n")
                                 self.medic_menu(username)
                             else:

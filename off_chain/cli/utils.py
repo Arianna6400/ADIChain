@@ -214,23 +214,23 @@ class Utils:
         console = Console()
         console.print(table)
 
-    def go_to_next_page(self, patients):
+    def go_to_next_page(self, list):
 
-        total_pages = math.ceil(len(patients) / self.PAGE_SIZE)
+        total_pages = math.ceil(len(list) / self.PAGE_SIZE)
         if self.current_page < total_pages - 1:
             self.current_page += 1
-            self.show_page(patients)
+            self.show_page(list)
         else:
-            self.show_page(patients)
+            self.show_page(list)
             print(Fore.RED + "\nNo more patients in the system." + Style.RESET_ALL)
             return
 
-    def go_to_previous_page(self, patients):
+    def go_to_previous_page(self, list):
         if self.current_page > 0:
             self.current_page -= 1
-            self.show_page(patients)
+            self.show_page(list)
         else:
-            self.show_page(patients)
+            self.show_page(list)
             print(Fore.RED + "\nInvalid action!" + Style.RESET_ALL)
 
     def show_patient_details(self, patient):
@@ -244,16 +244,16 @@ class Utils:
         print(f"Residence: {patient[5]}")
 
     def handle_selection(self, patients):
-        records = self.get_page_records(self.current_page, patients)
+        #records = self.get_page_records(self.current_page, patients)
         print("\nSelect a patient's username to view details:")
-        for i, patient in enumerate(records, start=1):
+        for i, patient in enumerate(patients, start=1):
             print(f"{i}. {patient[1]}")
         selection = input("Enter patient number (or '0' to cancel): ")
         if selection.isdigit():
             selection_index = int(selection) - 1
-            if 0 <= selection_index < len(records):
-                self.show_patient_details(records[selection_index])
-                self.patient_medical_data(records[selection_index][0])
+            if 0 <= selection_index < len(patients):
+                self.show_patient_details(patients[selection_index])
+                self.patient_medical_data(patients[selection_index][0], patients)
         
         # VISUALIZZA REPORTS E TREAT.PLAN come i pazienti
 
@@ -262,7 +262,7 @@ class Utils:
         if records is not None:
             self.display_records(records)
 
-    def patient_medical_data(self, username):
+    def patient_medical_data(self, username, patients):
         while True: 
             print("\nMEDICAL DATA")
             print('\nWhich type of data do you want to consult?')
@@ -279,17 +279,18 @@ class Utils:
                         self.display_reports(reports, username)
                         while len(reports) > 0:
 
-                            action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: \n")
+                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, or 'q' to quit: \n")
 
-                            if action == "n":
+                            if action == "n" or action == "N":
                                 self.go_to_next_page(reports)
-                            elif action == "p":
+                            elif action == "p" or action == "P":
                                 self.go_to_previous_page(reports)
-                            elif action == "s":
-                                self.handle_selection(reports)
-                            elif action == "q":
+                            elif action == "a" or action == "A":
+                                self.add_report(username)
+                                self.display_reports(reports)
+                            elif action == "q" or action == "Q":
                                 print("Exiting...\n")
-                                #self.medic_menu(username)
+                                break
                             else:
                                 print("Invalid input. Please try again. \n")
                         #self.medic_menu(username)
@@ -300,6 +301,7 @@ class Utils:
                     self.view_reportslist_patient(username) # finire
 
                 if choice == 3:
+                    self.show_page(patients)
                     return
                 
                 else:
@@ -307,6 +309,22 @@ class Utils:
 
             except ValueError:
                 print('Wrong input. Please enter a number!')
+
+
+    def add_report(self, username):
+
+        print("\nInsert the information regarding the new report...")
+    
+        analysis = input("\nInsert analysis: ")
+        diagnosis = input("\nInsert diagnosis: ")
+        result_code = self.controller.insert_report(username, "medico", analysis, diagnosis)
+
+        if result_code == 0:
+            print("\nNew report has been saved correctly.")
+        else:
+            print("\nInternal error!")
+
+
 
     '''--------------------------------------------------'''
 
