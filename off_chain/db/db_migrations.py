@@ -8,7 +8,6 @@ cur.execute("DROP TABLE IF EXISTS Patients")
 cur.execute("DROP TABLE IF EXISTS Caregivers")
 cur.execute("DROP TABLE IF EXISTS Reports")
 cur.execute("DROP TABLE IF EXISTS TreatmentPlans")
-cur.execute("DROP TABLE IF EXISTS AccessLog")
 cur.execute('''CREATE TABLE Credentials(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL,
@@ -68,13 +67,6 @@ cur.execute('''CREATE TABLE TreatmentPlans(
             FOREIGN KEY(username_patient) REFERENCES Patients(username),
             FOREIGN KEY(username_medic) REFERENCES Medics(username),
             FOREIGN KEY(username_caregiver) REFERENCES Caregivers(username)
-            );''')
-cur.execute('''CREATE TABLE AccessLog(
-            id_access INTEGER PRIMARY KEY AUTOINCREMENT,
-            id_utente INTEGER NOT NULL,
-            action TEXT NOT NULL,
-            timestamp TEXT NOT NULL,
-            FOREIGN KEY(id_utente) REFERENCES Credentials(id)
             );''')
 con.commit()
 con.close()

@@ -85,13 +85,6 @@ class DatabaseOperations:
             FOREIGN KEY(username_medic) REFERENCES Medics(username),
             FOREIGN KEY(username_caregiver) REFERENCES Caregivers(username)
             );''')
-        self.cur.execute('''CREATE TABLE IF NOT EXISTS AccessLog(
-            id_access INTEGER PRIMARY KEY AUTOINCREMENT,
-            id_utente INTEGER NOT NULL,
-            action TEXT NOT NULL,
-            timestamp TEXT NOT NULL,
-            FOREIGN KEY(id_utente) REFERENCES Credentials(id)
-            );''')
         self.conn.commit()
     
     def register_creds(self, username, hash_password, role, public_key, private_key):
