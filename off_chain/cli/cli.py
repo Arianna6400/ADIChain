@@ -1,8 +1,6 @@
 import getpass
-import math
 import re
 
-import click
 from eth_utils import *
 from eth_keys import *
 from controllers.controller import Controller
@@ -78,21 +76,29 @@ class CommandLineInterface:
                     elif proceed.strip().upper() == "N":
                         print("Deployment cancelled. Please deploy the contract when you are ready to register.")
                         return
-                    else: 
+                    else:
                         print('Wrong input, please insert y or n!')
             elif has_keys.strip().upper() == "Y":
                 break
             else:
                 print('Wrong input, please insert y or n!')
+
         print('Please, enter your wallet credentials.')
+        attempts = 0
         while True:
             public_key = input('Public Key: ')
             private_key = input('Private Key: ')
             confirm_private_key = input('Confirm Private Key: ')
-            #private_key = getpass.getpass('Private Key: ')
-            #confirm_private_key = getpass.getpass('Confirm Private Key: ')
+            
             if private_key == confirm_private_key:
-                if not self.controller.check_keys(public_key, private_key):
+                if self.controller.check_keys(public_key, private_key):
+                    print('A wallet with these keys already exists. Please enter a unique set of keys.')
+                    attempts += 1
+                    if attempts >= 3:
+                        print("Maximum retry attempts reached. Redeploying...")
+                        self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
+                        attempts = 0  # Reset attempts after deployment
+                else:
                     try:
                         pk_bytes = decode_hex(private_key)
                         priv_key = keys.PrivateKey(pk_bytes)
@@ -103,8 +109,6 @@ class CommandLineInterface:
                             break
                     except Exception:
                         print('Oops, there is no wallet with the matching public and private key provided.\n')
-                else:
-                    print('A wallet with these keys already exists. Please enter a unique set of keys.')
             else:
                 print('Private key and confirmation do not match. Try again.\n')
 

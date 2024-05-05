@@ -5,10 +5,6 @@ from colorama import Fore, Style, init
 from rich.console import Console
 from rich.table import Table
 
-
-
-from numpy import uint8
-
 from controllers.controller import Controller
 from controllers.action_controller import ActionController
 from session.session import Session
