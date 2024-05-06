@@ -383,6 +383,7 @@ class CommandLineInterface:
                         confirm = input("\nDo you really want to leave? (Y/n): ").strip().upper()
                         if confirm == 'Y':
                             print("\nThank you for using the service!\n")
+                            self.session.reset_session()
                             #self.print_menu()
                             return
                         else:
@@ -428,6 +429,7 @@ class CommandLineInterface:
                     confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
                     if confirm == 'Y':
                         print("Thank you for using the service!")
+                        self.session.reset_session()
                         #self.print_menu()
                         return
                     else:
@@ -471,6 +473,7 @@ class CommandLineInterface:
                 elif choice == 5:
                     print('Bye Bye!')
                     #self.print_menu()
+                    self.session.reset_session()
                     return
                 else:
                     print('Wrong option. Please enter one of the options listed in the menu!')

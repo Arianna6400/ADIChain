@@ -30,5 +30,8 @@ class Session:
     def get_timeout_left(self):
         return self.__login_error_timestamp - time.time()
 
-
+    def reset_session(self):
+        self.__user = None
+        self.__attempts = 0
+        self.__login_error_timestamp = 0
         
