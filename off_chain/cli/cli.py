@@ -405,10 +405,12 @@ class CommandLineInterface:
 
             caregiver_options = {
                         1: "Consult {}{} medical data".format(patient_name, self.controller.possessive_suffix(patient_name)),
-                        2: "Update your profile",
-                        3: "Update {}{} profile".format(patient_name, self.controller.possessive_suffix(patient_name)),
-                        4: "Change password",
-                        5: "Log out"
+                        2: "View your profile",
+                        3: "Update your profile",
+                        4: "view {}{} profile".format(patient_name, self.controller.possessive_suffix(patient_name)),
+                        5: "Update {}{} profile".format(patient_name, self.controller.possessive_suffix(patient_name)),
+                        6: "Change password",
+                        7: "Log out"
                     }
 
             print("\nMENU")                           
@@ -422,20 +424,25 @@ class CommandLineInterface:
                     self.util.patient_medical_data(patient_name)
 
                 elif choice == 2:
-                    self.util.update_profile(username, "Caregiver")
+                    self.view_caregiverview(username)
 
                 elif choice == 3:
-                    self.util.update_profile(patient_name, "Patient")
+                    self.util.update_profile(username, "Caregiver")
 
                 elif choice == 4:
+                    self.view_patientview(patient_name)
+
+                elif choice == 5:
+                    self.util.update_profile(patient_name, "Patient")
+
+                elif choice == 6:
                     self.util.change_passwd(username, "Caregiver")
             
-                elif choice == 5:                           
+                elif choice == 7:                           
                     confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
                     if confirm == 'Y':
                         print("Thank you for using the service!")
                         self.session.reset_session()
-                        #self.print_menu()
                         return
                     else:
                         print("Returning to the caregiver menu...")
@@ -477,7 +484,6 @@ class CommandLineInterface:
 
                 elif choice == 5:
                     print('Bye Bye!')
-                    #self.print_menu()
                     self.session.reset_session()
                     return
                 else:
@@ -516,9 +522,9 @@ class CommandLineInterface:
         print("Username: ", caregiverview.get_username())
         print("Name: ", caregiverview.get_name())
         print("Lastname: ", caregiverview.get_lastname())
-        print("Patient Username: ", caregiverview.username_patient())
-        print("Patient realltionship: ", caregiverview.get_patient_relationship())
-        print("Caregiver phone: ", caregiverview.get_phone())
+        print("Patient Username: ", caregiverview.get_username_patient())
+        print("Patient relationship: ", caregiverview.get_relationship())
+        print("Phone: ", caregiverview.get_phone())
         input("\nPress Enter to exit\n")
 
     def view_medicview(self, username):

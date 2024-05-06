@@ -24,7 +24,7 @@ class Caregivers(Model):
         return self.lastname
 
     def get_relationship(self):
-        return self.patient_relationship
+        return self.relationship
 
     def get_phone(self):
         return self.phone 
