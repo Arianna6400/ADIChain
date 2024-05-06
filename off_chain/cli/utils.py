@@ -276,24 +276,24 @@ class Utils:
 
                 if choice == 1:
                     reports = self.get_page_reports(self.current_page, username)
-                    if reports is not None:
-                        self.display_reports(reports, username)
-                        while len(reports) > 0:
+                    while len(reports) > 0:
+                        newreports = self.get_page_reports(self.current_page, username)
+                        self.display_reports(newreports, username)
 
-                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, or 'q' to quit: \n")
+                        action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, or 'q' to quit: \n")
 
-                            if action == "n" or action == "N":
-                                self.go_to_next_page(reports, 1, username)
-                            elif action == "p" or action == "P":
-                                self.go_to_previous_page(reports, 1, username)
-                            elif action == "a" or action == "A":
-                                self.add_report(username)
-                                #self.display_reports(reports, username)
-                            elif action == "q" or action == "Q":
-                                print("Exiting...\n")
-                                break
-                            else:
-                                print("Invalid input. Please try again. \n")
+                        if action == "n" or action == "N":
+                            self.go_to_next_page(newreports, 1, username)
+                        elif action == "p" or action == "P":
+                            self.go_to_previous_page(newreports, 1, username)
+                        elif action == "a" or action == "A":
+                            self.add_report(username)
+                            #self.display_reports(newreports, username)
+                        elif action == "q" or action == "Q":
+                            print("Exiting...\n")
+                            break
+                        else:
+                            print("Invalid input. Please try again. \n")
                         #self.medic_menu(username)
 
                     #self.view_treatmentplan(username)
