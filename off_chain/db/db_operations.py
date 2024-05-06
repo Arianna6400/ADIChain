@@ -79,14 +79,14 @@ class DatabaseOperations:
             );''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS TreatmentPlans(
             id_treament_plan INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT NOT NULL
+            date TEXT NOT NULL,
             username_patient TEXT NOT NULL,
             username_medic TEXT NOT NULL,
             description TEXT NOT NULL,
             start_date TEXT NOT NULL,
             end_date TEXT NOT NULL,
             FOREIGN KEY(username_patient) REFERENCES Patients(username),
-            FOREIGN KEY(username_medic) REFERENCES Medics(username),
+            FOREIGN KEY(username_medic) REFERENCES Medics(username)
             );''')
         self.conn.commit()
     
