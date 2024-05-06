@@ -176,6 +176,23 @@ class Utils:
                     break
                 return
         return reports[start_index:end_index]
+    
+    def get_page_treatplan(self, page_index, username):
+        start_index = page_index * self.PAGE_SIZE
+        end_index = start_index + self.PAGE_SIZE
+
+        treats = self.controller.get_treatplan_list_by_username(username)
+        if not treats:
+            print(f"\n{username} doesn't have any treatment plan yet.")
+            while True:
+                new_treat = input("\nDo you want to add one? (Y/n) ").strip().upper()
+                if new_treat == 'Y':
+                    analysis = input("\nInsert analysis: ")
+                    diagnosis = input("\nInsert diagnosis: ")
+                    self.controller.insert_report(username, "medico", analysis, diagnosis)
+                    break
+                return
+        return treats[start_index:end_index]
 
     def display_records(self, records):
 
@@ -210,8 +227,19 @@ class Utils:
         console = Console()
         console.print(table)
 
-    def go_to_next_page(self, list, flag, username):
+    def view_reports(self, reports):
+        #records = self.get_page_records(self.current_page, patients)
+        print("\nSelect the number of the report you'd like to visualize:")
+        for report in enumerate(reports, start=1):
+            print(f"- {report.get_id_report()}")
+        selection = input("Enter report number (or '0' to cancel): ")
+        if selection.isdigit():
+            selection_index = int(selection) - 1
+            if 0 <= selection_index < len(reports):
+                self.show_report_details(reports[selection_index])
+                #self.patient_medical_data(reports[selection_index][0])
 
+    def go_to_next_page(self, list, flag, username):
         total_pages = math.ceil(len(list) / self.PAGE_SIZE)
         if self.current_page < total_pages - 1:
             self.current_page += 1
@@ -238,6 +266,12 @@ class Utils:
         print(f"Age: {patient[3]}")
         print(f"Place of birth: {patient[4]}")
         print(f"Residence: {patient[5]}")
+
+    def show_report_details(self, report):
+
+        print(f"\nReport issued on {report.get_date()} by the medic {report.get_username_medic()}:")
+        print(f"\nAnalyses: {report.get_analyses()}")
+        print(f"\nDiagnosis: {report.get_diagnosis()}")
 
     def handle_selection(self, patients):
         #records = self.get_page_records(self.current_page, patients)
@@ -280,7 +314,7 @@ class Utils:
                         newreports = self.get_page_reports(self.current_page, username)
                         self.display_reports(newreports, username)
 
-                        action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, or 'q' to quit: \n")
+                        action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, 'v' to visualize one, or 'q' to quit: \n")
 
                         if action == "n" or action == "N":
                             self.go_to_next_page(newreports, 1, username)
@@ -290,6 +324,9 @@ class Utils:
                             self.add_report(username)
                             break
                             #self.display_reports(newreports, username)
+                        elif action == "v" or action == "V":
+                            self.view_reports(newreports)
+                            break
                         elif action == "q" or action == "Q":
                             print("Exiting...\n")
                             break
@@ -300,7 +337,26 @@ class Utils:
                     #self.view_treatmentplan(username)
 
                 if choice == 2:
-                    self.view_treatmentplan_patient(username) # finire
+                    treats = self.get_page_treatplan(self.current_page, username)
+                    while len(treats) > 0:
+                        newtreats = self.get_page_treatplan(self.current_page, username)
+                        self.display_treats(newtreats, username)
+
+                        action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new treatment plan, 'v' to visualize one, or 'q' to quit: \n")
+
+                        if action == "n" or action == "N":
+                            self.go_to_next_page(newtreats, 1, username)
+                        elif action == "p" or action == "P":
+                            self.go_to_previous_page(newtreats, 1, username)
+                        elif action == "a" or action == "A":
+                            self.add_report(username)
+                            break
+                            #self.display_reports(newtreats, username)
+                        elif action == "q" or action == "Q":
+                            print("Exiting...\n")
+                            break
+                        else:
+                            print("Invalid input. Please try again. \n")
 
                 if choice == 3:
                     break
