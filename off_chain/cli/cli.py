@@ -310,10 +310,13 @@ class CommandLineInterface:
                     print('\nYou have succesfully logged in!\n')
                     if user_type == "MEDIC":
                         self.medic_menu(username)
+                        return
                     elif user_type == "CAREGIVER":
                         self.caregiver_menu(username)
+                        return
                     elif user_type == "PATIENT":
                         self.patient_menu(username)
+                        return
                     else:
                         print("Error: User type is not recognized.")
                         return -1
@@ -380,7 +383,8 @@ class CommandLineInterface:
                         confirm = input("\nDo you really want to leave? (Y/n): ").strip().upper()
                         if confirm == 'Y':
                             print("\nThank you for using the service!\n")
-                            self.print_menu()
+                            #self.print_menu()
+                            return
                         else:
                             print("Invalid choice! Please try again.")
 
@@ -424,7 +428,8 @@ class CommandLineInterface:
                     confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
                     if confirm == 'Y':
                         print("Thank you for using the service!")
-                        self.print_menu()
+                        #self.print_menu()
+                        return
                     else:
                         print("Returning to the caregiver menu...")
 
@@ -465,7 +470,8 @@ class CommandLineInterface:
 
                 elif choice == 5:
                     print('Bye Bye!')
-                    self.print_menu()
+                    #self.print_menu()
+                    return
                 else:
                     print('Wrong option. Please enter one of the options listed in the menu!')
 
