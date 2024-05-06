@@ -1,6 +1,5 @@
 from datetime import datetime
 import re
-import click
 
 from db.db_operations import DatabaseOperations
 from session.session import Session
@@ -72,12 +71,19 @@ class Controller:
             print('Report inserted correctly.')
 
         return insertion_code
+    
+    def insert_treatment_plan(self, username_patient: str,  username_medic: str, description: str, start_date: str, end_date: str):
+        insertion_code = self.db_ops.insert_treatment_plan(username_patient, username_medic, description, start_date, end_date)
+
+        if insertion_code == 0:
+            print('Treatment plan inserted correctly.')
+
+        return insertion_code
 
     def check_null_info(self, info):
         if info: return True
         else: return False
         
-
     def check_birthdate_format(self, date_string):
         try:
             date = datetime.strptime(date_string, '%Y-%m-%d')
@@ -157,6 +163,9 @@ class Controller:
     
     def get_reports_list_by_username(self, username):
         return self.db_ops.get_reports_list_by_username(username)
+    
+    def get_treatplan_list_by_username(self, username):
+        return self.db_ops.get_treatplan_list_by_username(username)
     
     # def get_patient_info(self, username):
     #     return self.db_ops.get_patient_info(username)

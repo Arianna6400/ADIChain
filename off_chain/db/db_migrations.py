@@ -59,15 +59,14 @@ cur.execute('''CREATE TABLE Reports(
             );''')
 cur.execute('''CREATE TABLE TreatmentPlans(
             id_treament_plan INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL,
             username_patient TEXT NOT NULL,
             username_medic TEXT NOT NULL,
-            username_caregiver TEXT,
             description TEXT NOT NULL,
             start_date TEXT NOT NULL,
             end_date TEXT NOT NULL,
             FOREIGN KEY(username_patient) REFERENCES Patients(username),
             FOREIGN KEY(username_medic) REFERENCES Medics(username),
-            FOREIGN KEY(username_caregiver) REFERENCES Caregivers(username)
             );''')
 con.commit()
 con.close()

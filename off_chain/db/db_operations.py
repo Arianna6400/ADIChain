@@ -79,15 +79,14 @@ class DatabaseOperations:
             );''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS TreatmentPlans(
             id_treament_plan INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL
             username_patient TEXT NOT NULL,
             username_medic TEXT NOT NULL,
-            username_caregiver TEXT,
             description TEXT NOT NULL,
             start_date TEXT NOT NULL,
             end_date TEXT NOT NULL,
             FOREIGN KEY(username_patient) REFERENCES Patients(username),
             FOREIGN KEY(username_medic) REFERENCES Medics(username),
-            FOREIGN KEY(username_caregiver) REFERENCES Caregivers(username)
             );''')
         self.conn.commit()
     
@@ -187,6 +186,25 @@ class DatabaseOperations:
                                 username_medic,
                                 analyses,
                                 diagnosis
+                            ))
+            self.conn.commit()
+            return 0
+        except sqlite3.IntegrityError:
+            return -1
+        
+    def insert_treatment_plan(self, username_patient, username_medic, description, start_date, end_date):
+        try:
+            self.cur.execute("""
+                            INSERT INTO TreatmentPlans
+                            (date, username_patient, username_medic, description, start_date, end_date)
+                            VALUES (?, ?, ?, ?, ?, ?) """,
+                            (
+                                self.today_date,
+                                username_patient, 
+                                username_medic,
+                                description,
+                                start_date,
+                                end_date
                             ))
             self.conn.commit()
             return 0
@@ -400,6 +418,13 @@ class DatabaseOperations:
                                     FROM Reports
                                     WHERE username_patient =?""", (username,))       
         return [Reports(*report) for report in reportslist]
+    
+    def get_treatplan_list_by_username(self, username):
+        treatmentplanslist = self.cur.execute("""
+                                    SELECT *
+                                    FROM TreatmentPlans
+                                    WHERE username_patient =?""", (username,))       
+        return [TreatmentPlans(*treatmentplan) for treatmentplan in treatmentplanslist]
     
     def get_patients_for_doctor(self, username):
             query = """
