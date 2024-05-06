@@ -117,7 +117,6 @@ class ActionController:
             raise ValueError("A valid Ethereum address must be provided as 'from_address'.")
         report_functions = {
             'add': 'addReport',
-            'update': 'updateReport'
         }
         function_name = report_functions.get(action)
         if not function_name:

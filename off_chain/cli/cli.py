@@ -407,7 +407,7 @@ class CommandLineInterface:
                         1: "Consult {}{} medical data".format(patient_name, self.controller.possessive_suffix(patient_name)),
                         2: "View your profile",
                         3: "Update your profile",
-                        4: "view {}{} profile".format(patient_name, self.controller.possessive_suffix(patient_name)),
+                        4: "View {}{} profile".format(patient_name, self.controller.possessive_suffix(patient_name)),
                         5: "Update {}{} profile".format(patient_name, self.controller.possessive_suffix(patient_name)),
                         6: "Change password",
                         7: "Log out"
