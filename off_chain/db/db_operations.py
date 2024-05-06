@@ -1,3 +1,4 @@
+import datetime
 import sqlite3
 import os
 import hashlib
@@ -22,6 +23,8 @@ class DatabaseOperations:
         self.r_param = 8
         self.p_param = 1
         self.dklen_param = 64
+
+        self.today_date = datetime.date.today()
 
     def _create_new_table(self):
 
@@ -66,6 +69,7 @@ class DatabaseOperations:
             );''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Reports(
             id_report INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL,
             username_patient TEXT NOT NULL,
             username_medic TEXT NOT NULL,
             analyses TEXT NOT NULL,
@@ -175,9 +179,10 @@ class DatabaseOperations:
         try:
             self.cur.execute("""
                             INSERT INTO Reports
-                            (username_patient, username_medic, analyses, diagnosis)
-                            VALUES (?, ?, ?, ?) """,
+                            (date, username_patient, username_medic, analyses, diagnosis)
+                            VALUES (?, ?, ?, ?, ?) """,
                             (
+                                self.today_date,
                                 username_patient, 
                                 username_medic,
                                 analyses,

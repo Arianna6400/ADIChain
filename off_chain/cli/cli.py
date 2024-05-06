@@ -273,22 +273,23 @@ class CommandLineInterface:
             if self.controller.check_null_info(lastname): break
             else: print('Please insert information.')
         while True:
-            relationship = input('What kind of relationship there is between you and the patient: ')
-            if self.controller.check_null_info(relationship): break
-            else: print('Please insert information.')
-        while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): 
                 if self.controller.check_unique_phone_number(phone) == 0: break
                 else: print("This phone number has already been inserted. \n")
             else: print("Invalid phone number format.\n")
 
-        print('Now register patient information')
+        print('\nNow register patient information')
         while True:
             username_patient = input('Insert the patient username: ')
             if self.controller.check_username(username_patient) == 0: break
             else: print('Your username has been taken.\n')
         self.insert_patient_info(username_patient, "PATIENT", 0)
+
+        while True:
+            relationship = input('What kind of relationship there is between you and the patient: ')
+            if self.controller.check_null_info(relationship): break
+            else: print('Please insert information.')
 
         from_address_caregiver = self.controller.get_public_key_by_username(username)
         self.act_controller.register_entity('caregiver', name, lastname, from_address=from_address_caregiver)

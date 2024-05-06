@@ -198,13 +198,13 @@ class Utils:
         possessive_suffix = self.controller.possessive_suffix(username)
         table = Table(title=f"{username}{possessive_suffix} reports")
 
-        columns = ["id_report", "username_patient", "username_medic", "analysis", "diagnosis"]
+        columns = ["id_report", "date", "username_patient", "username_medic", "analysis", "diagnosis"]
 
         for column in columns:
             table.add_column(column)
 
         for report in reports:
-            row = [str(report.get_id_report()), report.get_username_patient(), report.get_username_medic(), report.get_analyses(), report.get_diagnosis()]
+            row = [str(report.get_id_report()), report.get_date(), report.get_username_patient(), report.get_username_medic(), report.get_analyses(), report.get_diagnosis()]
             table.add_row(*row, style = 'bright_green')
 
         console = Console()
@@ -288,7 +288,7 @@ class Utils:
                                 self.go_to_previous_page(reports, 1, username)
                             elif action == "a" or action == "A":
                                 self.add_report(username)
-                                self.display_reports(reports, username)
+                                #self.display_reports(reports, username)
                             elif action == "q" or action == "Q":
                                 print("Exiting...\n")
                                 break
@@ -309,7 +309,6 @@ class Utils:
 
             except ValueError:
                 print('Wrong input. Please enter a number!')
-
 
     def add_report(self, username):
 

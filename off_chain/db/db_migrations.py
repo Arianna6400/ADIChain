@@ -49,6 +49,7 @@ cur.execute('''CREATE TABLE Caregivers(
             );''')
 cur.execute('''CREATE TABLE Reports(
             id_report INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL,
             username_patient TEXT NOT NULL,
             username_medic TEXT NOT NULL,
             analyses TEXT NOT NULL,
