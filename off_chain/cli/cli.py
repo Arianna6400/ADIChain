@@ -63,25 +63,16 @@ class CommandLineInterface:
             return
 
     def registration_menu(self):
-        exit_flag = True
-        while exit_flag:
-            has_keys = input("Do you already have the keys? (Y/n): ")
-            if has_keys.strip().upper() == "N":
-                while True:
-                    proceed = input("You need to deploy and initialize the contract. Do you want to proceed with deployment? (Y/n): ")
-                    if proceed.strip().upper() == "Y":
-                        self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
-                        exit_flag = False
-                        break
-                    elif proceed.strip().upper() == "N":
-                        print("Deployment cancelled. Please deploy the contract when you are ready to register.")
-                        return
-                    else:
-                        print('Wrong input, please insert y or n!')
-            elif has_keys.strip().upper() == "Y":
-                break
+        while True:
+            proceed = input("In order to register, you need to deploy. Do you want to proceed with deployment and initialization of the contract? (Y/n): ")
+            if proceed.strip().upper() == "Y":
+                self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
+                break  # Exit the loop after deployment
+            elif proceed.strip().upper() == "N":
+                print("Deployment cancelled. Please deploy the contract when you are ready to register.")
+                return  # Return from the function to cancel
             else:
-                print('Wrong input, please insert y or n!')
+                print('Wrong input, please insert Y or N!')
 
         print('Please, enter your wallet credentials.')
         attempts = 0
@@ -319,10 +310,13 @@ class CommandLineInterface:
                     print('\nYou have succesfully logged in!\n')
                     if user_type == "MEDIC":
                         self.medic_menu(username)
+                        return
                     elif user_type == "CAREGIVER":
                         self.caregiver_menu(username)
+                        return
                     elif user_type == "PATIENT":
                         self.patient_menu(username)
+                        return
                     else:
                         print("Error: User type is not recognized.")
                         return -1
@@ -389,7 +383,8 @@ class CommandLineInterface:
                         confirm = input("\nDo you really want to leave? (Y/n): ").strip().upper()
                         if confirm == 'Y':
                             print("\nThank you for using the service!\n")
-                            self.print_menu()
+                            #self.print_menu()
+                            return
                         else:
                             print("Invalid choice! Please try again.")
 
@@ -433,7 +428,8 @@ class CommandLineInterface:
                     confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
                     if confirm == 'Y':
                         print("Thank you for using the service!")
-                        self.print_menu()
+                        #self.print_menu()
+                        return
                     else:
                         print("Returning to the caregiver menu...")
 
@@ -474,7 +470,8 @@ class CommandLineInterface:
 
                 elif choice == 5:
                     print('Bye Bye!')
-                    self.print_menu()
+                    #self.print_menu()
+                    return
                 else:
                     print('Wrong option. Please enter one of the options listed in the menu!')
 
