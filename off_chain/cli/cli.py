@@ -140,13 +140,15 @@ class CommandLineInterface:
                     print("You have to select a role between Caregiver (C), Medic (M) or Patient (P). Retry\n")
         
             while True:
-                password = input('Password: ')
-                #password = getpass.getpass('Password: ')
-                passwd_regex = r'^.{8,50}$'
-                #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
-                if not re.fullmatch(passwd_regex, password):
-                    print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
-                
+                while True:
+                    password = input('Password: ')
+                    #password = getpass.getpass('Password: ')
+                    passwd_regex = r'^.{8,50}$'
+                    #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
+                    if not re.fullmatch(passwd_regex, password):
+                        print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
+                    else: break
+
                 confirm_password = input('Confirm password: ')
                 #confirm_password = getpass.getpass('Confirm Password: ')
                 
