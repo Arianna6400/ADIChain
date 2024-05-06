@@ -269,16 +269,13 @@ class DatabaseOperations:
                                      WHERE Caregivers.username = ?""", (username,)).fetchone()
             if user is not None:
                 return Caregivers(*user)
-            #    return caregiver
-            #return user
-            #return user
         return None
     
     def get_role_by_username(self, username):
         role = self.cur.execute("""
-                                    SELECT role
-                                    FROM Credentials
-                                    WHERE Credentials.username = ?""", (username,))
+                                SELECT role
+                                FROM Credentials
+                                WHERE username = ?""", (username,))
         role = self.cur.fetchone()  
         if role:
             return role[0]

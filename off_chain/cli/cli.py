@@ -338,9 +338,10 @@ class CommandLineInterface:
     def medic_menu(self, username):
         medic_options = {
             1: "Choose patient",
-            2: "Update profile",
-            3: "Change password",
-            4: "Log out"
+            2: "View profile",
+            3: "Update profile",
+            4: "Change password",
+            5: "Log out"
         }
 
         while True:
@@ -374,19 +375,21 @@ class CommandLineInterface:
                                 print("Invalid input. Please try again. \n")
                         self.medic_menu(username)
 
-                    elif choice == 2:                           
+                    elif choice == 2:
+                        self.view_medicview(username)
+
+                    elif choice == 3:                           
                         print("Update profile function")
                         self.util.update_profile(username, "Medic")
                 
-                    elif choice == 3:
+                    elif choice == 4:
                         self.util.change_passwd(username, "Medic")
 
-                    elif choice == 4:
+                    elif choice == 5:
                         confirm = input("\nDo you really want to leave? (Y/n): ").strip().upper()
                         if confirm == 'Y':
                             print("\nThank you for using the service!\n")
                             self.session.reset_session()
-                            #self.print_menu()
                             return
                         else:
                             print("Invalid choice! Please try again.")
