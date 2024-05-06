@@ -198,13 +198,13 @@ class Utils:
         possessive_suffix = self.controller.possessive_suffix(username)
         table = Table(title=f"{username}{possessive_suffix} reports")
 
-        columns = ["id_report", "date", "username_patient", "username_medic", "analysis", "diagnosis"]
-
+        columns = ["id_report", "date", "username_medic", "analysis", "diagnosis"]
+        #IDREPORT da visualizzare diversamente
         for column in columns:
             table.add_column(column)
 
         for report in reports:
-            row = [str(report.get_id_report()), report.get_date(), report.get_username_patient(), report.get_username_medic(), report.get_analyses(), report.get_diagnosis()]
+            row = [str(report.get_id_report()), report.get_date(), report.get_username_medic(), report.get_analyses(), report.get_diagnosis()]
             table.add_row(*row, style = 'bright_green')
 
         console = Console()
@@ -288,6 +288,7 @@ class Utils:
                             self.go_to_previous_page(newreports, 1, username)
                         elif action == "a" or action == "A":
                             self.add_report(username)
+                            break
                             #self.display_reports(newreports, username)
                         elif action == "q" or action == "Q":
                             print("Exiting...\n")
@@ -302,7 +303,7 @@ class Utils:
                     self.view_treatmentplan_patient(username) # finire
 
                 if choice == 3:
-                    return
+                    break
                 
                 else:
                     print('Wrong option. Please enter one of the options listed in the menu!')
