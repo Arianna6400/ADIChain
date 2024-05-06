@@ -261,7 +261,7 @@ class Utils:
         #records = self.get_page_records(self.current_page, patients)
         print("\nSelect the number of the report you'd like to visualize:")
         for report in enumerate(reports, start=1):
-            print(f"- {report.get_id_report()}")
+            print(f"- {report[0]}")
         selection = input("Enter report number (or '0' to cancel): ")
         if selection.isdigit():
             selection_index = int(selection) - 1
