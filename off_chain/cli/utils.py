@@ -196,11 +196,13 @@ class Utils:
                     else: 
                         while True:
                             start_date = input("\nEnter the starting date (YYYY-MM-DD): ")
-                            if self.controller.check_birthdate_format(start_date): break
+                            if self.controller.check_tpdate_format(start_date): break
                             else: print("Invalid date or incorrect format.")
                     while True:
                         end_date = input("\nEnter the ending date (YYYY-MM-DD): ")
-                        if self.controller.check_birthdate_format(end_date): break
+                        if self.controller.check_birthdate_format(end_date): 
+                            if self.controller.check_date_order(start_date, end_date): break
+                            else: print("The second date cannot come after the first date.")
                         else: print("Invalid date or incorrect format.")
                     self.controller.insert_treatment_plan(username, "medico", description, start_date, end_date)
                     break

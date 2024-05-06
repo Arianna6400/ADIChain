@@ -95,6 +95,29 @@ class Controller:
         except ValueError:
             return False
         
+    def check_tpdate_format(self, date_string):
+        try:
+            date = datetime.strptime(date_string, '%Y-%m-%d')
+            current_date = datetime.now()
+            if date >= current_date: 
+                return True
+            else:
+                return False
+        except ValueError:
+            return False
+        
+    def check_date_order(self, first_date_string, second_date_string):
+        try:
+            first_date = datetime.strptime(first_date_string, '%Y-%m-%d')
+            second_date = datetime.strptime(second_date_string, '%Y-%m-%d')
+            if second_date > first_date:  
+                return True
+            else:
+                return False
+        except ValueError:
+            return False
+    
+        
     def check_phone_number_format(self, phone_number):
         if phone_number.replace('-', '').replace(' ', '').isdigit():
             if 7 <= len(phone_number) <= 15:
