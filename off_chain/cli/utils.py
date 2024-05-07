@@ -145,7 +145,6 @@ class Utils:
 
         us.save()
 
-
     '''
     -----------------------------------------------------
     Funzioni di gestione della visualizzazione del menù
@@ -257,28 +256,38 @@ class Utils:
         console.print(table)
 
     def view_reports(self, reports):
-        #records = self.get_page_records(self.current_page, patients)
-        print("\nSelect the number of the report you'd like to visualize:")
-        for report in enumerate(reports, start=1):
-            print(f"- {report[0]}")
-        selection = input("Enter report number (or '0' to cancel): ")
-        if selection.isdigit():
-            selection_index = int(selection) - 1
-            if 0 <= selection_index < len(reports):
-                self.show_report_details(reports[selection_index])
-                #self.patient_medical_data(reports[selection_index][0])
+        while True:
+            print("\nSelect the number of the report you'd like to visualize:")
+            i = 1
+            for i, report in enumerate(reports, start = i):
+                print(f"- {i}")
+            try:
+                selection = int(input("Enter report number (or '0' to cancel): "))
+                if 0 < selection <= i:
+                    selection_index = int(selection) - 1
+                    if 0 <= selection_index < len(reports):
+                        self.show_report_details(reports[selection_index])
+                        #break
+                elif selection == 0: break
+                else: print("\nInvalid input, try again!")
+            except: print("Invalid input!")
 
     def view_treatment_plan(self, treats):
-        #records = self.get_page_records(self.current_page, patients)
-        print("\nSelect the number of the treatment plan you'd like to visualize:")
-        for treat in enumerate(treats, start=1):
-            print(f"- {treat[0]}")
-        selection = input("Enter treatment plan number (or '0' to cancel): ")
-        if selection.isdigit():
-            selection_index = int(selection) - 1
-            if 0 <= selection_index < len(treats):
-                self.show_treatment_plan_details(treats[selection_index])
-                #self.patient_medical_data(reports[selection_index][0])
+        while True:
+            print("\nSelect the number of the treatment plan you'd like to visualize:")
+            i = 1
+            for i, treat in enumerate(treats, start = i):
+                print(f"- {i}")
+            try:
+                selection = int(input("Enter treatment plan number (or '0' to cancel): "))
+                if 0 < selection <= i:
+                    selection_index = int(selection) - 1
+                    if 0 <= selection_index < len(treats):
+                        self.show_treatment_plan_details(treats[selection_index])
+                        #break
+                elif selection == 0: break
+                else: print("\nInvalid input, try again!")
+            except: print("Invalid input!")
 
     def go_to_next_page(self, list, flag, username):
         total_pages = math.ceil(len(list) / self.PAGE_SIZE)
@@ -313,6 +322,7 @@ class Utils:
         print(f"\nReport issued on {report.get_date()} by the medic {report.get_username_medic()}:")
         print(f"\nAnalyses: {report.get_analyses()}")
         print(f"\nDiagnosis: {report.get_diagnosis()}")
+        input("\nPress Enter to exit\n")
 
     def show_treatment_plan_details(self, treat):
 
@@ -320,6 +330,7 @@ class Utils:
         print(f"\nDescription: {treat.get_description()}")
         print(f"\nTreatment plan's start: {treat.get_start_date()}")
         print(f"\nTreatment plan's end: {treat.get_end_date()}")
+        input("\nPress Enter to exit\n")
 
     def handle_selection(self, patients):
         while True:
@@ -338,8 +349,7 @@ class Utils:
                 elif selection == 0: break
                 else: print("\nInvalid input, try again!")
             except: print("Invalid input!")
-
-        
+      
     def show_page(self, list, flag, username):
         if flag == 0:
             records = self.get_page_records(self.current_page, list)
@@ -379,11 +389,8 @@ class Utils:
                             self.go_to_previous_page(newreports, 1, username)
                         elif action == "a" or action == "A":
                             self.add_report(username)
-                            break
-                            #self.display_reports(newreports, username)
                         elif action == "v" or action == "V":
                             self.view_reports(newreports)
-                            break
                         elif action == "q" or action == "Q":
                             print("Exiting...\n")
                             break
@@ -404,11 +411,9 @@ class Utils:
                             self.go_to_previous_page(treats, 2, username)
                         elif action == "a" or action == "A":
                             self.add_treatment_plan(username)
-                            break
                             #self.display_treatment_plans(newtreats, username)
                         elif action == "v" or action == "V":
                             self.view_treatment_plan(treats)
-                            break
                         elif action == "q" or action == "Q":
                             print("Exiting...\n")
                             break
