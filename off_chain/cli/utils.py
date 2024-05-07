@@ -185,8 +185,8 @@ class Utils:
     
     def get_page_treatplan(self, page_index, username):
 
-        user = self.session.get_user()
-        username_med = user.get_username()
+        user_auth = self.session.get_user()
+        username_auth = user_auth.get_username()
 
         start_index = page_index * self.PAGE_SIZE
         end_index = start_index + self.PAGE_SIZE
@@ -194,7 +194,7 @@ class Utils:
         treats = self.controller.get_treatplan_list_by_username(username)
         if not treats:
             print(f"\n{username} doesn't have any treatment plan yet.")
-            if self.controller.get_role_by_username(username) == "MEDIC":
+            if self.controller.get_role_by_username(username_auth) == "MEDIC":
                 while True:
                     new_treat = input("\nDo you want to add one? (Y/n) ").strip().upper()
                     if new_treat == 'Y':
@@ -335,8 +335,8 @@ class Utils:
                         self.show_patient_details(patients[selection_index])
                         self.patient_medical_data(patients[selection_index][0])
                         break
-                else: 
-                    print("\nInvalid input, try again!")
+                elif selection == 0: break
+                else: print("\nInvalid input, try again!")
             except: print("Invalid input!")
 
         
@@ -391,7 +391,7 @@ class Utils:
                             print("Invalid input. Please try again. \n")
 
                 elif choice == 2:
-                    treats = self.controller.get_treatplan_list_by_username(username)
+                    treats = self.get_page_treatplan(self.current_page, username)
                     while len(treats) > 0:
                         newtreats = self.get_page_treatplan(self.current_page, username)
                         self.display_treats(newtreats, username)
