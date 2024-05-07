@@ -25,6 +25,7 @@ contract HealthCareRecords {
     struct Report {
         uint256 reportId;
         address patientAddress;
+        address medicAddress;
         string analysis;
         string diagnosis;
     }
@@ -32,8 +33,8 @@ contract HealthCareRecords {
     struct TreatmentPlan {
         uint256 planId;
         address patientAddress;
+        address medicAddress;
         string treatmentDetails;
-        string medication;
         uint256 startDate;
         uint256 endDate;
     }
@@ -135,23 +136,22 @@ contract HealthCareRecords {
         emit EntityUpdated("Caregiver", msg.sender);
     }
 
-    function addReport(address patientAddress, string memory analysis, string memory diagnosis) public onlyOwner {
-        uint256 reportId = uint256(keccak256(abi.encodePacked(patientAddress, analysis, diagnosis, block.timestamp)));
-        reports[reportId] = Report(reportId, patientAddress, analysis, diagnosis);
+    function addReport(address patientAddress, address medicAddress, string memory analysis, string memory diagnosis) public onlyOwner {
+        uint256 reportId = uint256(keccak256(abi.encodePacked(patientAddress, medicAddress, analysis, diagnosis, block.timestamp)));
+        reports[reportId] = Report(reportId, patientAddress, medicAddress, analysis, diagnosis);
         logAction("Create", msg.sender, "Report added");
     }
 
-    function addTreatmentPlan(address patientAddress, string memory details, string memory medication, uint256 startDate, uint256 endDate) public onlyOwner {
-        uint256 planId = uint256(keccak256(abi.encodePacked(patientAddress, details, medication, block.timestamp))); 
-        treatmentPlans[planId] = TreatmentPlan(planId, patientAddress, details, medication, startDate, endDate);
+    function addTreatmentPlan(address patientAddress, address medicAddress, string memory details, uint256 startDate, uint256 endDate) public onlyOwner {
+        uint256 planId = uint256(keccak256(abi.encodePacked(patientAddress, medicAddress, details, block.timestamp))); 
+        treatmentPlans[planId] = TreatmentPlan(planId, patientAddress, medicAddress, details, startDate, endDate);
         logAction("Create", msg.sender, "Treatment plan added");
     }
 
-    function updateTreatmentPlan(uint256 planId, string memory newDetails, string memory newMedication) public {
+    function updateTreatmentPlan(uint256 planId, string memory newDetails) public {
         require(msg.sender == owner || msg.sender == treatmentPlans[planId].patientAddress, "Unauthorized");
         require(keccak256(abi.encodePacked(treatmentPlans[planId].treatmentDetails)) != keccak256(abi.encodePacked(newDetails)), "No change in treatment details");
         treatmentPlans[planId].treatmentDetails = newDetails;
-        treatmentPlans[planId].medication = newMedication;
         logAction("Update", msg.sender, "Treatment plan updated");
     }
 }

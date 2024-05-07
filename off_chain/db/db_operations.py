@@ -176,12 +176,13 @@ class DatabaseOperations:
         
     def insert_report(self, username_patient, username_medic, analyses, diagnosis):
         try:
+            today_date_str = self.today_date.strftime('%Y-%m-%d')
             self.cur.execute("""
                             INSERT INTO Reports
                             (date, username_patient, username_medic, analyses, diagnosis)
                             VALUES (?, ?, ?, ?, ?) """,
                             (
-                                self.today_date,
+                                today_date_str,
                                 username_patient, 
                                 username_medic,
                                 analyses,
@@ -194,12 +195,13 @@ class DatabaseOperations:
         
     def insert_treatment_plan(self, username_patient, username_medic, description, start_date, end_date):
         try:
+            today_date_str = self.today_date.strftime('%Y-%m-%d')
             self.cur.execute("""
                             INSERT INTO TreatmentPlans
                             (date, username_patient, username_medic, description, start_date, end_date)
                             VALUES (?, ?, ?, ?, ?, ?) """,
                             (
-                                self.today_date,
+                                today_date_str,
                                 username_patient, 
                                 username_medic,
                                 description,
