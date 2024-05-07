@@ -319,16 +319,21 @@ class Utils:
         print(f"\nTreatment plan's end: {treat.get_end_date()}")
 
     def handle_selection(self, patients):
-        #records = self.get_page_records(self.current_page, patients)
-        print("\nSelect a patient's username to view details:")
-        for i, patient in enumerate(patients, start=1):
-            print(f"{i}. {patient[1]}")
-        selection = input("Enter patient number (or '0' to cancel): ")
-        if selection.isdigit():
-            selection_index = int(selection) - 1
-            if 0 <= selection_index < len(patients):
-                self.show_patient_details(patients[selection_index])
-                self.patient_medical_data(patients[selection_index][0])
+        while True:
+            print("\nSelect a patient's username to view details:")
+            i = 1
+            for i, patient in enumerate(patients, start = i):
+                print(f"{i}. {patient[1]}")
+            selection = int(input("Enter patient number (or '0' to cancel): "))
+            if 0 < selection <= i:
+                selection_index = int(selection) - 1
+                if 0 <= selection_index < len(patients):
+                    self.show_patient_details(patients[selection_index])
+                    self.patient_medical_data(patients[selection_index][0])
+                    break
+            else: 
+                print("\nInvalid input, try again!")
+
         
         # VISUALIZZA REPORTS E TREAT.PLAN come i pazienti
 
