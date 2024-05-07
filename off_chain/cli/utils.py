@@ -172,7 +172,7 @@ class Utils:
         reports = self.controller.get_reports_list_by_username(username)
         if not reports:
             print(f"\n{username} doesn't have reports yet.")
-            if self.controller.get_role_by_username(username): 
+            if self.controller.get_role_by_username(username) == 'MEDIC': 
                 while True:
                     new_report = input("\nDo you want to add one? (Y/n) ").strip().upper()
                     if new_report == 'Y':
