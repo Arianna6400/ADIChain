@@ -327,15 +327,17 @@ class Utils:
             i = 1
             for i, patient in enumerate(patients, start = i):
                 print(f"{i}. {patient[1]}")
-            selection = int(input("Enter patient number (or '0' to cancel): "))
-            if 0 < selection <= i:
-                selection_index = int(selection) - 1
-                if 0 <= selection_index < len(patients):
-                    self.show_patient_details(patients[selection_index])
-                    self.patient_medical_data(patients[selection_index][0])
-                    break
-            else: 
-                print("\nInvalid input, try again!")
+            try:
+                selection = int(input("Enter patient number (or '0' to cancel): "))
+                if 0 < selection <= i:
+                    selection_index = int(selection) - 1
+                    if 0 <= selection_index < len(patients):
+                        self.show_patient_details(patients[selection_index])
+                        self.patient_medical_data(patients[selection_index][0])
+                        break
+                else: 
+                    print("\nInvalid input, try again!")
+            except: print("Invalid input!")
 
         
     def show_page(self, list, flag, username):
