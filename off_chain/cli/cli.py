@@ -370,10 +370,12 @@ class CommandLineInterface:
                                 self.util.handle_selection(patients)
                             elif action == "q" or action == "Q":
                                 print("Exiting...\n")
-                                self.medic_menu(username)
+                                #self.medic_menu(username)
+                                break
                             else:
                                 print("Invalid input. Please try again. \n")
-                        self.medic_menu(username)
+                        #self.medic_menu(username)
+                        #break
 
                     elif choice == 2:
                         self.view_medicview(username)

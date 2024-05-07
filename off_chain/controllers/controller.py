@@ -189,6 +189,9 @@ class Controller:
     def get_treatplan_list_by_username(self, username):
         return self.db_ops.get_treatplan_list_by_username(username)
     
+    def get_role_by_username(self, username):
+        return self.db_ops.get_role_by_username(username)
+    
     # def get_patient_info(self, username):
     #     return self.db_ops.get_patient_info(username)
     

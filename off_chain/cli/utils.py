@@ -172,14 +172,15 @@ class Utils:
         reports = self.controller.get_reports_list_by_username(username)
         if not reports:
             print(f"\n{username} doesn't have reports yet.")
-            while True:
-                new_report = input("\nDo you want to add one? (Y/n) ").strip().upper()
-                if new_report == 'Y':
-                    analysis = input("\nInsert analysis: ")
-                    diagnosis = input("\nInsert diagnosis: ")
-                    self.controller.insert_report(username, username_med, analysis, diagnosis)
-                    break
-                return
+            if self.controller.get_role_by_username(username): 
+                while True:
+                    new_report = input("\nDo you want to add one? (Y/n) ").strip().upper()
+                    if new_report == 'Y':
+                        self.add_report(username)
+                        break
+                    elif new_report == 'N': break
+                    else: print("Invalid choice!")
+                    return
         return reports[start_index:end_index]
     
     def get_page_treatplan(self, page_index, username):
@@ -196,22 +197,10 @@ class Utils:
             while True:
                 new_treat = input("\nDo you want to add one? (Y/n) ").strip().upper()
                 if new_treat == 'Y':
-                    description = input("\nInsert description: ")
-                    quest = input("\nDoes the patient have to start the plan today? (Y/n)").strip().upper()
-                    if quest == "Y": start_date = self.today_date
-                    else: 
-                        while True:
-                            start_date = input("\nEnter the starting date (YYYY-MM-DD): ")
-                            if self.controller.check_tpdate_format(start_date): break
-                            else: print("Invalid date or incorrect format.")
-                    while True:
-                        end_date = input("\nEnter the ending date (YYYY-MM-DD): ")
-                        if self.controller.check_birthdate_format(end_date): 
-                            if self.controller.check_date_order(start_date, end_date): break
-                            else: print("The second date cannot come after the first date.")
-                        else: print("Invalid date or incorrect format.")
-                    self.controller.insert_treatment_plan(username, username_med, description, start_date, end_date)
+                    self.add_treatment_plan(username)
                     break
+                elif new_treat == 'N': break
+                else: print("Invalid choice!")
                 return
         return treats[start_index:end_index]
 
