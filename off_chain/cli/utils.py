@@ -372,6 +372,9 @@ class Utils:
             print("2 -- Treatment plans") 
             print("3 -- Undo")
             
+            user_auth = self.session.get_user()
+            role = self.controller.get_role_by_username(user_auth.get_username())
+
             try:
                 choice = int(input('Enter your choice: '))
 
@@ -381,13 +384,16 @@ class Utils:
                         newreports = self.get_page_reports(self.current_page, username)
                         self.display_reports(newreports, username)
 
-                        action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, 'v' to visualize one, or 'q' to quit: \n")
+                        if role == "MEDIC":
+                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, 'v' to visualize one, or 'q' to quit: \n")
+                        else:
+                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'v' to visualize one, or 'q' to quit: \n")
 
                         if action == "n" or action == "N":
                             self.go_to_next_page(newreports, 1, username)
                         elif action == "p" or action == "P":
                             self.go_to_previous_page(newreports, 1, username)
-                        elif action == "a" or action == "A":
+                        elif (action == "a" or action == "A") and role == "MEDIC":
                             self.add_report(username)
                         elif action == "v" or action == "V":
                             self.view_reports(newreports)
@@ -403,17 +409,19 @@ class Utils:
                         newtreats = self.get_page_treatplan(self.current_page, username)
                         self.display_treats(newtreats, username)
 
-                        action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new treatment plan, 'v' to visualize one, or 'q' to quit: \n")
+                        if role == "MEDIC":
+                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new treatment plan, 'v' to visualize one, or 'q' to quit: \n")
+                        else:
+                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'v' to visualize one, or 'q' to quit: \n")
 
                         if action == "n" or action == "N":
-                            self.go_to_next_page(treats, 2, username)
+                            self.go_to_next_page(newtreats, 2, username)
                         elif action == "p" or action == "P":
-                            self.go_to_previous_page(treats, 2, username)
-                        elif action == "a" or action == "A":
+                            self.go_to_previous_page(newtreats, 2, username)
+                        elif (action == "a" or action == "A") and role == "MEDIC":
                             self.add_treatment_plan(username)
-                            #self.display_treatment_plans(newtreats, username)
                         elif action == "v" or action == "V":
-                            self.view_treatment_plan(treats)
+                            self.view_treatment_plan(newtreats)
                         elif action == "q" or action == "Q":
                             print("Exiting...\n")
                             break
@@ -453,13 +461,18 @@ class Utils:
         print("\nInsert the information regarding the new treatment plan...")
     
         description = input("\nInsert description: ")
-        quest = input("\nDoes the patient have to start the plan today? (Y/n)").strip().upper()
-        if quest == "Y": start_date = self.today_date
-        else: 
-            while True:
-                start_date = input("\nEnter the starting date (YYYY-MM-DD): ")
-                if self.controller.check_tpdate_format(start_date): break
-                else: print("Invalid date or incorrect format.")
+        while True:
+            quest = input("\nDoes the patient have to start the plan today? (Y/n)").strip().upper()
+            if quest == "Y": 
+                start_date = self.today_date
+                break
+            elif quest == "N": 
+                while True:
+                    start_date = input("\nEnter the starting date (YYYY-MM-DD): ")
+                    if self.controller.check_tpdate_format(start_date): break
+                    else: print("Invalid date or incorrect format.")
+                break
+            else: print("invalid input!") 
         while True:
             end_date = input("\nEnter the ending date (YYYY-MM-DD): ")
             if self.controller.check_tpdate_format(end_date): 

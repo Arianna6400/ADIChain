@@ -452,6 +452,7 @@ class CommandLineInterface:
             except ValueError:
                     print("Invalid Input! Please enter a valid number.")
             
+    #Patient
     def patient_menu(self, username):
 
         while True: 
@@ -491,7 +492,7 @@ class CommandLineInterface:
             except ValueError:
                 print('Wrong input. Please enter a number!')
 
-    def view_treatmentplan(self, username):     # checkare che esista il piano di cura
+    def view_treatmentplan(self, username):
         treatmentplan = self.controller.get_treatmentplan_by_username(username)
         medic = self.controller.get_medic_by_username(treatmentplan.get_username_medic())
         print("\nTREATMENT PLAN\n")
@@ -501,7 +502,6 @@ class CommandLineInterface:
         print("Description: ", treatmentplan.get_description())
         input("\nPress Enter to exit\n")
 
-    #Patient view
     def view_patientview(self, username):
         patientview = self.controller.get_user_by_username(username)
         print("\nPATIENT INFO\n")
@@ -537,8 +537,6 @@ class CommandLineInterface:
         print("E-mail: ", medicview.get_mail())
         print("Phone: ",medicview.get_phone())
         input("\nPress Enter to exit\n")
-      
-    #sviluppare visualizzazione
 
     def view_reportslist_patient(self, username):
         while True:
@@ -560,13 +558,3 @@ class CommandLineInterface:
                     print('Wrong option. Please enter one of the options listed in the menu!')
             except ValueError:
                     print('Wrong input. Please enter a number!')
-
-    # OPERATIONS 
-
-    # Read_patient's_data 
-    # Write_patient's_data
-    # Modify_patient's_data
-    # Read_my_data
-    # Write_my_data
-    # Update_my_profile
-    # Update_someone's_profile
