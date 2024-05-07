@@ -1,3 +1,9 @@
+"""
+This module is used for setting up and initializing the database for ADIChain.
+It creates all necessary tables including Credentials, Medics, Patients, Caregivers,
+Reports, and Treatment Plans with appropriate relationships and constraints.
+"""
+
 import sqlite3
 
 con = sqlite3.connect("ADIChain")

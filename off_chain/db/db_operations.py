@@ -1,3 +1,8 @@
+"""
+This module handles all database operations for various user roles and their associated data within the system.
+It manages the creation, update, and retrieval of user data through a series of defined methods.
+"""
+
 import datetime
 import sqlite3
 import os
@@ -12,8 +17,15 @@ from models.treatmentplan import TreatmentPlans
 from models.reports import Reports
 
 class DatabaseOperations:
+    """
+    Handles all interactions with the database for user data manipulation and retrieval.
+    This class manages the connection to the database and executes SQL queries to manage the data.
+    """
 
     def __init__(self):
+        """
+        Initializes the database connection and cursor, and creates new tables if they do not exist.
+        """
         self.conn = sqlite3.connect(config.config["db_path"])
         self.cur = self.conn.cursor()
         self._create_new_table()
@@ -26,7 +38,10 @@ class DatabaseOperations:
         self.today_date = datetime.date.today().strftime('%Y-%m-%d')
 
     def _create_new_table(self):
-
+        """
+        Creates necessary tables in the database if they are not already present.
+        This ensures that the database schema is prepared before any operations are performed.
+        """
         self.cur.execute('''CREATE TABLE IF NOT EXISTS Credentials(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL, 
@@ -90,6 +105,17 @@ class DatabaseOperations:
         self.conn.commit()
     
     def register_creds(self, username, hash_password, role, public_key, private_key):
+        """
+        Registers new user credentials in the database.
+        Args:
+            username (str): Username of the user.
+            hash_password (str): Password to be hashed and stored.
+            role (str): Role of the user (e.g., MEDIC, PATIENT, CAREGIVER).
+            public_key (str): Public key for user encryption.
+            private_key (str): Private key for user encryption.
+        Returns:
+            int: 0 if registration is successful, -1 if username already exists.
+        """
         try:
             if self.check_username(username) == 0:
                 hashed_passwd = self.hash_function(hash_password)
@@ -111,11 +137,26 @@ class DatabaseOperations:
             return -1
 
     def check_username(self, username):
+        """
+        Check if a username exists in the Credentials table.
+        Args:
+            username (str): Username to check in the database.
+        Returns:
+            int: 0 if username does not exist, -1 if it does.
+        """
         self.cur.execute("SELECT COUNT(*) FROM Credentials WHERE username = ? UNION ALL SELECT COUNT(*) FROM Patients WHERE username = ?", (username, username,))
         if self.cur.fetchone()[0] == 0: return 0
         else: return -1
 
     def check_unique_phone_number(self, phone):
+        """
+        Checks if a phone number is unique across multiple tables in the database.
+        Args:
+            phone (str): The phone number to check for uniqueness.
+
+        Returns:
+            int: 0 if the phone number is not found in any records (unique), -1 if it is found (not unique).
+        """
         query_patients = "SELECT COUNT(*) FROM Patients WHERE phone = ?"
         self.cur.execute(query_patients, (phone,))
         count_patients = self.cur.fetchone()[0]
@@ -134,6 +175,14 @@ class DatabaseOperations:
             return -1  
         
     def check_unique_email(self, mail):
+        """
+        Checks if an email address is unique within the Medics table in the database.
+        Args:
+            mail (str): The email address to check for uniqueness.
+
+        Returns:
+            int: 0 if the email address is not found in the Medics records (unique), -1 if it is found (not unique).
+        """
         query_medics = "SELECT COUNT(*) FROM Medics WHERE mail = ?"
         self.cur.execute(query_medics, (mail,))
         count_medics = self.cur.fetchone()[0]
@@ -144,6 +193,19 @@ class DatabaseOperations:
             return -1
 
     def key_exists(self, public_key, private_key):
+        """
+        Checks if either a public key or a private key already exists in the Credentials table.
+        Args:
+            public_key (str): The public key to check against existing entries in the database.
+            private_key (str): The private key to check against existing entries in the database.
+
+        Returns:
+            bool: True if either the public or private key is found in the database (indicating they are not unique),
+                  False if neither key is found (indicating they are unique) or an exception occurs during the query.
+        
+        Exceptions:
+            Exception: Catches and prints any exception that occurs during the database operation, returning False.
+        """
         try:
             query = "SELECT public_key, private_key FROM Credentials WHERE public_key=? OR private_key=?"
             existing_users = self.cur.execute(query, (public_key, private_key)).fetchall()
@@ -153,6 +215,25 @@ class DatabaseOperations:
             return False 
         
     def insert_patient(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
+        """
+        Inserts a new patient record into the Patients table in the database.
+        Args:
+            username (str): The unique username for the patient.
+            name (str): The first name of the patient.
+            lastname (str): The last name of the patient.
+            birthday (str): The birth date of the patient in YYYY-MM-DD format.
+            birth_place (str): The birthplace of the patient.
+            residence (str): The current residence address of the patient.
+            autonomous (int): An integer (0 or 1) indicating whether the patient is autonomous.
+            phone (str): The phone number of the patient.
+
+        Returns:
+            int: 0 if the insertion was successful, -1 if an integrity error occurred (e.g., duplicate username).
+
+        Exceptions:
+            sqlite3.IntegrityError: Catches and handles integrity errors from the database if, for instance, the
+                                    username is not unique, preventing the patient's data from being inserted.
+        """
         try:
             self.cur.execute("""
                             INSERT INTO Patients
@@ -174,6 +255,22 @@ class DatabaseOperations:
             return -1
         
     def insert_report(self, username_patient, username_medic, analyses, diagnosis):
+        """
+        Inserts a new medical report into the Reports table in the database.
+        Args:
+            username_patient (str): The username of the patient to whom the report pertains.
+            username_medic (str): The username of the medic who is creating the report.
+            analyses (str): Descriptions of any analyses that were performed as part of the medical evaluation.
+            diagnosis (str): The diagnosis given to the patient based on the analyses.
+
+        Returns:
+            int: 0 if the insertion was successful, -1 if an integrity error occurred, such as duplicate entries
+                or reference integrity issues.
+
+        Exceptions:
+            sqlite3.IntegrityError: Handles integrity errors that occur during the insertion process, typically
+                                    related to database constraints like unique keys or foreign key constraints.
+        """
         try:
             self.cur.execute("""
                             INSERT INTO Reports
@@ -192,6 +289,25 @@ class DatabaseOperations:
             return -1
         
     def insert_treatment_plan(self, username_patient, username_medic, description, start_date, end_date):
+        """
+        Inserts a new treatment plan into the TreatmentPlans table in the database.
+        Args:
+            username_patient (str): The username of the patient for whom the treatment plan is created.
+            username_medic (str): The username of the medic responsible for the treatment plan.
+            description (str): A detailed description of the treatment plan.
+            start_date (datetime.date or str): The start date of the treatment plan. If provided as a datetime.date
+                                            object, it will be formatted to a string.
+            end_date (datetime.date or str): The end date of the treatment plan. If provided as a datetime.date
+                                            object, it will be formatted to a string.
+
+        Returns:
+            int: 0 if the insertion was successful, -1 if an integrity error occurred, which might be due to issues
+                like duplicate entries or database constraints.
+
+        Exceptions:
+            sqlite3.IntegrityError: Handles integrity errors from the database, such as violations of primary key
+                                    constraints or foreign key constraints, ensuring that the database integrity is maintained.
+        """
         try:
             start_date_str = start_date.strftime('%Y-%m-%d') if isinstance(start_date, datetime.date) else start_date
             end_date_str = end_date.strftime('%Y-%m-%d') if isinstance(end_date, datetime.date) else end_date
@@ -213,6 +329,25 @@ class DatabaseOperations:
             return -1
         
     def insert_medic(self, username, name, lastname, birthday, specialization, mail, phone):
+        """
+        Inserts a new medic record into the Medics table in the database.
+        Args:
+            username (str): The unique identifier for the medic.
+            name (str): The first name of the medic.
+            lastname (str): The last name of the medic.
+            birthday (str): The birth date of the medic in YYYY-MM-DD format.
+            specialization (str): The medical specialization or department of the medic.
+            mail (str): The email address of the medic.
+            phone (str): The contact phone number of the medic.
+
+        Returns:
+            int: 0 if the insertion was successful, -1 if an integrity error occurred, such as violating unique constraints
+                or foreign key references.
+
+        Exceptions:
+            sqlite3.IntegrityError: Catches and handles any integrity errors during the insertion process, which typically occur
+                                    due to violation of database constraints like unique keys or foreign key constraints.
+        """
         try:
             self.cur.execute("""
                             INSERT INTO Medics
@@ -233,6 +368,24 @@ class DatabaseOperations:
             return -1
 
     def insert_caregiver(self, username, name, lastname, username_patient, relationship, phone):
+        """
+        Inserts a new caregiver record into the Caregivers table in the database.
+        Args:
+            username (str): The unique identifier for the caregiver.
+            name (str): The first name of the caregiver.
+            lastname (str): The last name of the caregiver.
+            username_patient (str): The username of the patient to whom the caregiver is linked.
+            relationship (str): The nature of the relationship between the caregiver and the patient (e.g., parent, sibling).
+            phone (str): The contact phone number of the caregiver.
+
+        Returns:
+            int: 0 if the insertion was successful, -1 if an integrity error occurred, such as duplicate entries or 
+                issues with foreign key constraints.
+
+        Exceptions:
+            sqlite3.IntegrityError: Catches and handles any integrity errors that occur during the database operation. 
+                                    This includes problems like violating unique constraints or foreign key violations.
+        """
         try:
             self.cur.execute("""
                             INSERT INTO Caregivers
