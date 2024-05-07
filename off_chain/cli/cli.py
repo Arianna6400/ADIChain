@@ -356,9 +356,9 @@ class CommandLineInterface:
 
                         patients = self.controller.get_patients()
 
-                        self.util.show_page(patients, 0, username)
-
                         while len(patients) > 0:
+
+                            self.util.show_page(patients, 0, username)
 
                             action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: \n")
 
@@ -370,12 +370,9 @@ class CommandLineInterface:
                                 self.util.handle_selection(patients)
                             elif action == "q" or action == "Q":
                                 print("Exiting...\n")
-                                #self.medic_menu(username)
                                 break
                             else:
                                 print("Invalid input. Please try again. \n")
-                        #self.medic_menu(username)
-                        #break
 
                     elif choice == 2:
                         self.view_medicview(username)

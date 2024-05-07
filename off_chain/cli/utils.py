@@ -163,8 +163,8 @@ class Utils:
 
     def get_page_reports(self, page_index, username):
 
-        user = self.session.get_user()
-        username_med = user.get_username()
+        user_auth = self.session.get_user()
+        username_auth = user_auth.get_username()
 
         start_index = page_index * self.PAGE_SIZE
         end_index = start_index + self.PAGE_SIZE
@@ -172,7 +172,7 @@ class Utils:
         reports = self.controller.get_reports_list_by_username(username)
         if not reports:
             print(f"\n{username} doesn't have reports yet.")
-            if self.controller.get_role_by_username(username): 
+            if self.controller.get_role_by_username(username_auth) == "MEDIC": 
                 while True:
                     new_report = input("\nDo you want to add one? (Y/n) ").strip().upper()
                     if new_report == 'Y':
@@ -194,14 +194,15 @@ class Utils:
         treats = self.controller.get_treatplan_list_by_username(username)
         if not treats:
             print(f"\n{username} doesn't have any treatment plan yet.")
-            while True:
-                new_treat = input("\nDo you want to add one? (Y/n) ").strip().upper()
-                if new_treat == 'Y':
-                    self.add_treatment_plan(username)
-                    break
-                elif new_treat == 'N': break
-                else: print("Invalid choice!")
-                return
+            if self.controller.get_role_by_username(username) == "MEDIC":
+                while True:
+                    new_treat = input("\nDo you want to add one? (Y/n) ").strip().upper()
+                    if new_treat == 'Y':
+                        self.add_treatment_plan(username)
+                        break
+                    elif new_treat == 'N': break
+                    else: print("Invalid choice!")
+                    return
         return treats[start_index:end_index]
 
     def display_records(self, records):
@@ -382,11 +383,8 @@ class Utils:
                             break
                         else:
                             print("Invalid input. Please try again. \n")
-                        #self.medic_menu(username)
 
-                    #self.view_treatmentplan(username)
-
-                if choice == 2:
+                elif choice == 2:
                     treats = self.get_page_treatplan(self.current_page, username)
                     while len(treats) > 0:
                         newtreats = self.get_page_treatplan(self.current_page, username)
@@ -411,7 +409,7 @@ class Utils:
                         else:
                             print("Invalid input. Please try again. \n")
 
-                if choice == 3:
+                elif choice == 3:
                     break
                 
                 else:
