@@ -16,14 +16,12 @@ class Utils:
 
     init(convert=True)
 
-    
     PAGE_SIZE = 3
     current_page = 0
     
-
     def __init__(self, session: Session):
 
-        
+        self.session = session
         self.controller = Controller(session)
         self.act_controller = ActionController()
         self.today_date = datetime.date.today()
@@ -164,6 +162,10 @@ class Utils:
         return patients[start_index:end_index]
 
     def get_page_reports(self, page_index, username):
+
+        user = self.session.get_user()
+        username_med = user.get_username()
+
         start_index = page_index * self.PAGE_SIZE
         end_index = start_index + self.PAGE_SIZE
 
@@ -175,12 +177,16 @@ class Utils:
                 if new_report == 'Y':
                     analysis = input("\nInsert analysis: ")
                     diagnosis = input("\nInsert diagnosis: ")
-                    self.controller.insert_report(username, "medico", analysis, diagnosis)
+                    self.controller.insert_report(username, username_med, analysis, diagnosis)
                     break
                 return
         return reports[start_index:end_index]
     
     def get_page_treatplan(self, page_index, username):
+
+        user = self.session.get_user()
+        username_med = user.get_username()
+
         start_index = page_index * self.PAGE_SIZE
         end_index = start_index + self.PAGE_SIZE
 
@@ -204,7 +210,7 @@ class Utils:
                             if self.controller.check_date_order(start_date, end_date): break
                             else: print("The second date cannot come after the first date.")
                         else: print("Invalid date or incorrect format.")
-                    self.controller.insert_treatment_plan(username, "medico", description, start_date, end_date)
+                    self.controller.insert_treatment_plan(username, username_med, description, start_date, end_date)
                     break
                 return
         return treats[start_index:end_index]
@@ -226,7 +232,6 @@ class Utils:
         console.print(table)
 
     def display_reports(self, reports, username):
-
         possessive_suffix = self.controller.possessive_suffix(username)
         table = Table(title=f"{username}{possessive_suffix} reports")
 
@@ -275,14 +280,13 @@ class Utils:
         #records = self.get_page_records(self.current_page, patients)
         print("\nSelect the number of the treatment plan you'd like to visualize:")
         for treat in enumerate(treats, start=1):
-            print(f"- {treat.get_id_treatment_plan()}")
+            print(f"- {treat[0]}")
         selection = input("Enter treatment plan number (or '0' to cancel): ")
         if selection.isdigit():
             selection_index = int(selection) - 1
             if 0 <= selection_index < len(treats):
                 self.show_treatment_plan_details(treats[selection_index])
                 #self.patient_medical_data(reports[selection_index][0])
-
 
     def go_to_next_page(self, list, flag, username):
         total_pages = math.ceil(len(list) / self.PAGE_SIZE)
@@ -344,10 +348,15 @@ class Utils:
             records = self.get_page_records(self.current_page, list)
         elif flag == 1:
             records = list
+        elif flag == 2:
+            records = list
         if records is not None and flag == 0:
             self.display_records(records)
         elif records is not None and flag == 1:
             self.display_reports(records, username)
+        elif records is not None and flag == 2:
+            self.display_treats(records, username)
+        # X ALE: flag per treat plans
 
     def patient_medical_data(self, username):
         while True: 
@@ -355,7 +364,7 @@ class Utils:
             print('\nWhich type of data do you want to consult?')
             print("1 -- Reports ")
             print("2 -- Treatment plans") 
-            print("3 -- Undo") 
+            print("3 -- Undo")
             
             try:
                 choice = int(input('Enter your choice: '))
@@ -397,13 +406,16 @@ class Utils:
                         action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new treatment plan, 'v' to visualize one, or 'q' to quit: \n")
 
                         if action == "n" or action == "N":
-                            self.go_to_next_page(newtreats, 1, username)
+                            self.go_to_next_page(newtreats, 2, username)
                         elif action == "p" or action == "P":
-                            self.go_to_previous_page(newtreats, 1, username)
+                            self.go_to_previous_page(newtreats, 2, username)
                         elif action == "a" or action == "A":
                             self.add_treatment_plan(username)
                             break
                             #self.display_treatment_plans(newtreats, username)
+                        elif action == "v" or action == "V":
+                            self.view_treatment_plan(newtreats)
+                            break
                         elif action == "q" or action == "Q":
                             print("Exiting...\n")
                             break
@@ -421,11 +433,14 @@ class Utils:
 
     def add_report(self, username):
 
+        user = self.session.get_user()
+        username_med = user.get_username()
+
         print("\nInsert the information regarding the new report...")
     
         analysis = input("\nInsert analysis: ")
         diagnosis = input("\nInsert diagnosis: ")
-        result_code = self.controller.insert_report(username, "medico", analysis, diagnosis)
+        result_code = self.controller.insert_report(username, username_med, analysis, diagnosis)
 
         if result_code == 0:
             print("\nNew report has been saved correctly.")
@@ -433,6 +448,9 @@ class Utils:
             print("\nInternal error!")
 
     def add_treatment_plan(self, username):
+
+        user = self.session.get_user()
+        username_med = user.get_username()
 
         print("\nInsert the information regarding the new treatment plan...")
     
@@ -442,13 +460,15 @@ class Utils:
         else: 
             while True:
                 start_date = input("\nEnter the starting date (YYYY-MM-DD): ")
-                if self.controller.check_birthdate_format(start_date): break
+                if self.controller.check_tpdate_format(start_date): break
                 else: print("Invalid date or incorrect format.")
         while True:
             end_date = input("\nEnter the ending date (YYYY-MM-DD): ")
-            if self.controller.check_birthdate_format(end_date): break
+            if self.controller.check_tpdate_format(end_date): 
+                if self.controller.check_date_order(start_date, end_date): break
+                else: print("\nThe second date cannot come before the first date!")
             else: print("Invalid date or incorrect format.")
-        result_code = self.controller.insert_treatment_plan(username, "medico", description, start_date, end_date)
+        result_code = self.controller.insert_treatment_plan(username, username_med, description, start_date, end_date)
 
         if result_code == 0:
             print("\nNew treatment plan has been saved correctly.")

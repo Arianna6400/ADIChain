@@ -116,8 +116,7 @@ class Controller:
                 return False
         except ValueError:
             return False
-    
-        
+       
     def check_phone_number_format(self, phone_number):
         if phone_number.replace('-', '').replace(' ', '').isdigit():
             if 7 <= len(phone_number) <= 15:

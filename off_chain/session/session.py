@@ -7,13 +7,11 @@ class Session:
         self.__attempts = 0
         self.__login_error_timestamp = 0
 
-    def get_user(self):        
+    def get_user(self):
         return self.__user
     
-
     def set_user(self, user):
         self.__user = user
-
 
     def get_attempts(self):
         return self.__attempts
@@ -34,4 +32,3 @@ class Session:
         self.__user = None
         self.__attempts = 0
         self.__login_error_timestamp = 0
-        
