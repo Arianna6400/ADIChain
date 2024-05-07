@@ -108,12 +108,15 @@ class Controller:
         
     def check_date_order(self, first_date_string, second_date_string):
         try:
+            if not isinstance(first_date_string, str):
+                first_date_string = first_date_string.strftime('%Y-%m-%d')
+            if not isinstance(second_date_string, str):
+                second_date_string = second_date_string.strftime('%Y-%m-%d')
+            
             first_date = datetime.strptime(first_date_string, '%Y-%m-%d')
             second_date = datetime.strptime(second_date_string, '%Y-%m-%d')
-            if second_date > first_date:  
-                return True
-            else:
-                return False
+            
+            return second_date > first_date
         except ValueError:
             return False
        

@@ -1,8 +1,23 @@
 from models.model_base import Model
 
-#Costruttore e attributi della tabella Caregivers
 class Caregivers(Model):
+    """
+    This class represents a Caregiver model inheriting from the base Model class.
+    It handles the interaction with the Caregivers table in the database.
+    """
+
     def __init__(self, username_patient, username, name, lastname, relationship, phone):
+        """
+        Initializes a new instance of the Caregivers class with details about the caregiver.
+
+        Parameters:
+        - username_patient: the username of the patient whom the caregiver looks after
+        - username: the username for the caregiver
+        - name: the first name of the caregiver
+        - lastname: the last name of the caregiver
+        - relationship: the relationship of the caregiver to the patient
+        - phone: the phone number of the caregiver
+        """
         super().__init__()
         self.username_patient = username_patient
         self.username = username
@@ -11,6 +26,7 @@ class Caregivers(Model):
         self.relationship = relationship
         self.phone = phone
 
+    # Getter methods for each attribute
     def get_username_patient(self):
         return self.username_patient
 
@@ -28,7 +44,8 @@ class Caregivers(Model):
 
     def get_phone(self):
         return self.phone 
-    
+
+    # Setter methods for each attribute
     def set_username_patient(self, username_patient):
         self.username_patient = username_patient
 
@@ -47,24 +64,32 @@ class Caregivers(Model):
     def set_phone(self, phone):
         self.phone = phone   
 
-# Metodi ORM per interagire con il db SQLite per operazioni CRUD
     def save(self):
+        """
+        Saves or updates a Caregiver record in the database. Implements the ORM pattern.
+        """
         try: 
             if self.username is None:
-                self.cur.execute('''INSERT INTO Caregivers (username_patient, username, name, lastname, relationship, phone)
-                                    VALUES (?, ?, ?, ?, ?, ?)''',
-                                (self.username_patient, self.username, self.name, self.lastname, self.relationship, self.phone))
-                                    #I punti interrogativi come placeholder servono per la prevenzione di attacchi SQL Injection
+                # Inserts new caregiver if no username is set
+                self.cur.execute(
+                    '''INSERT INTO Caregivers (username_patient, username, name, lastname, relationship, phone)
+                       VALUES (?, ?, ?, ?, ?, ?)''',
+                    (self.username_patient, self.username, self.name, self.lastname, self.relationship, self.phone))
             else:
-                self.cur.execute('''UPDATE Caregivers SET username_patient=?, name=?, lastname=?, relationship=?, phone=? WHERE username=?''',
-                                (self.username_patient, self.name, self.lastname, self.relationship, self.phone, self.username))
+                # Updates existing caregiver details based on username
+                self.cur.execute(
+                    '''UPDATE Caregivers SET username_patient=?, name=?, lastname=?, relationship=?, phone=? WHERE username=?''',
+                    (self.username_patient, self.name, self.lastname, self.relationship, self.phone, self.username))
             self.conn.commit()
-            self.username = self.cur.lastrowid
+            self.username = self.cur.lastrowid  # Updating the username with last inserted row id
             print('Information saved correctly!\n')
-        except: 
-            print('Internal error!')
+        except Exception as e: 
+            print('Internal error!', str(e))
 
     def delete(self):
+        """
+        Deletes a Caregiver record from the database based on the username.
+        """
         if self.username is not None:
             self.cur.execute('DELETE FROM Caregivers WHERE username=?', (self.username,))
             self.conn.commit()
