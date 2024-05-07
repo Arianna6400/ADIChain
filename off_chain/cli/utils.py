@@ -446,8 +446,11 @@ class Utils:
     
         analysis = input("\nInsert analysis: ")
         diagnosis = input("\nInsert diagnosis: ")
-        result_code = self.controller.insert_report(username, username_med, analysis, diagnosis)
 
+        # from_address = self.controller.get_public_key_by_username(username_med)
+        # self.act_controller.manage_report('add', analysis, diagnosis, from_address=from_address)
+        result_code = self.controller.insert_report(username, username_med, analysis, diagnosis)
+        
         if result_code == 0:
             print("\nNew report has been saved correctly.")
         else:
@@ -479,6 +482,9 @@ class Utils:
                 if self.controller.check_date_order(start_date, end_date): break
                 else: print("\nThe second date cannot come before the first date!")
             else: print("Invalid date or incorrect format.")
+
+        # from_address= self.controller.get_public_key_by_username(username_med)
+        # self.act_controller.manage_treatment_plan('add', from_address, description, start_date, end_date)
         result_code = self.controller.insert_treatment_plan(username, username_med, description, start_date, end_date)
 
         if result_code == 0:
