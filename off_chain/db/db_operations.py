@@ -24,7 +24,7 @@ class DatabaseOperations:
         self.p_param = 1
         self.dklen_param = 64
 
-        self.today_date = datetime.date.today()
+        self.today_date = datetime.date.today().strftime('%Y-%m-%d')
 
     def _create_new_table(self):
 
@@ -176,13 +176,12 @@ class DatabaseOperations:
         
     def insert_report(self, username_patient, username_medic, analyses, diagnosis):
         try:
-            today_date_str = self.today_date.strftime('%Y-%m-%d')
             self.cur.execute("""
                             INSERT INTO Reports
                             (date, username_patient, username_medic, analyses, diagnosis)
                             VALUES (?, ?, ?, ?, ?) """,
                             (
-                                today_date_str,
+                                self.today_date,
                                 username_patient, 
                                 username_medic,
                                 analyses,
@@ -195,18 +194,19 @@ class DatabaseOperations:
         
     def insert_treatment_plan(self, username_patient, username_medic, description, start_date, end_date):
         try:
-            today_date_str = self.today_date.strftime('%Y-%m-%d')
+            start_date_str = start_date.strftime('%Y-%m-%d') if isinstance(start_date, datetime.date) else start_date
+            end_date_str = end_date.strftime('%Y-%m-%d') if isinstance(end_date, datetime.date) else end_date
             self.cur.execute("""
                             INSERT INTO TreatmentPlans
                             (date, username_patient, username_medic, description, start_date, end_date)
                             VALUES (?, ?, ?, ?, ?, ?) """,
                             (
-                                today_date_str,
+                                self.today_date,
                                 username_patient, 
                                 username_medic,
                                 description,
-                                start_date,
-                                end_date
+                                start_date_str,
+                                end_date_str
                             ))
             self.conn.commit()
             return 0
