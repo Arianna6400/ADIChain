@@ -2,7 +2,6 @@ import datetime
 import sqlite3
 import os
 import hashlib
-import click
 
 from config import config
 from models.medics import Medics
@@ -453,65 +452,3 @@ class DatabaseOperations:
             self.cur.execute(query)
             return self.cur.fetchall()
 
-    # def get_patient_info(self, username):
-    #     query = """
-    #         SELECT * FROM Patients WHERE username = ?
-    #     """
-    #     self.cur.execute(query, (username,))
-    #     return self.cur.fetchone()
-    
-    # def get_caregiver_info(self, username):
-    #     query = """
-    #         SELECT * FROM Caregivers WHERE username = ?
-    #     """
-    #     self.cur.execute(query, (username,))
-    #     return self.cur.fetchone()
-    
-    # def get_medic_info(self, username):
-    #     query = """
-    #         SELECT * FROM Medics WHERE username = ?
-    #     """
-    #     self.cur.execute(query, (username,))
-    #     return self.cur.fetchone()
-
-    # def update_profile(self, username, new_data):
-        
-    #     role = self.get_role_by_username(username)
-    #     try:
-    #         if role == 'CAREGIVER':
-    #             query = """
-    #                 UPDATE Caregivers
-    #                 SET name = ?, lastname = ?, phone = ?
-    #                 WHERE username = ?
-    #             """
-    #             self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['phone'], username))
-    #             self.conn.commit()
-    #             return 0
-
-    #         elif role == 'PATIENT':
-    #             query = """
-    #                 UPDATE Patients
-    #                 SET name = ?, lastname = ?, birthday = ?, birth_place = ?, residence = ?, autonomous = ?, phone = ?
-    #                 WHERE username = ?
-    #             """
-    #             self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['birthday'], 
-    #                                 new_data['birth_place'], new_data['residence'], new_data['autonomous'], 
-    #                                 new_data['phone'], username))
-    #             self.conn.commit()
-    #             return 0
-                
-
-    #         elif role == 'MEDIC':
-    #             query = """
-    #                 UPDATE Medics
-    #                 SET name = ?, lastname = ?, birthday = ?, specialization = ?, mail = ?, phone = ?
-    #                 WHERE username = ?
-    #             """
-    #             self.cur.execute(query, (new_data['name'], new_data['lastname'], new_data['birthday'], new_data['specialization'], new_data['mail'], new_data['phone'], username))
-    #             self.conn.commit()
-    #             return 0
-    #         else:
-    #             print("Invalid user role!")
-    #             return 
-    #     except: 
-    #         return -1
