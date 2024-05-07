@@ -242,7 +242,9 @@ class Utils:
         table = Table(title=f"{username}{possessive_suffix} treatment plans")
 
         columns = ["id_treatment_plan", "date", "username_medic", "description", "start_date", "end_date"]
+        
         #IDREPORT da visualizzare diversamente
+        
         for column in columns:
             table.add_column(column)
 
@@ -330,22 +332,19 @@ class Utils:
                 self.show_patient_details(patients[selection_index])
                 self.patient_medical_data(patients[selection_index][0])
         
-        # VISUALIZZA REPORTS E TREAT.PLAN come i pazienti
-
     def show_page(self, list, flag, username):
         if flag == 0:
             records = self.get_page_records(self.current_page, list)
         elif flag == 1:
-            records = list
+            records = self.get_page_reports(self.current_page, username)
         elif flag == 2:
-            records = list
+            records = self.get_page_treatplan(self.current_page, username)
         if records is not None and flag == 0:
             self.display_records(records)
         elif records is not None and flag == 1:
             self.display_reports(records, username)
         elif records is not None and flag == 2:
             self.display_treats(records, username)
-        # X ALE: flag per treat plans
 
     def patient_medical_data(self, username):
         while True: 
@@ -387,7 +386,7 @@ class Utils:
                     #self.view_treatmentplan(username)
 
                 if choice == 2:
-                    treats = self.get_page_treatplan(self.current_page, username)
+                    treats = self.controller.get_treatplan_list_by_username(username)
                     while len(treats) > 0:
                         newtreats = self.get_page_treatplan(self.current_page, username)
                         self.display_treats(newtreats, username)
@@ -395,15 +394,15 @@ class Utils:
                         action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new treatment plan, 'v' to visualize one, or 'q' to quit: \n")
 
                         if action == "n" or action == "N":
-                            self.go_to_next_page(newtreats, 2, username)
+                            self.go_to_next_page(treats, 2, username)
                         elif action == "p" or action == "P":
-                            self.go_to_previous_page(newtreats, 2, username)
+                            self.go_to_previous_page(treats, 2, username)
                         elif action == "a" or action == "A":
                             self.add_treatment_plan(username)
                             break
                             #self.display_treatment_plans(newtreats, username)
                         elif action == "v" or action == "V":
-                            self.view_treatment_plan(newtreats)
+                            self.view_treatment_plan(treats)
                             break
                         elif action == "q" or action == "Q":
                             print("Exiting...\n")
