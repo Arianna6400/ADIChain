@@ -505,8 +505,7 @@ class DatabaseOperations:
         )
         hashed_passwd = f"{digest.hex()}${salt.hex()}${self.n_param}${self.r_param}${self.p_param}${self.dklen_param}"
         return hashed_passwd
-
-    
+ 
     def check_credentials(self, username, password, public_key, private_key):
         creds = self.get_creds_by_username(username)
         if(creds is not None and self.check_passwd(username, password) and creds.get_public_key() == public_key and private_key == creds.get_private_key()):
@@ -514,7 +513,6 @@ class DatabaseOperations:
         else:
             return False
     
-
     def check_passwd(self, username, password):
 
         result = self.cur.execute("""
@@ -535,7 +533,6 @@ class DatabaseOperations:
             )
         return hashed_passwd.hex() == params[0]
     
-
     def change_passwd(self, username, old_pass, new_pass):
         creds = self.get_creds_by_username(username)
         if creds is not None:
