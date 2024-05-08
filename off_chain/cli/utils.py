@@ -370,6 +370,13 @@ class Utils:
             treat.set_end_date(new_end_date)
             treat.save()
             try:
+                try:
+                    from_address_medic = self.controller.get_public_key_by_username(medic_username)
+                    self.act_controller.manage_treatment_plan('update', treat.get_id_treatment_plan(),
+                                                                updated_description, new_start_date,
+                                                                new_end_date, from_address=from_address_medic)
+                except Exception as e:
+                    log_error(e)
                 self.controller.update_treatment_plan(treat.get_id_treatment_plan(), updated_description, new_start_date, new_end_date)
                 print("Treatment plan updated successfully.")
             except Exception as e:

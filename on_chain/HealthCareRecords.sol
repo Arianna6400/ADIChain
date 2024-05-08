@@ -224,27 +224,31 @@ contract HealthCareRecords {
 
     /**
      * @dev Adds a new treatment plan to the system.
-     * @param details Treatment details.
+     * @param treatmentDetails Treatment details.
      * @param startDate Start date of the treatment.
      * @param endDate End date of the treatment.
      * @notice Only authorized users can add treatment plans.
      */
-    function addTreatmentPlan(string memory details, string memory startDate, string memory endDate) public onlyAuthorized {
-        uint256 planId = uint256(keccak256(abi.encodePacked(msg.sender, details, block.timestamp))); 
-        treatmentPlans[planId] = TreatmentPlan(planId, msg.sender, details, startDate, endDate);
+    function addTreatmentPlan(string memory treatmentDetails, string memory startDate, string memory endDate) public onlyAuthorized {
+        uint256 planId = uint256(keccak256(abi.encodePacked(msg.sender, treatmentDetails, block.timestamp))); 
+        treatmentPlans[planId] = TreatmentPlan(planId, msg.sender, treatmentDetails, startDate, endDate);
         logAction("Create", msg.sender, "Treatment plan added");
     }
 
     /**
-     * @dev Updates an existing treatment plan.
+     * @dev Updates an existing treatment plan with new details, start date, and end date.
      * @param planId Identifier of the treatment plan to update.
-     * @param newDetails New details of the treatment plan.
+     * @param treatmetDetails New details of the treatment plan.
+     * @param startDate New start date of the treatment.
+     * @param endDate New end date of the treatment.
      * @notice Requires the caller to be either the owner or the medic associated with the treatment plan.
-     */
-    function updateTreatmentPlan(uint256 planId, string memory newDetails) public onlyAuthorized {
+     * @notice Assumes the treatment plan exists and the caller has proper authorization.
+     */    
+    function updateTreatmentPlan(uint256 planId, string memory treatmetDetails, string memory startDate, string memory endDate) public onlyAuthorized {
         require(msg.sender == owner || msg.sender == treatmentPlans[planId].medicAddress, "Unauthorized");
-        require(keccak256(abi.encodePacked(treatmentPlans[planId].treatmentDetails)) != keccak256(abi.encodePacked(newDetails)), "No change in treatment details");
-        treatmentPlans[planId].treatmentDetails = newDetails;
+        treatmentPlans[planId].treatmentDetails = treatmetDetails;
+        treatmentPlans[planId].startDate = startDate;
+        treatmentPlans[planId].endDate = endDate;
         logAction("Update", msg.sender, "Treatment plan updated");
     }
 }
