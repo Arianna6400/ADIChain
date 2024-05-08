@@ -349,12 +349,12 @@ class Utils:
         new_description = input(f"Description ({treat.get_description()}): ").strip() or treat.get_description()
         while True:
             new_start_date = input(f"Start date ({treat.get_start_date()}): ").strip() or str(treat.get_start_date())
-            if self.controller.check_tpdate_format(new_start_date): break
+            if self.controller.check_tpdate_format(new_start_date, 1): break
             else: print("Invalid date or incorrect format.")
             
         while True:
             new_end_date = input(f"End date ({treat.get_end_date()}): ").strip() or str(treat.get_end_date())
-            if self.controller.check_tpdate_format(new_end_date): 
+            if self.controller.check_tpdate_format(new_end_date, 1): 
                 if self.controller.check_date_order(new_start_date, new_end_date): break
                 else: print("\nThe second date cannot come before the first date!")
             else: print("Invalid date or incorrect format.")
@@ -526,7 +526,7 @@ class Utils:
             else: print("invalid input!") 
         while True:
             end_date = input("\nEnter the ending date (YYYY-MM-DD): ")
-            if self.controller.check_tpdate_format(end_date): 
+            if self.controller.check_tpdate_format(end_date):
                 if self.controller.check_date_order(start_date, end_date): break
                 else: print("\nThe second date cannot come before the first date!")
             else: print("Invalid date or incorrect format.")

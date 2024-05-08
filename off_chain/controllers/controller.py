@@ -98,16 +98,18 @@ class Controller:
         except ValueError:
             return False
 
-    def check_tpdate_format(self, date_string):
+    def check_tpdate_format(self, date_string, check_today = 0):
         try:
             if not isinstance(date_string, str):
                 date_string = date_string.strftime('%Y-%m-%d')
             date = datetime.strptime(date_string, '%Y-%m-%d')
             current_date = datetime.now()
-            if date >= current_date: 
-                return True
-            else:
-                return False
+            if check_today == 0: 
+                if date >= current_date: 
+                    return True
+                else:
+                    return False
+            else: return True
         except ValueError:
             return False
         
