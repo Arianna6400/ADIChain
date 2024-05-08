@@ -6,7 +6,7 @@ This module setups file handlers, formatters, and loggers.
 import logging
 import os
 
-def setup_logging(log_path, level, formatter_str):
+def setup_logging(log_path, level, formatter):
     """
     Setup and return a logger with a file handler if it does not already exist.
     

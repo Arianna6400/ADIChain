@@ -33,8 +33,8 @@ contract HealthCareRecords {
         uint256 planId;
         address medicAddress;
         string treatmentDetails;
-        uint256 startDate;
-        uint256 endDate;
+        string startDate;
+        string endDate;
     }
 
     struct ActionLog {
@@ -70,6 +70,11 @@ contract HealthCareRecords {
         _;
     }
 
+    modifier onlyAuthorized() {
+        require(msg.sender == owner || authorizedEditors[msg.sender], "Access denied: caller is not the owner or an authorized editor.");
+        _;
+    }
+
     function authorizeEditor(address _editor) public onlyOwner {
         authorizedEditors[_editor] = true;
     }
@@ -87,7 +92,7 @@ contract HealthCareRecords {
         emit EntityRegistered("Medic", msg.sender);
     }
 
-    function updateMedic(string memory name, string memory lastname, string memory specialization) public onlyOwner {
+    function updateMedic(string memory name, string memory lastname, string memory specialization) public onlyAuthorized {
         require(medics[msg.sender].isRegistered, "Medic not found");
         Medic storage medic = medics[msg.sender];
         medic.name = name;
@@ -108,7 +113,7 @@ contract HealthCareRecords {
         emit EntityRegistered("Patient", msg.sender);
     }
 
-    function updatePatient(string memory name, string memory lastname, uint8 autonomous) public onlyOwner {
+    function updatePatient(string memory name, string memory lastname, uint8 autonomous) public onlyAuthorized {
         require(patients[msg.sender].isRegistered, "Patient not found");
         Patient storage patient = patients[msg.sender];
         patient.name = name;
@@ -125,7 +130,7 @@ contract HealthCareRecords {
         emit EntityRegistered("Caregiver", msg.sender);
     }
 
-    function updateCaregiver(string memory name, string memory lastname) public onlyOwner {
+    function updateCaregiver(string memory name, string memory lastname) public onlyAuthorized {
         require(caregivers[msg.sender].isRegistered, "Caregiver not found");
         Caregiver storage caregiver = caregivers[msg.sender];
         caregiver.name = name;
@@ -134,19 +139,19 @@ contract HealthCareRecords {
         emit EntityUpdated("Caregiver", msg.sender);
     }
 
-    function addReport(address medicAddress, string memory analysis, string memory diagnosis) public onlyOwner {
-        uint256 reportId = uint256(keccak256(abi.encodePacked(medicAddress, analysis, diagnosis, block.timestamp)));
-        reports[reportId] = Report(reportId, medicAddress, analysis, diagnosis);
+    function addReport(string memory analysis, string memory diagnosis) public onlyAuthorized {
+        uint256 reportId = uint256(keccak256(abi.encodePacked(msg.sender, analysis, diagnosis, block.timestamp)));
+        reports[reportId] = Report(reportId, msg.sender, analysis, diagnosis);
         logAction("Create", msg.sender, "Report added");
     }
 
-    function addTreatmentPlan(address medicAddress, string memory details, uint256 startDate, uint256 endDate) public onlyOwner {
-        uint256 planId = uint256(keccak256(abi.encodePacked(medicAddress, details, block.timestamp))); 
-        treatmentPlans[planId] = TreatmentPlan(planId, medicAddress, details, startDate, endDate);
+    function addTreatmentPlan(string memory details, string memory startDate, string memory endDate) public onlyAuthorized {
+        uint256 planId = uint256(keccak256(abi.encodePacked(msg.sender, details, block.timestamp))); 
+        treatmentPlans[planId] = TreatmentPlan(planId, msg.sender, details, startDate, endDate);
         logAction("Create", msg.sender, "Treatment plan added");
     }
 
-    function updateTreatmentPlan(uint256 planId, string memory newDetails) public {
+    function updateTreatmentPlan(uint256 planId, string memory newDetails) public onlyAuthorized {
         require(msg.sender == owner || msg.sender == treatmentPlans[planId].medicAddress, "Unauthorized");
         require(keccak256(abi.encodePacked(treatmentPlans[planId].treatmentDetails)) != keccak256(abi.encodePacked(newDetails)), "No change in treatment details");
         treatmentPlans[planId].treatmentDetails = newDetails;
