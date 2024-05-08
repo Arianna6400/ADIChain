@@ -24,7 +24,7 @@ class Utils:
         self.session = session
         self.controller = Controller(session)
         self.act_controller = ActionController()
-        self.today_date = datetime.date.today()
+        self.today_date = str(datetime.date.today())
 
     def change_passwd(self, username, role):
 
@@ -176,11 +176,11 @@ class Utils:
                     new_report = input("\nDo you want to add one? (Y/n) ").strip().upper()
                     if new_report == 'Y':
                         self.add_report(username)
-                        break
-                    elif new_report == 'N': break
+                        return self.controller.get_reports_list_by_username(username)
+                    elif new_report == 'N': return
                     else: print("Invalid choice!")
-                    return
-        return reports[start_index:end_index]
+                    #return
+        else: return reports[start_index:end_index]
     
     def get_page_treatplan(self, page_index, username):
 
@@ -198,11 +198,11 @@ class Utils:
                     new_treat = input("\nDo you want to add one? (Y/n) ").strip().upper()
                     if new_treat == 'Y':
                         self.add_treatment_plan(username)
-                        break
-                    elif new_treat == 'N': break
+                        return self.controller.get_treatplan_list_by_username(username)
+                    elif new_treat == 'N': return
                     else: print("Invalid choice!")
-                    return
-        return treats[start_index:end_index]
+                    #return
+        else: return treats[start_index:end_index]
 
     def display_records(self, records):
 
@@ -378,7 +378,7 @@ class Utils:
             print("\nSelect a patient's username to view details:")
             i = 1
             for i, patient in enumerate(patients, start = i):
-                print(f"{i}. {patient[1]}")
+                print(f"{i}. {patient[0]}")
             try:
                 selection = int(input("Enter patient number (or '0' to cancel): "))
                 if 0 < selection <= i:
@@ -400,10 +400,10 @@ class Utils:
             records = self.get_page_treatplan(self.current_page, username)
         if records is not None and flag == 0:
             self.display_records(records)
-        elif records is not None and flag == 1:
-            self.display_reports(records, username)
-        elif records is not None and flag == 2:
-            self.display_treats(records, username)
+        # elif records is not None and flag == 1:
+        #     self.display_reports(records, username)
+        # elif records is not None and flag == 2:
+        #     self.display_treats(records, username)
 
     def patient_medical_data(self, username):
         while True: 
@@ -418,57 +418,60 @@ class Utils:
 
             try:
                 choice = int(input('Enter your choice: '))
-
                 if choice == 1:
-                    reports = self.get_page_reports(self.current_page, username)
-                    while len(reports) > 0:
-                        newreports = self.get_page_reports(self.current_page, username)
-                        self.display_reports(newreports, username)
+                    while True:
+                        reports = self.controller.get_reports_list_by_username(username)
+                        pagereports = self.get_page_reports(self.current_page, username)
+                        if pagereports:
+                            self.display_reports(pagereports, username)
 
-                        if role == "MEDIC":
-                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, 'v' to visualize one, or 'q' to quit: \n")
-                        else:
-                            # lele ti amo
-                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'v' to visualize one, or 'q' to quit: \n")
+                            if role == "MEDIC":
+                                action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, 'v' to visualize one, or 'q' to quit: \n")
+                            else:
+                                # lele ti amo
+                                action = input("\nEnter 'n' for next page, 'p' for previous page, 'v' to visualize one, or 'q' to quit: \n")
 
-                        if action == "n" or action == "N":
-                            self.go_to_next_page(newreports, 1, username)
-                        elif action == "p" or action == "P":
-                            self.go_to_previous_page(newreports, 1, username)
-                        elif (action == "a" or action == "A") and role == "MEDIC":
-                            self.add_report(username)
-                        elif action == "v" or action == "V":
-                            self.view_reports(newreports)
-                        elif action == "q" or action == "Q":
-                            print("Exiting...\n")
-                            break
-                        else:
-                            print("Invalid input. Please try again. \n")
+                            if action == "n" or action == "N":
+                                self.go_to_next_page(reports, 1, username)
+                            elif action == "p" or action == "P":
+                                self.go_to_previous_page(reports, 1, username)
+                            elif (action == "a" or action == "A") and role == "MEDIC":
+                                self.add_report(username)
+                            elif action == "v" or action == "V":
+                                self.view_reports(pagereports)
+                            elif action == "q" or action == "Q":
+                                print("Exiting...\n")
+                                break
+                            else:
+                                print("Invalid input. Please try again. \n")
+                        else: break
 
                 elif choice == 2:
-                    treats = self.get_page_treatplan(self.current_page, username)
-                    while len(treats) > 0:
-                        newtreats = self.get_page_treatplan(self.current_page, username)
-                        self.display_treats(newtreats, username)
+                    while True:
+                        treats = self.controller.get_treatplan_list_by_username(username)
+                        pagetreats = self.get_page_treatplan(self.current_page, username)
+                        if pagetreats:
+                            self.display_treats(pagetreats, username)
 
-                        if role == "MEDIC":
-                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new treatment plan, 'v' to visualize one, or 'q' to quit: \n")
-                        else:
-                            action = input("\nEnter 'n' for next page, 'p' for previous page, 'v' to visualize one, or 'q' to quit: \n")
+                            if role == "MEDIC":
+                                action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new treatment plan, 'v' to visualize one, or 'q' to quit: \n")
+                            else:
+                                action = input("\nEnter 'n' for next page, 'p' for previous page, 'v' to visualize one, or 'q' to quit: \n")
 
-                        if action == "n" or action == "N":
-                            self.go_to_next_page(newtreats, 2, username)
-                        elif action == "p" or action == "P":
-                            self.go_to_previous_page(newtreats, 2, username)
-                        elif (action == "a" or action == "A") and role == "MEDIC":
-                            self.add_treatment_plan(username)
-                        elif action == "v" or action == "V":
-                            self.view_treatment_plan(newtreats)
-                        elif action == "q" or action == "Q":
-                            print("Exiting...\n")
-                            break
-                        else:
-                            print("Invalid input. Please try again. \n")
+                            if action == "n" or action == "N":
+                                self.go_to_next_page(treats, 2, username)
+                            elif action == "p" or action == "P":
+                                self.go_to_previous_page(treats, 2, username)
+                            elif (action == "a" or action == "A") and role == "MEDIC":
+                                self.add_treatment_plan(username)
+                            elif action == "v" or action == "V":
+                                self.view_treatment_plan(pagetreats)
+                            elif action == "q" or action == "Q":
+                                print("Exiting...\n")
+                                break
+                            else:
+                                print("Invalid input. Please try again. \n")
+                        else: break
 
                 elif choice == 3:
                     break
@@ -489,8 +492,11 @@ class Utils:
         analysis = input("\nInsert analysis: ")
         diagnosis = input("\nInsert diagnosis: ")
 
-        # from_address = self.controller.get_public_key_by_username(username_med)
-        # self.act_controller.manage_report('add', analysis, diagnosis, from_address=from_address)
+        try:
+            from_address_medic = self.controller.get_public_key_by_username(username_med)
+            self.act_controller.manage_report('add', analysis, diagnosis, from_address=from_address_medic)
+        except Exception as e:
+            log_error(e)
         result_code = self.controller.insert_report(username, username_med, analysis, diagnosis)
         
         if result_code == 0:
@@ -524,9 +530,12 @@ class Utils:
                 if self.controller.check_date_order(start_date, end_date): break
                 else: print("\nThe second date cannot come before the first date!")
             else: print("Invalid date or incorrect format.")
-
-        # from_address= self.controller.get_public_key_by_username(username_med)
-        # self.act_controller.manage_treatment_plan('add', from_address, description, start_date, end_date)
+        
+        try:
+            from_address_medic= self.controller.get_public_key_by_username(username_med)
+            self.act_controller.manage_treatment_plan('add', description, start_date, end_date, from_address=from_address_medic)
+        except Exception as e:
+            log_error(e)
         result_code = self.controller.insert_treatment_plan(username, username_med, description, start_date, end_date)
 
         if result_code == 0:
