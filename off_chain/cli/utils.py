@@ -328,21 +328,25 @@ class Utils:
 
         user = self.session.get_user()
         username_med = user.get_username()
+        role = self.controller.get_role_by_username(username_med)
 
         while True:
             print(f"\nTreatment plan issued on {treat.get_date()} by the medic {treat.get_username_medic()}:")
             print(f"\nDescription: {treat.get_description()}")
             print(f"\nTreatment plan's start: {treat.get_start_date()}")
             print(f"\nTreatment plan's end: {treat.get_end_date()}")
-
-            action = input("\nEnter 'u' to update, or 'q' to quit: \n")
-            if action == "u" or action == "U":
-                self.update_treat(treat, username_med)
-            elif action == "q" or action == "Q":
-                print("Going back...\n")
-                break
+            if role == "MEDIC":
+                action = input("\nEnter 'u' to update, or 'q' to quit: \n")
+                if action == "u" or action == "U":
+                    self.update_treat(treat, username_med)
+                elif action == "q" or action == "Q":
+                    print("Going back...\n")
+                    break
+                else:
+                    print("Invalid input. Please try again. \n")
             else:
-                print("Invalid input. Please try again. \n")
+                input("\nPress Enter to exit\n") 
+                break
 
     def update_treat(self, treat, medic_username):
         print("\nEnter new treatment plan details (click Enter to keep current values):")
