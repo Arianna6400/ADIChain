@@ -328,6 +328,21 @@ class DatabaseOperations:
         except sqlite3.IntegrityError:
             return -1
         
+    def update_treatment_plan(self, id_treatment_plan, updated_description, new_start_date, new_end_date):
+        query = """
+            UPDATE TreatmentPlans
+            SET description = ?,
+                start_date = ?,
+                end_date = ?
+            WHERE id_treament_plan = ?
+        """
+        try:
+            self.cur.execute(query, (updated_description, new_start_date, new_end_date, id_treatment_plan))
+            self.conn.commit()
+        except Exception as e:
+            print("Error updating treatment plan:", e)
+
+        
     def insert_medic(self, username, name, lastname, birthday, specialization, mail, phone):
         """
         Inserts a new medic record into the Medics table in the database.

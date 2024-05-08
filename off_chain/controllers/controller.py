@@ -79,6 +79,9 @@ class Controller:
             print('Treatment plan inserted correctly.')
 
         return insertion_code
+    
+    def update_treatment_plan(self, id_treatment_plan, updated_description, new_start_date, new_end_date):
+        return self.db_ops.update_treatment_plan(id_treatment_plan, updated_description, new_start_date, new_end_date)
 
     def check_null_info(self, info):
         if info: return True
@@ -94,9 +97,11 @@ class Controller:
                 return False
         except ValueError:
             return False
-        
+
     def check_tpdate_format(self, date_string):
         try:
+            if not isinstance(date_string, str):
+                date_string = date_string.strftime('%Y-%m-%d')
             date = datetime.strptime(date_string, '%Y-%m-%d')
             current_date = datetime.now()
             if date >= current_date: 

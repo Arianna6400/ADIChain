@@ -51,6 +51,24 @@ class TreatmentPlans(Model):
     def get_end_date(self):
         return self.end_date
     
+    def set_date(self, date):
+        self.date = date
+    
+    def set_username_patient(self, username):
+        self.username_patient = username
+    
+    def set_username_medic(self, username):
+        self.username_medic = username
+    
+    def set_description(self, description):
+        self.description = description
+    
+    def set_start_date(self, start_date):
+        self.start_date = start_date
+    
+    def set_end_date(self, end_date):
+        self.end_date = end_date
+    
     def save(self):
         """
         Saves a new or updates an existing Treatment Plan record in the database.
@@ -65,8 +83,8 @@ class TreatmentPlans(Model):
                              (today_date, self.username_patient, self.username_medic, self.description, self.start_date, self.end_date))
         else:
             # Update existing treatment plan details
-            self.cur.execute('''UPDATE TreatmentPlans SET date=? username_patient=?, username_medic=?, description=?, start_date=?, end_date=? WHERE id_treatment_plan=?''',
-                             (self.date, self.username_patient, self.username_medic, self.description, self.start_date, self.end_date, self.id_treatment_plan))
+            self.cur.execute('''UPDATE TreatmentPlans SET date=?, username_patient=?, username_medic=?, description=?, start_date=?, end_date=? WHERE id_treament_plan=?''',
+                 (self.date, self.username_patient, self.username_medic, self.description, self.start_date, self.end_date, self.id_treatment_plan))
         self.conn.commit()
         self.id_treatment_plan = self.cur.lastrowid # Update the id_treatment_plan with the last inserted row ID if new record
 
@@ -75,5 +93,5 @@ class TreatmentPlans(Model):
         Deletes a Treatment Plan record from the database based on its id_treatment_plan.
         """
         if self.id_treatment_plan is not None:
-            self.cur.execute('DELETE FROM TreatmentPlans WHERE id_treatment_plan=?', (self.id_treatment_plan,))
+            self.cur.execute('DELETE FROM TreatmentPlans WHERE id_treament_plan=?', (self.id_treatment_plan,))
             self.conn.commit()

@@ -326,11 +326,52 @@ class Utils:
 
     def show_treatment_plan_details(self, treat):
 
-        print(f"\nTreatment plan issued on {treat.get_date()} by the medic {treat.get_username_medic()}:")
-        print(f"\nDescription: {treat.get_description()}")
-        print(f"\nTreatment plan's start: {treat.get_start_date()}")
-        print(f"\nTreatment plan's end: {treat.get_end_date()}")
-        input("\nPress Enter to exit\n")
+        user = self.session.get_user()
+        username_med = user.get_username()
+
+        while True:
+            print(f"\nTreatment plan issued on {treat.get_date()} by the medic {treat.get_username_medic()}:")
+            print(f"\nDescription: {treat.get_description()}")
+            print(f"\nTreatment plan's start: {treat.get_start_date()}")
+            print(f"\nTreatment plan's end: {treat.get_end_date()}")
+
+            action = input("\nEnter 'u' to update, or 'q' to quit: \n")
+            if action == "u" or action == "U":
+                self.update_treat(treat, username_med)
+            elif action == "q" or action == "Q":
+                print("Going back...\n")
+                break
+            else:
+                print("Invalid input. Please try again. \n")
+
+    def update_treat(self, treat, medic_username):
+        print("\nEnter new treatment plan details (click Enter to keep current values):")
+        new_description = input(f"Description ({treat.get_description()}): ").strip() or treat.get_description()
+        while True:
+            new_start_date = input(f"Start date ({treat.get_start_date()}): ").strip() or str(treat.get_start_date())
+            if self.controller.check_tpdate_format(new_start_date): break
+            else: print("Invalid date or incorrect format.")
+            
+        while True:
+            new_end_date = input(f"End date ({treat.get_end_date()}): ").strip() or str(treat.get_end_date())
+            if self.controller.check_tpdate_format(new_end_date): 
+                if self.controller.check_date_order(new_start_date, new_end_date): break
+                else: print("\nThe second date cannot come before the first date!")
+            else: print("Invalid date or incorrect format.")
+
+        if new_description != treat.get_description() or new_start_date != treat.get_start_date() or new_end_date != treat.get_end_date():
+            updated_description = f"{treat.get_description()}. \nDescription updated on {self.today_date} by the medic {medic_username}: {new_description}"
+            treat.set_description(updated_description)
+            treat.set_start_date(new_start_date)
+            treat.set_end_date(new_end_date)
+            treat.save()
+            try:
+                self.controller.update_treatment_plan(treat.get_id_treatment_plan(), updated_description, new_start_date, new_end_date)
+                print("Treatment plan updated successfully.")
+            except Exception as e:
+                print("An error occurred while updating the treatment plan:", e)
+        else:
+            print("No changes made to the treatment plan.")
 
     def handle_selection(self, patients):
         while True:
@@ -387,6 +428,7 @@ class Utils:
                         if role == "MEDIC":
                             action = input("\nEnter 'n' for next page, 'p' for previous page, 'a' to add a new report, 'v' to visualize one, or 'q' to quit: \n")
                         else:
+                            # lele ti amo
                             action = input("\nEnter 'n' for next page, 'p' for previous page, 'v' to visualize one, or 'q' to quit: \n")
 
                         if action == "n" or action == "N":
@@ -465,7 +507,7 @@ class Utils:
     
         description = input("\nInsert description: ")
         while True:
-            quest = input("\nDoes the patient have to start the plan today? (Y/n)").strip().upper()
+            quest = input("\nDoes the patient have to start the plan today? (Y/n) ").strip().upper()
             if quest == "Y": 
                 start_date = self.today_date
                 break
