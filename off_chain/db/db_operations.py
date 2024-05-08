@@ -484,6 +484,16 @@ class DatabaseOperations:
         return None
     
     def get_role_by_username(self, username):
+        """
+        Retrieves the role of a user from the database based on their username.
+
+        Args:
+            username (str): The username of the user whose role is to be determined.
+
+        Returns:
+            str|None: The role of the user as a string if found (e.g., 'MEDIC', 'PATIENT', 'CAREGIVER'), or None if the
+                  username does not correspond to any known user in the system.
+        """
         role = self.cur.execute("""
                                 SELECT role
                                 FROM Credentials
@@ -547,6 +557,18 @@ class DatabaseOperations:
         return hashed_passwd
  
     def check_credentials(self, username, password, public_key, private_key):
+        """
+        Verifies a user's login credentials against the stored values in the database.
+
+        Args:
+            username (str): The username of the user whose credentials are being verified.
+            password (str): The password provided by the user for verification.
+            public_key (str): The public key provided by the user for verification.
+            private_key (str): The private key provided by the user for verification.
+
+        Returns:
+            bool: True if all provided credentials match the stored values, False otherwise.
+        """
         creds = self.get_creds_by_username(username)
         if(creds is not None and self.check_passwd(username, password) and creds.get_public_key() == public_key and private_key == creds.get_private_key()):
             return True
@@ -554,7 +576,20 @@ class DatabaseOperations:
             return False
     
     def check_passwd(self, username, password):
+        """
+        Verifies a user's password by comparing it against the hashed password stored in the database.
 
+        Args:
+            username (str): The username of the user whose password is being verified.
+            password (str): The plaintext password provided by the user for verification.
+
+        Returns:
+            bool: True if the provided password matches the stored hash, False otherwise.
+
+        Note:
+            This method assumes that the hashed password and the salt are stored in a specific format in the database,
+            delimited by '$'. It extracts the salt and hash parameters from this format to perform the hashing operation.
+        """
         result = self.cur.execute("""
                                 SELECT hash_password
                                 FROM Credentials
@@ -574,6 +609,22 @@ class DatabaseOperations:
         return hashed_passwd.hex() == params[0]
     
     def change_passwd(self, username, old_pass, new_pass):
+        """
+        Changes a user's password in the Credentials table after verifying the old password.
+
+        Args:
+            username (str): The username of the user whose password is being changed.
+            old_pass (str): The current password of the user to verify its correctness before changing.
+            new_pass (str): The new password to set for the user.
+
+        Returns:
+            int: 0 if the password change was successful, -1 if the user's credentials could not be found or the old
+             password was incorrect.
+
+        Raises:
+            Exception: Propagates any exceptions that occur during the database update operation, such as database
+                   connection issues or SQL errors.
+        """
         creds = self.get_creds_by_username(username)
         if creds is not None:
             new_hash = self.hash_function(new_pass)
@@ -590,6 +641,16 @@ class DatabaseOperations:
             return -1
     
     def get_treatmentplan_by_username(self, username):
+        """
+        Retrieves the treatment plan associated with a specific patient based on their username.
+
+        Args:
+            username (str): The username of the patient whose treatment plan is being retrieved.
+
+        Returns:
+            TreatmentPlans: An object representing the treatment plan of the specified patient.
+                        This object is constructed from the data retrieved from the database.
+        """
         treatmentplan = self.cur.execute("""
                                     SELECT *
                                     FROM TreatmentPlans
@@ -597,6 +658,15 @@ class DatabaseOperations:
         return TreatmentPlans(*treatmentplan)
 
     def get_medic_by_username(self, username):
+        """
+        Retrieves a medic's detailed information based on their username from the Medics table.
+
+        Args:
+            username (str): The username of the medic whose details are to be retrieved.
+
+        Returns:
+            Medics|None: A Medics object containing the medic's details if a record is found; otherwise, None.
+        """
         medic = self.cur.execute("""
                                     SELECT *
                                     FROM Medics
@@ -604,6 +674,16 @@ class DatabaseOperations:
         return Medics(*medic)
     
     def get_reports_list_by_username(self, username):
+        """
+        Retrieves a list of medical reports associated with a specific patient, identified by their username.
+
+        Args:
+            username (str): The username of the patient whose reports are being retrieved.
+
+        Returns:
+            list[Reports]: A list of Reports objects containing the medical report details for the patient.
+                       If no reports are found, an empty list is returned.
+        """
         reportslist = self.cur.execute("""
                                     SELECT *
                                     FROM Reports
@@ -611,6 +691,16 @@ class DatabaseOperations:
         return [Reports(*report) for report in reportslist]
     
     def get_treatplan_list_by_username(self, username):
+        """
+        Retrieves a list of treatment plans associated with a specific patient, identified by their username.
+
+        Args:
+            username (str): The username of the patient whose treatment plans are being retrieved.
+
+        Returns:
+            list[TreatmentPlans]: A list of TreatmentPlans objects containing detailed information about each treatment 
+                              plan for the patient. If no treatment plans are found, an empty list is returned.
+        """
         treatmentplanslist = self.cur.execute("""
                                     SELECT *
                                     FROM TreatmentPlans
@@ -618,27 +708,37 @@ class DatabaseOperations:
         return [TreatmentPlans(*treatmentplan) for treatmentplan in treatmentplanslist]
     
     def get_patients_for_doctor(self, username):
-            query = """
-                SELECT Patients.username, Patients.name, Patients.lastname
-                FROM Patients
-                INNER JOIN DoctorPatientRelationships ON Patients.username = DoctorPatientRelationships.patient_username
-                WHERE DoctorPatientRelationships.username = ?
-            """
-            # OPPURE
-            query2 = """
+        """
+        Retrieves a list of patients associated with a specific doctor, identified by the doctor's username.
+
+        Args:
+            username (str): The username of the doctor whose patients are being retrieved.
+
+        Returns:
+            list[tuple]: A list of tuples, each containing the username, name, and lastname of a patient.
+                     This list can be empty if the doctor has no patients linked to them.
+        """
+        query2 = """
                 SELECT Patients.username, Patients.name, Patients.lastname
                 FROM Patients
             
                 WHERE Patients.medic_id = ?
             """
-            self.cur.execute(query2, (username,))
-            return self.cur.fetchall()
+        self.cur.execute(query2, (username,))
+        return self.cur.fetchall()
     
     def get_patients(self):
-            query = """
+        """
+        Retrieves a list of all patients from the Patients table in the database.
+
+        Returns:
+            list[tuple]: A list of tuples, each representing a patient's entire record from the Patients table.
+                     This list can be empty if there are no patients in the database.
+        """
+        query = """
                 SELECT *
                 FROM Patients
             """
-            self.cur.execute(query)
-            return self.cur.fetchall()
+        self.cur.execute(query)
+        return self.cur.fetchall()
 
