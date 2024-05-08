@@ -85,7 +85,7 @@ contract HealthCareRecords {
         emit ActionLogged(actionCounter, _actionType, _initiator, block.timestamp, _details);
     }
 
-    function addMedic(string memory name, string memory lastname, string memory specialization) public onlyOwner {
+    function addMedic(string memory name, string memory lastname, string memory specialization) public onlyAuthorized {
         require(!medics[msg.sender].isRegistered, "Medic already registered");
         medics[msg.sender] = Medic(name, lastname, specialization, true);
         logAction("Create", msg.sender, "Medic added");
@@ -102,7 +102,7 @@ contract HealthCareRecords {
         emit EntityUpdated("Medic", msg.sender);
     }
 
-    function addPatient(string memory name, string memory lastname, uint8 autonomous) public onlyOwner {
+    function addPatient(string memory name, string memory lastname, uint8 autonomous) public onlyAuthorized {
          require(!patients[msg.sender].isRegistered, "Patient already registered");
         Patient storage patient = patients[msg.sender];
         patient.name = name;
@@ -123,7 +123,7 @@ contract HealthCareRecords {
         emit EntityUpdated("Patient", msg.sender);
     }
 
-    function addCaregiver(string memory name, string memory lastname) public onlyOwner {
+    function addCaregiver(string memory name, string memory lastname) public onlyAuthorized {
         require(caregivers[msg.sender].isRegistered == false, "Caregiver already registered");
         caregivers[msg.sender] = Caregiver(name, lastname, true);
         logAction("Create", msg.sender, "Caregiver added");
