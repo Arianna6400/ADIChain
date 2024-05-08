@@ -107,6 +107,7 @@ class DatabaseOperations:
     def register_creds(self, username, hash_password, role, public_key, private_key):
         """
         Registers new user credentials in the database.
+        
         Args:
             username (str): Username of the user.
             hash_password (str): Password to be hashed and stored.
@@ -139,6 +140,7 @@ class DatabaseOperations:
     def check_username(self, username):
         """
         Check if a username exists in the Credentials table.
+
         Args:
             username (str): Username to check in the database.
         Returns:
@@ -151,6 +153,7 @@ class DatabaseOperations:
     def check_unique_phone_number(self, phone):
         """
         Checks if a phone number is unique across multiple tables in the database.
+
         Args:
             phone (str): The phone number to check for uniqueness.
 
@@ -177,6 +180,7 @@ class DatabaseOperations:
     def check_unique_email(self, mail):
         """
         Checks if an email address is unique within the Medics table in the database.
+
         Args:
             mail (str): The email address to check for uniqueness.
 
@@ -195,6 +199,7 @@ class DatabaseOperations:
     def key_exists(self, public_key, private_key):
         """
         Checks if either a public key or a private key already exists in the Credentials table.
+
         Args:
             public_key (str): The public key to check against existing entries in the database.
             private_key (str): The private key to check against existing entries in the database.
@@ -217,6 +222,7 @@ class DatabaseOperations:
     def insert_patient(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
         """
         Inserts a new patient record into the Patients table in the database.
+
         Args:
             username (str): The unique username for the patient.
             name (str): The first name of the patient.
@@ -257,6 +263,7 @@ class DatabaseOperations:
     def insert_report(self, username_patient, username_medic, analyses, diagnosis):
         """
         Inserts a new medical report into the Reports table in the database.
+
         Args:
             username_patient (str): The username of the patient to whom the report pertains.
             username_medic (str): The username of the medic who is creating the report.
@@ -291,6 +298,7 @@ class DatabaseOperations:
     def insert_treatment_plan(self, username_patient, username_medic, description, start_date, end_date):
         """
         Inserts a new treatment plan into the TreatmentPlans table in the database.
+
         Args:
             username_patient (str): The username of the patient for whom the treatment plan is created.
             username_medic (str): The username of the medic responsible for the treatment plan.
@@ -331,6 +339,7 @@ class DatabaseOperations:
     def insert_medic(self, username, name, lastname, birthday, specialization, mail, phone):
         """
         Inserts a new medic record into the Medics table in the database.
+
         Args:
             username (str): The unique identifier for the medic.
             name (str): The first name of the medic.
@@ -370,6 +379,7 @@ class DatabaseOperations:
     def insert_caregiver(self, username, name, lastname, username_patient, relationship, phone):
         """
         Inserts a new caregiver record into the Caregivers table in the database.
+
         Args:
             username (str): The unique identifier for the caregiver.
             name (str): The first name of the caregiver.
@@ -404,12 +414,32 @@ class DatabaseOperations:
         except sqlite3.IntegrityError:
             return -1
 
-    def check_patient_by_username(self, username): #forse non serve
-            self.cur.execute("SELECT COUNT(*) FROM Patients WHERE username = ?", (username,))
-            if self.cur.fetchone()[0] == 0: return 0
-            else: return -1
+    def check_patient_by_username(self, username):
+        """
+        Checks if a patient with the given username exists in the Patients table in the database.
+
+        Args:
+            username (str): The username of the patient to be checked.
+
+        Returns:
+            int: 0 if the username is not found in the database (indicating no such patient exists), 
+                -1 if the username is found (indicating the patient exists).
+        """
+        self.cur.execute("SELECT COUNT(*) FROM Patients WHERE username = ?", (username,))
+        if self.cur.fetchone()[0] == 0: return 0
+        else: return -1
 
     def get_creds_by_username(self, username):
+        """
+        Retrieves a user's credentials from the Credentials table based on their username.
+
+        Args:
+            username (str): The username of the user whose credentials are to be retrieved.
+
+        Returns:
+            Credentials: A Credentials object containing the user's credentials if found.
+            None: If no credentials are found for the given username.
+        """
         creds = self.cur.execute("""
                                 SELECT *
                                 FROM Credentials
@@ -419,6 +449,16 @@ class DatabaseOperations:
         return None
 
     def get_user_by_username(self, username):
+        """
+        Retrieves a user's detailed information based on their role from the appropriate table in the database.
+
+        Args:
+            username (str): The username of the user whose detailed information is being requested.
+
+        Returns:
+            Medics|Patients|Caregivers|None: An instance of the Medics, Patients, or Caregivers class if the user exists,
+                                         otherwise, None.
+        """
         role = self.get_role_by_username(username)
         if role == 'MEDIC':
             user = self.cur.execute("""
