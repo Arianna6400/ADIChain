@@ -26,7 +26,7 @@ class Utils:
         self.act_controller = ActionController()
         self.today_date = str(datetime.date.today())
 
-    def change_passwd(self, username, role):
+    def change_passwd(self, username):
 
         while True:
             confirmation = input("Do you want to change your password (Y/n): ").strip().upper()
@@ -225,12 +225,12 @@ class Utils:
         table = Table(title=f"{username}{possessive_suffix} reports")
 
         columns = ["id_report", "date", "username_medic", "analysis", "diagnosis"]
-        #IDREPORT da visualizzare diversamente
+
         for column in columns:
             table.add_column(column)
 
-        for report in reports:
-            row = [str(report.get_id_report()), report.get_date(), report.get_username_medic(), report.get_analyses(), report.get_diagnosis()]
+        for i, report in enumerate(reports, start=1):
+            row = [str(i), report.get_date(), report.get_username_medic(), report.get_analyses(), report.get_diagnosis()]
             table.add_row(*row, style = 'bright_green')
 
         console = Console()
@@ -243,13 +243,11 @@ class Utils:
 
         columns = ["id_treatment_plan", "date", "username_medic", "description", "start_date", "end_date"]
         
-        #IDREPORT da visualizzare diversamente
-        
         for column in columns:
             table.add_column(column)
 
-        for treat in treats:
-            row = [str(treat.get_id_treatment_plan()), treat.get_date(), treat.get_username_medic(), treat.get_description(), treat.get_start_date(), treat.get_end_date()]
+        for i, treat in enumerate(treats, start=1):
+            row = [str(i), treat.get_date(), treat.get_username_medic(), treat.get_description(), treat.get_start_date(), treat.get_end_date()]
             table.add_row(*row, style = 'bright_green')
 
         console = Console()
@@ -400,10 +398,6 @@ class Utils:
             records = self.get_page_treatplan(self.current_page, username)
         if records is not None and flag == 0:
             self.display_records(records)
-        # elif records is not None and flag == 1:
-        #     self.display_reports(records, username)
-        # elif records is not None and flag == 2:
-        #     self.display_treats(records, username)
 
     def patient_medical_data(self, username):
         while True: 

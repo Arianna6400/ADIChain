@@ -349,8 +349,7 @@ class DatabaseOperations:
             self.conn.commit()
         except Exception as e:
             print("Error updating treatment plan:", e)
-
-        
+     
     def insert_medic(self, username, name, lastname, birthday, specialization, mail, phone):
         """
         Inserts a new medic record into the Medics table in the database.
