@@ -326,33 +326,37 @@ class Utils:
 
         user = self.session.get_user()
         username_med = user.get_username()
+        role = self.controller.get_role_by_username(username_med)
 
         while True:
             print(f"\nTreatment plan issued on {treat.get_date()} by the medic {treat.get_username_medic()}:")
             print(f"\nDescription: {treat.get_description()}")
             print(f"\nTreatment plan's start: {treat.get_start_date()}")
             print(f"\nTreatment plan's end: {treat.get_end_date()}")
-
-            action = input("\nEnter 'u' to update, or 'q' to quit: \n")
-            if action == "u" or action == "U":
-                self.update_treat(treat, username_med)
-            elif action == "q" or action == "Q":
-                print("Going back...\n")
-                break
+            if role == "MEDIC":
+                action = input("\nEnter 'u' to update, or 'q' to quit: \n")
+                if action == "u" or action == "U":
+                    self.update_treat(treat, username_med)
+                elif action == "q" or action == "Q":
+                    print("Going back...\n")
+                    break
+                else:
+                    print("Invalid input. Please try again. \n")
             else:
-                print("Invalid input. Please try again. \n")
+                input("\nPress Enter to exit\n") 
+                break
 
     def update_treat(self, treat, medic_username):
         print("\nEnter new treatment plan details (click Enter to keep current values):")
         new_description = input(f"Description ({treat.get_description()}): ").strip() or treat.get_description()
         while True:
             new_start_date = input(f"Start date ({treat.get_start_date()}): ").strip() or str(treat.get_start_date())
-            if self.controller.check_tpdate_format(new_start_date): break
+            if self.controller.check_tpdate_format(new_start_date, 1): break
             else: print("Invalid date or incorrect format.")
             
         while True:
             new_end_date = input(f"End date ({treat.get_end_date()}): ").strip() or str(treat.get_end_date())
-            if self.controller.check_tpdate_format(new_end_date): 
+            if self.controller.check_tpdate_format(new_end_date, 1): 
                 if self.controller.check_date_order(new_start_date, new_end_date): break
                 else: print("\nThe second date cannot come before the first date!")
             else: print("Invalid date or incorrect format.")
@@ -364,6 +368,13 @@ class Utils:
             treat.set_end_date(new_end_date)
             treat.save()
             try:
+                try:
+                    from_address_medic = self.controller.get_public_key_by_username(medic_username)
+                    self.act_controller.manage_treatment_plan('update', treat.get_id_treatment_plan(),
+                                                                updated_description, new_start_date,
+                                                                new_end_date, from_address=from_address_medic)
+                except Exception as e:
+                    log_error(e)
                 self.controller.update_treatment_plan(treat.get_id_treatment_plan(), updated_description, new_start_date, new_end_date)
                 print("Treatment plan updated successfully.")
             except Exception as e:
@@ -520,7 +531,7 @@ class Utils:
             else: print("invalid input!") 
         while True:
             end_date = input("\nEnter the ending date (YYYY-MM-DD): ")
-            if self.controller.check_tpdate_format(end_date): 
+            if self.controller.check_tpdate_format(end_date):
                 if self.controller.check_date_order(start_date, end_date): break
                 else: print("\nThe second date cannot come before the first date!")
             else: print("Invalid date or incorrect format.")
