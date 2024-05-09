@@ -1,19 +1,22 @@
-Comandi da eseguire su terminale
+Note importanti per Docker
 
-BUILD DI DOCKER:
+BUILD E LOG:
 
-docker build -t adichain .
+docker-compose up --build
 
-RUN DEL CONTAINER:
+Se tutto va a buon fine, con la comparsa della schermata iniziale dell'app,
+forzare lo stop con Crtl+c.
+Dopo la build, spostarsi sulla cartella /scripts se si vuole stampare
+il log di Ganache su ADIChain per le chiavi. Da terminale, quindi, eseguire:
 
-docker run -it -p 8000:8000 adichain
+chmod +x ./extract.sh -> se non si hanno i permessi d'amministratore
+./extract.sh -> per runnare lo script di estrazione
 
 DOCKER-COMPOSE:
 
-docker compose up -d
-docker compose run -it adichain
+Per far partire l'applicazione, eseguire in ordine i seguenti comandi.
 
-SCRIPT:
-chmod +x ./extract.sh
-./extract.sh
+docker-compose up -d
+docker-compose run -it adichain
 
+Ora è possibile interagire con l'applicazione!

@@ -25,7 +25,7 @@ services:
         while ! curl -s http://ganache:8545 >/dev/null; do
           sleep 1;
         done;
-        echo 'Ganache is ready, starting Adichain';
+        echo 'Ganache is ready, starting ADIChain';
         python /progetto/off_chain/main.py
       "
     environment:
