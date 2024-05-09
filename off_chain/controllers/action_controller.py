@@ -112,8 +112,7 @@ class ActionController:
             tx_hash = function.transact(tx_parameters)
             receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
 
-            log_msg(f"Transaction {function_name} executed. From: {from_address}, Tx Hash: {tx_hash.hex()}, 
-                    Gas: {gas}, Gas Price: {tx_parameters['gasPrice']}")
+            log_msg(f"Transaction {function_name} executed. From: {from_address}, Tx Hash: {tx_hash.hex()}, Gas: {gas}, Gas Price: {tx_parameters['gasPrice']}")
             return receipt
 
         except Exception as e:
