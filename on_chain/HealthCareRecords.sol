@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+
 //Documentation for this contract written in NatSpec format
 /**
  * @title Health Care Records System
@@ -10,21 +11,21 @@ contract HealthCareRecords {
     // Structs for every type of user
     struct Medic {
         string name;
-        string lastname;
+        string lastName;
         string specialization;
         bool isRegistered;
     }
 
     struct Patient {
         string name;
-        string lastname;
+        string lastName;
         uint8 autonomous;
         bool isRegistered;
     }
 
     struct Caregiver {
         string name;
-        string lastname;
+        string lastName;
         bool isRegistered;
     }
 
@@ -141,7 +142,7 @@ contract HealthCareRecords {
         require(medics[msg.sender].isRegistered, "Medic not found");
         Medic storage medic = medics[msg.sender];
         medic.name = name;
-        medic.lastname = lastname;
+        medic.lastName = lastname;
         medic.specialization = specialization;
         logAction("Update", msg.sender, "Medic updated");
         emit EntityUpdated("Medic", msg.sender);
@@ -158,7 +159,7 @@ contract HealthCareRecords {
          require(!patients[msg.sender].isRegistered, "Patient already registered");
         Patient storage patient = patients[msg.sender];
         patient.name = name;
-        patient.lastname = lastname;
+        patient.lastName = lastname;
         patient.autonomous = autonomous;
         patient.isRegistered = true;
         logAction("Create", msg.sender, "Patient added");
@@ -176,7 +177,7 @@ contract HealthCareRecords {
         require(patients[msg.sender].isRegistered, "Patient not found");
         Patient storage patient = patients[msg.sender];
         patient.name = name;
-        patient.lastname = lastname;
+        patient.lastName = lastname;
         patient.autonomous = autonomous;
         logAction("Update", msg.sender, "Patient updated");
         emit EntityUpdated("Patient", msg.sender);
@@ -205,7 +206,7 @@ contract HealthCareRecords {
         require(caregivers[msg.sender].isRegistered, "Caregiver not found");
         Caregiver storage caregiver = caregivers[msg.sender];
         caregiver.name = name;
-        caregiver.lastname = lastname;
+        caregiver.lastName = lastname;
         logAction("Update", msg.sender, "Caregiver status updated");
         emit EntityUpdated("Caregiver", msg.sender);
     }
