@@ -111,6 +111,7 @@ class Utils:
             None
         """
      
+        print("\nUpdate profile function")
         us = self.controller.get_user_by_username(username)
         us.set_name(click.prompt('Name ', default=us.get_name()))
         us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
@@ -240,7 +241,7 @@ class Utils:
         Handle the selection of a patient for viewing details.
 
         Args:
-            patients (list): A list of patient records.
+            patients (List[Patient]): A list of Patient objects.
 
         Returns:
             None
@@ -270,17 +271,17 @@ class Utils:
 
         Parameters:
             page_index (int): The index of the page to retrieve.
-            patients (list): A list of patient records.
+            patients (List[Patient]): A list of Patient objects.
 
         Returns:
-            list: A subset of patient records for the specified page.
+            list: A subset of Patient objects for the specified page.
         """
 
         start_index = page_index * self.PAGE_SIZE
         end_index = start_index + self.PAGE_SIZE
 
         if not patients:
-            print("\nThere are no patients in the system. \n")
+            print("\nThere are no patients in the system.")
             return
         return patients[start_index:end_index]
 
@@ -348,7 +349,7 @@ class Utils:
                     else: print("Invalid choice!")
         else: return treats[start_index:end_index]
 
-    def display_records(self, records):
+    def display_records(self, username):
 
         """
         Displays the records (patients) in a tabular format.
@@ -357,19 +358,44 @@ class Utils:
             records (list): A list of patient records to be displayed.
         """
 
-        table = Table(title="Patients")
+        while True:
+            patients = self.controller.get_patients()
 
-        columns = ["Username", "Name", "Last Name", "Date of Birth", "Place of Birth","Residence"]
+            pagerecords = self.get_page_records(self.current_page, patients)
 
-        for column in columns:
-            table.add_column(column)
+            if pagerecords:
 
-        for patient in records:
-            row = [patient.get_username(), patient.get_name(), patient.get_lastname(), patient.get_birthday(), patient.get_birth_place(), patient.get_residence()]
-            table.add_row(*row, style = 'bright_green')
+                table = Table(title="Patients")
 
-        console = Console()
-        console.print(table)
+                columns = ["Username", "Name", "Last Name", "Date of Birth", "Place of Birth","Residence"]
+
+                for column in columns:
+                    table.add_column(column)
+
+                for patient in pagerecords:
+                    row = [patient.get_username(), patient.get_name(), patient.get_lastname(), patient.get_birthday(), patient.get_birth_place(), patient.get_residence()]
+                    table.add_row(*row, style = 'bright_green')
+
+                console = Console()
+                console.print(table)
+
+                try:
+                    action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: \n")
+
+                    if action == "n" or action == "N":
+                        self.go_to_next_page(patients, 0, username)
+                    elif action == "p" or action == "P":
+                        self.go_to_previous_page(patients, 0, username)
+                    elif action == "s" or action == "S":
+                        self.handle_selection(pagerecords)
+                    elif action == "q" or action == "Q":
+                        self.current_page = 0
+                        print("Exiting...")
+                        break
+                    else:
+                        print("Invalid input. Please try again. \n")
+                except: print("invalid input!")
+            else: break
 
     def display_reports(self, username):
 
@@ -416,7 +442,8 @@ class Utils:
                     elif (action == "a" or action == "A") and role == "MEDIC":
                         self.add_report(username)
                     elif action == "q" or action == "Q":
-                        print("Exiting...\n")
+                        self.current_page = 0
+                        print("Exiting...")
                         break
                     elif 0 < int(action) <= len(pagereports):
                             selection_index = int(action) - 1
@@ -472,7 +499,8 @@ class Utils:
                     elif (action == "a" or action == "A") and role == "MEDIC":
                         self.add_treatment_plan(username)
                     elif action == "q" or action == "Q":
-                        print("Exiting...\n")
+                        self.current_page = 0
+                        print("Exiting...")
                         break
                     elif 0 < int(action) <= len(treats):
                         selection_index = int(action) - 1
@@ -498,13 +526,11 @@ class Utils:
         """
 
         if flag == 0:
-            records = self.get_page_records(self.current_page, list)
+            self.get_page_records(self.current_page, list)
         elif flag == 1:
-            records = self.get_page_reports(self.current_page, username)
+            self.get_page_reports(self.current_page, username)
         elif flag == 2:
-            records = self.get_page_treatplan(self.current_page, username)
-        if records is not None and flag == 0:
-            self.display_records(records)
+            self.get_page_treatplan(self.current_page, username)
 
     def go_to_next_page(self, list, flag, username):
         """

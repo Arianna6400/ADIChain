@@ -444,36 +444,16 @@ class CommandLineInterface:
                 choice = int(input("Choose an option: "))
                 if choice in medic_options:
                     if choice == 1:
-
-                        patients = self.controller.get_patients()
-
-                        while len(patients) > 0:
-
-                            self.util.show_page(patients, 0, username)
-
-                            action = input("\nEnter 'n' for next page, 'p' for previous page, 's' to select a patient, or 'q' to quit: \n")
-
-                            if action == "n" or action == "N":
-                                self.util.go_to_next_page(patients, 0, username)
-                            elif action == "p" or action == "P":
-                                self.util.go_to_previous_page(patients, 0, username)
-                            elif action == "s" or action == "S":
-                                self.util.handle_selection(patients)
-                            elif action == "q" or action == "Q":
-                                print("Exiting...\n")
-                                break
-                            else:
-                                print("Invalid input. Please try again. \n")
+                        self.util.display_records(username)
 
                     elif choice == 2:
                         self.view_medicview(username)
 
                     elif choice == 3:                           
-                        print("Update profile function")
                         self.util.update_profile(username, "Medic")
                 
                     elif choice == 4:
-                        self.util.change_passwd(username, "Medic")
+                        self.util.change_passwd(username)
 
                     elif choice == 5:
                         confirm = input("\nDo you really want to leave? (Y/n): ").strip().upper()
@@ -537,7 +517,7 @@ class CommandLineInterface:
                     self.util.update_profile(patient_name, "Patient")
 
                 elif choice == 6:
-                    self.util.change_passwd(username, "Caregiver")
+                    self.util.change_passwd(username)
             
                 elif choice == 7:                           
                     confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
@@ -592,7 +572,7 @@ class CommandLineInterface:
                     self.util.update_profile(username, "Patient") 
 
                 elif choice == 4:
-                    self.util.change_passwd(username, "Patient")
+                    self.util.change_passwd(username)
 
                 elif choice == 5:
                     print('Bye Bye!')
