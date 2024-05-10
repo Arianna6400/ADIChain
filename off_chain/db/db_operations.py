@@ -335,20 +335,6 @@ class DatabaseOperations:
             return 0
         except sqlite3.IntegrityError:
             return -1
-        
-    def update_treatment_plan(self, id_treatment_plan, updated_description, new_start_date, new_end_date):
-        query = """
-            UPDATE TreatmentPlans
-            SET description = ?,
-                start_date = ?,
-                end_date = ?
-            WHERE id_treament_plan = ?
-        """
-        try:
-            self.cur.execute(query, (updated_description, new_start_date, new_end_date, id_treatment_plan))
-            self.conn.commit()
-        except Exception as e:
-            print("Error updating treatment plan:", e)
      
     def insert_medic(self, username, name, lastname, birthday, specialization, mail, phone):
         """
@@ -709,13 +695,13 @@ class DatabaseOperations:
         Retrieves a list of all patients from the Patients table in the database.
 
         Returns:
-            list[tuple]: A list of tuples, each representing a patient's entire record from the Patients table.
-                     This list can be empty if there are no patients in the database.
+            list[Patients]: A list of Patients objects containing detailed information about each patient.
+                        If no treatment plans are found, an empty list is returned.
         """
         query = """
                 SELECT *
                 FROM Patients
             """
-        self.cur.execute(query)
-        return self.cur.fetchall()
+        patients = self.cur.execute(query)
+        return [Patients(*patient) for patient in patients]
 

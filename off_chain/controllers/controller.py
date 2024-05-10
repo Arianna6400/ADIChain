@@ -159,18 +159,6 @@ class Controller:
             print('Treatment plan inserted correctly.')
 
         return insertion_code
-    
-    def update_treatment_plan(self, id_treatment_plan, updated_description, new_start_date, new_end_date):
-        """
-        Updates an existing treatment plan in the database.
-
-        :param id_treatment_plan: The unique identifier of the treatment plan to be updated.
-        :param updated_description: The new description to replace the old one in the treatment plan.
-        :param new_start_date: The new start date for the treatment plan (format YYYY-MM-DD).
-        :param new_end_date: The new end date for the treatment plan (format YYYY-MM-DD).
-        :return: A status code indicating the success (e.g., 0 for success) or failure of the operation.
-        """
-        return self.db_ops.update_treatment_plan(id_treatment_plan, updated_description, new_start_date, new_end_date)
 
     def check_null_info(self, info):
         """
