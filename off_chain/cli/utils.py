@@ -1,3 +1,9 @@
+"""
+This module provides various utility functions for handling user input, updating profiles, changing passwords, 
+displaying data, managing reports and treatment plans, and navigating through pages of patient records, reports, 
+and treatment plans. It also includes functions for adding new reports and treatment plans.
+"""
+
 import datetime
 import math
 import re
@@ -13,6 +19,16 @@ from session.logging import log_error
 
 
 class Utils:
+    """
+    This class provides various utility methods for handling user input, updating profiles, changing passwords, 
+    displaying data, managing reports and treatment plans, and navigating through pages of patient records, reports, 
+    and treatment plans. It also includes methods for adding new reports and treatment plans.
+
+    Attributes:
+        PAGE_SIZE (int): The number of items to display per page.
+        current_page (int): The index of the current page being displayed.
+
+    """
 
     init(convert=True)
 
@@ -21,12 +37,34 @@ class Utils:
     
     def __init__(self, session: Session):
 
+        """
+        Initializes the Utils class with a session object.
+
+        Parameters:
+            session (Session): The session object containing user information.
+
+        Attributes:
+            session (Session): The session object containing user information.
+            controller (Controller): An instance of the Controller class for database interaction.
+            act_controller (ActionController): An instance of the ActionController class for managing actions.
+            today_date (str): The current date in string format.
+        """
+
         self.session = session
         self.controller = Controller(session)
         self.act_controller = ActionController()
         self.today_date = str(datetime.date.today())
 
     def change_passwd(self, username):
+        """
+        Allows the user to change their password.
+
+        Args:
+            username (str): The username of the user whose password is being changed.
+
+        Returns:
+            None
+        """
 
         while True:
             confirmation = input("Do you want to change your password (Y/n): ").strip().upper()
@@ -60,7 +98,17 @@ class Utils:
             break
             
     def update_profile(self, username, role):
-        
+        """
+        Updates the profile information of a user.
+
+        Parameters:
+            username (str): The username of the user whose profile is being updated.
+            role (str): The role of the user (e.g., "Patient", "Caregiver", "Medic").
+
+        Returns:
+            None
+        """
+     
         us = self.controller.get_user_by_username(username)
         us.set_name(click.prompt('Name ', default=us.get_name()))
         us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
@@ -145,13 +193,20 @@ class Utils:
 
         us.save()
 
-    '''
-    -----------------------------------------------------
-    Funzioni di gestione della visualizzazione del menù
-    'Visualizzazione pazienti' del medico
-    '''
 
     def get_page_records(self, page_index, patients):
+
+        """
+        Retrieves a subset of patient records for a specific page.
+
+        Parameters:
+            page_index (int): The index of the page to retrieve.
+            patients (list): A list of patient records.
+
+        Returns:
+            list: A subset of patient records for the specified page.
+        """
+
         start_index = page_index * self.PAGE_SIZE
         end_index = start_index + self.PAGE_SIZE
 
@@ -161,6 +216,17 @@ class Utils:
         return patients[start_index:end_index]
 
     def get_page_reports(self, page_index, username):
+
+        """
+        Retrieves a subset of reports for a specific page belonging to a particular user.
+
+        Parameters:
+            page_index (int): The index of the page to retrieve.
+            username (str): The username of the user whose reports are to be fetched.
+
+        Returns:
+            list: A subset of reports for the specified page.
+        """
 
         user_auth = self.session.get_user()
         username_auth = user_auth.get_username()
@@ -184,6 +250,17 @@ class Utils:
     
     def get_page_treatplan(self, page_index, username):
 
+        """
+        Retrieves a subset of treatment plans for a specific page belonging to a particular user.
+
+        Args:
+            page_index (int): The index of the page to retrieve.
+            username (str): The username of the user whose treatment plans are to be fetched.
+
+        Returns:
+            list: A subset of treatment plans for the specified page.
+        """
+
         user_auth = self.session.get_user()
         username_auth = user_auth.get_username()
 
@@ -206,6 +283,13 @@ class Utils:
 
     def display_records(self, records):
 
+        """
+        Displays the records (patients) in a tabular format.
+
+        Args:
+            records (list): A list of patient records to be displayed.
+        """
+
         table = Table(title="Patients")
 
         columns = ["Username", "Name", "Last Name", "Date of Birth", "Place of Birth","Residence"]
@@ -221,6 +305,14 @@ class Utils:
         console.print(table)
 
     def display_reports(self, reports, username):
+        """
+        Displays the reports of a specific user in a tabular format.
+
+        Args:
+            reports (list): A list of report objects to be displayed.
+            username (str): The username of the user whose reports are being displayed.
+        """
+
         possessive_suffix = self.controller.possessive_suffix(username)
         table = Table(title=f"{username}{possessive_suffix} reports")
 
@@ -238,6 +330,14 @@ class Utils:
 
     def display_treats(self, treats, username):
 
+        """
+        Displays the treatment plans of a specific user in a tabular format.
+
+        Args:
+            treats (list): A list of treatment plan objects to be displayed.
+            username (str): The username of the user whose treatment plans are being displayed.
+        """
+
         possessive_suffix = self.controller.possessive_suffix(username)
         table = Table(title=f"{username}{possessive_suffix} treatment plans")
 
@@ -254,6 +354,13 @@ class Utils:
         console.print(table)
 
     def view_reports(self, reports):
+        """
+        Allows the user to select and view details of a specific report from a list of reports.
+
+        Args:
+            reports (list): A list of report objects to choose from.
+        """
+
         while True:
             print("\nSelect the number of the report you'd like to visualize:")
             i = 1
@@ -271,6 +378,13 @@ class Utils:
             except: print("Invalid input!")
 
     def view_treatment_plan(self, treats):
+        """
+        Allows the user to select and view details of a specific treatment plan from a list of treatment plans.
+
+        Args:
+            treats (list): A list of treatment plan objects to choose from.
+        """
+
         while True:
             print("\nSelect the number of the treatment plan you'd like to visualize:")
             i = 1
@@ -288,6 +402,18 @@ class Utils:
             except: print("Invalid input!")
 
     def go_to_next_page(self, list, flag, username):
+        """
+        Displays the next page of records based on the current page index.
+
+        Args:
+            list (list): The list of records to paginate through.
+            flag (int): A flag indicating the type of records (0 for general records, 1 for reports, 2 for treatment plans).
+            username (str): The username associated with the records.
+
+        Returns:
+            None
+        """
+
         total_pages = math.ceil(len(list) / self.PAGE_SIZE)
         if self.current_page < total_pages - 1:
             self.current_page += 1
@@ -298,6 +424,18 @@ class Utils:
             return
 
     def go_to_previous_page(self, list, flag, username):
+        """
+        Displays the previous page of records based on the current page index.
+
+        Args:
+            list (list): The list of records to paginate through.
+            flag (int): A flag indicating the type of records (0 for general records, 1 for reports, 2 for treatment plans).
+            username (str): The username associated with the records.
+
+        Returns:
+            None
+        """
+
         if self.current_page > 0:
             self.current_page -= 1
             self.show_page(list, flag, username)
@@ -306,6 +444,13 @@ class Utils:
             print(Fore.RED + "\nInvalid action!" + Style.RESET_ALL)
 
     def show_patient_details(self, patient):
+
+        """
+        Display details of a patient.
+
+        Args:
+            patient (tuple): Tuple containing patient details (username, name, last name, age, place of birth, residence).
+        """
 
         print("\nPatient Details:")
         print(f"Username: {patient[0]}")
@@ -317,12 +462,26 @@ class Utils:
 
     def show_report_details(self, report):
 
+        """
+        Display details of a medical report.
+
+        Args:
+            report (Report): The medical report object containing the report details.
+        """
+
         print(f"\nReport issued on {report.get_date()} by the medic {report.get_username_medic()}:")
         print(f"\nAnalyses: {report.get_analyses()}")
         print(f"\nDiagnosis: {report.get_diagnosis()}")
         input("\nPress Enter to exit\n")
 
     def show_treatment_plan_details(self, treat):
+
+        """
+        Display details of a treatment plan.
+
+        Args:
+            treat (TreatmentPlan): The treatment plan object containing the plan details.
+        """
 
         user = self.session.get_user()
         username_med = user.get_username()
@@ -347,6 +506,14 @@ class Utils:
                 break
 
     def update_treat(self, treat, medic_username):
+        """
+        Update a treatment plan.
+
+        Args:
+            treat (TreatmentPlan): The treatment plan object to be updated.
+            medic_username (str): The username of the medic updating the treatment plan.
+        """
+
         print("\nEnter new treatment plan details (click Enter to keep current values):")
         new_description = input(f"Description ({treat.get_description()}): ").strip() or treat.get_description()
         while True:
@@ -383,6 +550,16 @@ class Utils:
             print("No changes made to the treatment plan.")
 
     def handle_selection(self, patients):
+        """
+        Handle the selection of a patient for viewing details.
+
+        Args:
+            patients (list): A list of patient records.
+
+        Returns:
+            None
+        """
+
         while True:
             print("\nSelect a patient's username to view details:")
             i = 1
@@ -401,6 +578,18 @@ class Utils:
             except: print("Invalid input!")
       
     def show_page(self, list, flag, username):
+        """
+        Display a page of records based on the flag.
+
+        Args:
+            list (list): The list of records to display.
+            flag (int): An integer flag indicating the type of records (0 for general records, 1 for reports, 2 for treatment plans).
+            username (str): The username associated with the records.
+
+        Returns:
+            None
+        """
+
         if flag == 0:
             records = self.get_page_records(self.current_page, list)
         elif flag == 1:
@@ -411,6 +600,16 @@ class Utils:
             self.display_records(records)
 
     def patient_medical_data(self, username):
+        """
+        Display medical data for a given patient.
+
+        Args:
+            username (str): The username of the patient.
+
+        Returns:
+            None
+        """
+
         while True: 
             print("\nMEDICAL DATA")
             print('\nWhich type of data do you want to consult?')
@@ -488,6 +687,15 @@ class Utils:
                 print('Wrong input. Please enter a number!')
 
     def add_report(self, username):
+        """
+        Add a new report for a given patient.
+
+        Args:
+            username (str): The username of the patient.
+
+        Returns:
+            None
+        """
 
         user = self.session.get_user()
         username_med = user.get_username()
@@ -510,6 +718,15 @@ class Utils:
             print("\nInternal error!")
 
     def add_treatment_plan(self, username):
+        """
+        Add a new treatment plan for a given patient.
+
+        Args:
+            username (str): The username of the patient.
+
+        Returns:
+            None
+        """
 
         user = self.session.get_user()
         username_med = user.get_username()
@@ -547,9 +764,3 @@ class Utils:
             print("\nNew treatment plan has been saved correctly.")
         else:
             print("\nInternal error!")
-
-
-
-    '''--------------------------------------------------'''
-
-
