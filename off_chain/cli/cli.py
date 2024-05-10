@@ -491,17 +491,7 @@ class CommandLineInterface:
 
             except ValueError:
                 print('Wrong input. Please enter a number!')
-
-    def view_treatmentplan(self, username):
-        treatmentplan = self.controller.get_treatmentplan_by_username(username)
-        medic = self.controller.get_medic_by_username(treatmentplan.get_username_medic())
-        print("\nTREATMENT PLAN\n")
-        print("Start: ", treatmentplan.get_start_date())
-        print("Finish: ", treatmentplan.get_end_date())
-        print("Medic: ", medic.get_name(), " ", medic.get_lastname())
-        print("Description: ", treatmentplan.get_description())
-        input("\nPress Enter to exit\n")
-
+    
     def view_patientview(self, username):
         patientview = self.controller.get_user_by_username(username)
         print("\nPATIENT INFO\n")
@@ -537,24 +527,3 @@ class CommandLineInterface:
         print("E-mail: ", medicview.get_mail())
         print("Phone: ",medicview.get_phone())
         input("\nPress Enter to exit\n")
-
-    def view_reportslist_patient(self, username):
-        while True:
-            reports_list = self.controller.get_reports_list_by_username(username)
-            print("\nELENCO REPORTS\n")
-            for i, report in enumerate(reports_list, 1):
-                print(f"{i}. {report.get_analyses()}")
-            print(f"{i+1}. Undo")
-            try:
-                choice = int(input("Chose an option: "))-1
-                if choice in {indice for indice, _ in enumerate(reports_list)}:
-                    print("\nREPORT")
-                    print("\nAnalyses: ", reports_list[choice].get_analyses())
-                    print("Diagnosis: ", reports_list[choice].get_diagnosis())
-                    input("Press Enter to exit")
-                elif choice==i:
-                    return  
-                else:
-                    print('Wrong option. Please enter one of the options listed in the menu!')
-            except ValueError:
-                    print('Wrong input. Please enter a number!')

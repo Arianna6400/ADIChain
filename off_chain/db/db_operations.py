@@ -653,23 +653,6 @@ class DatabaseOperations:
                 raise ex
         else:
             return -1
-    
-    def get_treatmentplan_by_username(self, username):
-        """
-        Retrieves the treatment plan associated with a specific patient based on their username.
-
-        Args:
-            username (str): The username of the patient whose treatment plan is being retrieved.
-
-        Returns:
-            TreatmentPlans: An object representing the treatment plan of the specified patient.
-                        This object is constructed from the data retrieved from the database.
-        """
-        treatmentplan = self.cur.execute("""
-                                    SELECT *
-                                    FROM TreatmentPlans
-                                    WHERE username_patient =?""", (username,)).fetchone()
-        return TreatmentPlans(*treatmentplan)
 
     def get_medic_by_username(self, username):
         """
@@ -720,26 +703,6 @@ class DatabaseOperations:
                                     FROM TreatmentPlans
                                     WHERE username_patient =?""", (username,))       
         return [TreatmentPlans(*treatmentplan) for treatmentplan in treatmentplanslist]
-    
-    def get_patients_for_doctor(self, username):
-        """
-        Retrieves a list of patients associated with a specific doctor, identified by the doctor's username.
-
-        Args:
-            username (str): The username of the doctor whose patients are being retrieved.
-
-        Returns:
-            list[tuple]: A list of tuples, each containing the username, name, and lastname of a patient.
-                     This list can be empty if the doctor has no patients linked to them.
-        """
-        query2 = """
-                SELECT Patients.username, Patients.name, Patients.lastname
-                FROM Patients
-            
-                WHERE Patients.medic_id = ?
-            """
-        self.cur.execute(query2, (username,))
-        return self.cur.fetchall()
     
     def get_patients(self):
         """

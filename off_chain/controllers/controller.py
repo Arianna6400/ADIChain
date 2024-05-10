@@ -337,9 +337,6 @@ class Controller:
     
     def get_public_key_by_username(self, username):
         return self.db_ops.get_public_key_by_username(username)
-
-    def get_treatmentplan_by_username(self, username):
-        return self.db_ops.get_treatmentplan_by_username(username)
     
     def get_medic_by_username(self, username):
         return self.db_ops.get_medic_by_username(username)
