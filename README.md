@@ -8,11 +8,14 @@
     - [Overview](#overview)
     - [Key Features](#key-features)
     - [Technologies Used to Develop](#technologies-used-to-develop)
-- [Requirements](#requirements)
 - [Installation](#installation)
+    - [Requirements](#requirements)
+    - [Setup in UNIX-like OS's](#setup-in-unix-like-oss)
+    - [Setup in Windows](#setup-in-windows)
 - [How to use it](#how-to-use-it)
+    - [First look](#first-look)
 - [Documentation](#documentation)
-- [Credits](#credits)
+- [Contributors](#contributors)
 
 ## Introduction
 
@@ -22,7 +25,7 @@ Welcome to **ADIChain**, a decentralized DApp platform built on blockchain, desi
 
 ADIChain is a medical platform that facilitates effective and secure management of health data. Using Ethereum as the backbone for data security and immutability, and Python for offchain operations, ADIChain aims to improve communication between doctors and patients. This application is designed to allow doctors to manage medical reports and treatment plans efficiently, while patients, both autonomous and non-autonomous (assisted by caregivers), can access and view their medical information securely and privately.
 
-> **Note:** ADI stands for *Assistenza Domiciliare Integrata*, as for *Integrated Home Care*
+> **N.D.R.:** ADI stands for *Assistenza Domiciliare Integrata*, as for *Integrated Home Care*
 
 ### Key Features
 
@@ -45,17 +48,71 @@ ADIChain is designed to be used both by healthcare professionals and patients an
 - [Py-solc-x](https://solcx.readthedocs.io/en/latest/) -> Solidity compiler
 - [Unittest](https://docs.python.org/3/library/unittest.html) -> Unit testing framework
 
-## Requirements
-
-Before getting started, make sure you have installed [Docker](https://www.docker.com/) on your computer.
-
 ## Installation
+
+In order to run our application, you need to follow a few steps.
+
+### Requirements
+
+Before getting started, make sure you have installed Docker on your computer. Docker provides an isolated environment to run applications in containers, ensuring the portability and security of project components. You can run the Docker installation file from the following [link](https://www.docker.com/).
+
+Also, make sure you have installed `git` on your computer. In **Windows** systems, you could download [here](https://git-scm.com/download/win) the latest version of **Git for Windows**. In **UNIX-like** operating systems, you could run the following command:
+
+```bash
+sudo apt install git
+```
+
+### Setup in UNIX-like OS's
+
+First, you need to clone this repository. In order to do that, you can open your command shell and run this command:
+
+```bash
+git clone https://github.com/Arianna6400/ADIChain
+```
+
+Then, make sure you are placed in the right directory:
+
+```bash
+cd ADIChain
+```
+
+Now, you can initiate the process of creating and starting the Docker containers required to host the Ethereum blockchain by running the following simple command:
+
+```bash
+docker-compose up -d
+```
+
+You could also check if services were built properly by running `docker-compose logs`. Also, make sure your user has the proper privileges to run Docker commands. Otherwise, you can address this issue by prefixing each command with `sudo`.
+
+> **NOTE:** The application has been tested on [Ubuntu](https://ubuntu.com/) and [Kali Linux](https://www.kali.org/).
+
+### Setup in Windows
+
+To setup the application on Windows, you can basically run the same commands previously listed in your **Windows PowerShell**. Make sure you open the Shell in the project's directory.
+
+If the docker commands do not work due to the missing *engine*, you will probably need to start [Docker Desktop](https://www.docker.com/products/docker-desktop/) in the background, which is the fastest way to start docker on Windows systems.
+
+> **NOTE:** The application has been tested both on Windows 10 and Windows 11. 
 
 ## How to use it
 
-## Documentation
+Once the setup has been completed, you can proceed with running the main application interface with the following command:
 
-## Credits
+```bash
+docker-compose run -it adichain
+```
+
+Remember to include `-it`, because `-i` ensures that the container's *STDIN* is kept open and `-t` allocates a *pseudo-TTY*, which is essential for interacting with the application via terminal. Together, these flags allow you to interact with the `adichain` service through a command line interface.
+
+At this point, the program is ready to be used. After executing the previous command and successfully deploying the entire infrastructure, you can interact with the application through the terminal that opens after deployment.
+
+### First look
+
+Upon the very first startup of the program, it will perform an application check mechanism from Docker to verify that Ganache is ready to listen. If there are no errors, ADIChain will start correctly and run the first homepage.
+
+
+
+## Documentation
 
 ## Contributors
 Meet the team that made ADIChain possible:
