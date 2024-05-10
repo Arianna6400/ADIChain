@@ -135,7 +135,7 @@ After that, you can run the following command:
 ./SCRIPT_NAME.sh
 ```
 
-Changing the `SCRIPT_NAME` with the proper name of the script you want to execute. You can find your `.txt.` files inside the directory and use one of the results to register your user in our application.
+Changing the `SCRIPT_NAME` with the proper name of the script you want to execute. You can find your `FILE_NAME.txt`. files inside the directory and use one of the results to register your user in our application.
 
 ## Contributors
 Meet the team that made ADIChain possible:
