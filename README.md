@@ -14,7 +14,7 @@
     - [Setup in Windows](#setup-in-windows)
 - [How to use it](#how-to-use-it)
     - [First look](#first-look)
-- [Documentation](#documentation)
+    - [Bonus track: Scripts](#bonus-track-scripts)
 - [Contributors](#contributors)
 
 ## Introduction
