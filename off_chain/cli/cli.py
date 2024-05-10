@@ -1,3 +1,9 @@
+"""
+This module provides a command-line interface (CLI) for a healthcare system. 
+It allows users to register new accounts, log in, and perform various actions based on their roles 
+(e.g., patient, medic, caregiver).
+"""
+
 import getpass
 import re
 
@@ -11,7 +17,25 @@ from cli.utils import Utils
 
 
 class CommandLineInterface:
+    """
+    This class represents the command-line interface (CLI) of a healthcare system. 
+    It facilitates user interactions, such as registration, login, and navigation 
+    through various functionalities based on user roles (patient, medic, caregiver).
+    """
     def __init__(self, session: Session):
+        """Initialize the CommandLineInterface with a session.
+
+        Args:
+            session (Session): An instance of the Session class representing the user's session.
+
+        Attributes:
+            controller (Controller): instance of the Controller class, responsible for handling the business logic and interfacing with the underlying system.
+            act_controller (ActionController): instance of the ActionController class, managing actions related to smart contract deployment and entity registration.
+            session (Session): instance of the Session class, managing user sessions and authentication states.
+            ops (DatabaseOperations): instance of the DatabaseOperations class, handling database operations such as user registration and data retrieval.
+            util (Utils): instance of the Utils class, providing utility functions for various tasks within the CLI.
+            menu (dict): dictionary mapping menu option numbers to their corresponding descriptions.
+        """
 
         self.controller = Controller(session)
         self.act_controller = ActionController()
@@ -30,6 +54,12 @@ class CommandLineInterface:
     current_page = 0
 
     def print_menu(self):
+        """
+        This method prints the main menu options available to the user and prompts for 
+        their choice. It then directs the user to the corresponding functionality based 
+        on their selection. The method handles user input validation to ensure a valid 
+        choice is made.
+        """
 
         print(r""" ______     _____     __     ______     __  __     ______     __     __   __       
 /\  __ \   /\  __-.  /\ \   /\  ___\   /\ \_\ \   /\  __ \   /\ \   /\ "-.\ \      
@@ -63,6 +93,14 @@ class CommandLineInterface:
             return
 
     def registration_menu(self):
+        """
+        This method prompts users to decide whether to proceed with deployment and 
+        initialization of the smart contract. It then collects wallet credentials, 
+        personal information, and role selection from the user for registration. 
+        The method validates user inputs and interacts with the Controller to perform 
+        registration actions.
+        """
+
         while True:
             proceed = input("In order to register, you need to deploy. Do you want to proceed with deployment and initialization of the contract? (Y/n): ")
             if proceed.strip().upper() == "Y":
@@ -174,6 +212,17 @@ class CommandLineInterface:
             return 
 
     def insert_patient_info(self, username, role, autonomous_flag=1):
+        """
+        This method guides users through the process of providing personal information.
+        It validates user inputs and ensures data integrity before inserting the 
+        information into the system. Additionally, it registers the patient entity 
+        on the blockchain.
+
+        Args:
+            username (str): The username of the patient.
+            role (str): The role of the patient.
+            autonomous_flag (bool): Flag indicating whether the patient is autonomous or not. Default set to 1.
+        """
 
         print("Proceed with the insertion of a few personal information.")
         while True:
@@ -215,6 +264,16 @@ class CommandLineInterface:
             print('Internal error!')
 
     def insert_medic_info(self, username, role):
+        """
+        This method assists medics in providing their personal information. It validates 
+        user inputs and ensures data integrity before inserting the information into 
+        the system. Additionally, it registers the medic entity on the blockchain.
+
+        Args:
+            username (str): The username of the medic.
+            role (str): The role of the medic.
+        """
+
         print("Proceed with the insertion of a few personal information.")
         while True:
             name = input('Name: ')
@@ -256,6 +315,17 @@ class CommandLineInterface:
             print('Internal error!')
 
     def insert_caregiver_info(self, username, role):
+        """
+        This method facilitates the process of caregivers providing their personal 
+        information and the patient's information the are taking care of. It validates user inputs and ensures data 
+        integrity before inserting the information into the system. Additionally, 
+        it registers the caregiver entity on the blockchain.
+
+        Args:
+            username (str): The username of the caregiver.
+            role (str): The role of the caregiver.
+        """
+
         print("Proceed with the insertion of a few personal information.")
         while True:
             name = input('Name: ')
@@ -294,6 +364,16 @@ class CommandLineInterface:
             print('Internal error!')
 
     def login_menu(self):
+        """
+        This method prompts users to provide their credentials (public and private keys, 
+        username, and password) for authentication. It verifies the credentials with 
+        the Controller and grants access if authentication is successful. The method 
+        handles authentication failures, including too many login attempts.
+
+        Returns:
+            int: An indicator of the login outcome (-1 for authentication failure, -2 for too many login attempts, 0 for successful login).
+        """
+
         while True:
             if not self.controller.check_attempts() and self.session.get_timeout_left() < 0:
                 self.session.reset_attempts()
@@ -336,6 +416,17 @@ class CommandLineInterface:
     #Homepages
     #Medic
     def medic_menu(self, username):
+        """
+        This method presents medics with a menu of options tailored to their role. 
+        It allows medics to choose actions such as selecting a patient, viewing or 
+        updating their profile, changing their password, or logging out. The method 
+        handles user input validation and directs users to the corresponding functionality 
+        based on their choice.
+
+        Args:
+            username (str): The username of the logged-in medic.
+        """
+
         medic_options = {
             1: "Choose patient",
             2: "View profile",
@@ -398,6 +489,17 @@ class CommandLineInterface:
 
     #Caregiver
     def caregiver_menu(self, username):
+        """
+        This method presents caregivers with a menu of options tailored to their role. 
+        It allows caregivers to choose actions such as consulting medical data, viewing 
+        or updating their profile, viewing patient profiles, changing their password, 
+        or logging out. The method handles user input validation and directs users 
+        to the corresponding functionality based on their choice.
+
+        Args:
+            username (str): The username of the logged-in caregiver.
+        """
+
         while True:
             caregiver = self.controller.get_user_by_username(username)
             patient_name = caregiver.get_username_patient()
@@ -454,6 +556,16 @@ class CommandLineInterface:
             
     #Patient
     def patient_menu(self, username):
+        """
+        This method presents patients with a menu of options tailored to their role. 
+        It allows patients to choose actions such as consulting medical data, viewing 
+        or updating their profile, changing their password, or logging out. The method 
+        handles user input validation and directs users to the corresponding functionality 
+        based on their choice.
+
+        Args:
+            username (str): The username of the logged-in patient.
+        """
 
         while True: 
             patient_options = {
@@ -493,6 +605,15 @@ class CommandLineInterface:
                 print('Wrong input. Please enter a number!')
     
     def view_patientview(self, username):
+        """
+        This method retrieves and displays the profile information of the patient 
+        identified by the given username. It presents details such as username, name, 
+        lastname, birthday, birth place, residence, autonomous status, and phone number.
+
+        Args:
+            username (str): The username of the patient whose profile is to be viewed.
+        """
+
         patientview = self.controller.get_user_by_username(username)
         print("\nPATIENT INFO\n")
         print("Username: ", patientview.get_username())
@@ -506,6 +627,16 @@ class CommandLineInterface:
         input("\nPress Enter to exit\n")
 
     def view_caregiverview(self, username):
+        """
+        This method retrieves and displays the profile information of the caregiver 
+        identified by the given username. It presents details such as username, name, 
+        lastname, associated patient's username, relationship with the patient, and 
+        phone number.
+
+        Args:
+            username (str): The username of the caregiver whose profile is to be viewed.
+        """
+
         caregiverview = self.controller.get_user_by_username(username)
         print("\nCAREGIVER INFO\n")
         print("Username: ", caregiverview.get_username())
@@ -517,6 +648,15 @@ class CommandLineInterface:
         input("\nPress Enter to exit\n")
 
     def view_medicview(self, username):
+        """
+        This method retrieves and displays the profile information of the medic 
+        identified by the given username. It presents details such as username, name, 
+        lastname, birthday, specialization, email, and phone number.
+
+        Args:
+            username (str): The username of the medic whose profile is to be viewed.
+        """
+
         medicview = self.controller.get_user_by_username(username)
         print("\nMEDIC INFO\n")
         print("Username: ", medicview.get_username())

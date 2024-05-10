@@ -639,7 +639,7 @@ class DatabaseOperations:
                 raise ex
         else:
             return -1
-
+    
     def get_medic_by_username(self, username):
         """
         Retrieves a medic's detailed information based on their username from the Medics table.
