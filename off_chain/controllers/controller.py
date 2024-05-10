@@ -286,8 +286,6 @@ class Controller:
             return"'s"
         else:
             return "'"
-        
-    #Check and get functions from query
 
     def check_username(self, username):
         return self.db_ops.check_username(username)
@@ -322,9 +320,6 @@ class Controller:
     
     def get_user_by_username(self, username):
         return self.db_ops.get_user_by_username(username)
-    
-    def check_patient_by_username(self, username): #forse non serve
-        return self.db_ops.check_patient_by_username(username)
     
     def check_attempts(self):
         if self.session.get_attempts() < self.__n_attempts_limit:
