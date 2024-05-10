@@ -110,9 +110,32 @@ At this point, the program is ready to be used. After executing the previous com
 
 Upon the very first startup of the program, it will perform an application check mechanism from Docker to verify that Ganache is ready to listen. If there are no errors, ADIChain will start correctly and run the first homepage.
 
+![](https://github.com/Arianna6400/ADIChain/blob/master/docs/first_look.png)
 
+Now, you can *register* a new account as a Doctor, Patient or Caregiver, or *login* if you are already enrolled, and start exploring every feature of our application.
+**Enjoy it!**
 
-## Documentation
+### Bonus track: Scripts
+
+To facilitate recording tests, we have included some interesting scripts:
+
+1. `extract.sh` -> Allows you to extract the Ganache logs, through Docker-compose, to access both the *public key* and the *private key* associated with the contract being deployed.
+2. `gen_email.sh` -> Generates a list of random emails, with the domain '**adichain.com**', associated with a username that is also randomic.
+3. `gen_phone.sh` -> Generates a list of random phone numbers, both landline and mobile, with Italian prefixes.
+
+To run the scripts, you need to go to the project's `/scripts` directory. After that, you need to run the following command to make the scripts executable:
+
+```bash
+chmod +x ./SCRIPT_NAME.sh
+```
+
+After that, you can run the following command:
+
+```bash
+./SCRIPT_NAME.sh
+```
+
+Changing the `SCRIPT_NAME` with the proper name of the script you want to execute. You can find your `.txt.` files inside the directory and use one of the results to register your user in our application.
 
 ## Contributors
 Meet the team that made ADIChain possible:
