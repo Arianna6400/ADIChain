@@ -117,7 +117,7 @@ Now, you can *register* a new account as a Doctor, Patient or Caregiver, or *log
 
 ### Bonus track: Scripts
 
-To facilitate recording tests, we have included some interesting scripts:
+In order to make registration tests easy, we have included some interesting scripts:
 
 1. `extract.sh` -> Allows you to extract the Ganache logs, through Docker-compose, to access both the *public key* and the *private key* associated with the contract being deployed.
 2. `gen_email.sh` -> Generates a list of random emails, with the domain '**adichain.com**', associated with a username that is also randomic.
