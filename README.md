@@ -94,6 +94,20 @@ If the docker commands do not work due to the missing *engine*, you will probabl
 
 > **NOTE:** The application has been tested both on Windows 10 and Windows 11. 
 
+### Setup in macOS
+
+The application on macOS systems works in the same way as previously described. You can test it on your terminal following the UNIX-like setup. 
+
+If `docker-compose` does not run at first, you probably need to set up an environment variable to set the Docker platform. You should run the following command:
+
+```bash
+sudo DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose run -it adichain
+```
+
+After this set-up, the application should run properly.
+
+> **NOTE:** The application has been tested on macOS M1 Pro (ARM64 architecture).
+
 ## How to use it
 
 Once the setup has been completed, you can proceed with running the main application interface with the following command:
