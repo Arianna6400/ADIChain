@@ -602,7 +602,6 @@ class CommandLineInterface:
         print("Birthday: ", patientview.get_birthday())
         print("Birth Place: ", patientview.get_birth_place())
         print("Residence: ", patientview.get_residence())
-        print("Autonomous: ", patientview.get_autonomous())
         print("Phone: ", patientview.get_phone())
         input("\nPress Enter to exit\n")
 
