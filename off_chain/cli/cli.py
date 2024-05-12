@@ -259,7 +259,7 @@ class CommandLineInterface:
         if autonomous_flag == 1:
             from_address_patient = self.controller.get_public_key_by_username(username)
             self.act_controller.register_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
-        insert_code = self.controller.insert_patient_info(role, username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
+        insert_code = self.controller.insert_patient_info(username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
         if insert_code == 0:
             print(Fore.GREEN + 'Information saved correctly!' + Style.RESET_ALL)
             if autonomous_flag == 1:
@@ -311,7 +311,7 @@ class CommandLineInterface:
 
         from_address_medic = self.controller.get_public_key_by_username(username)
         self.act_controller.register_entity('medic', name, lastname, specialization, from_address=from_address_medic)
-        insert_code = self.controller.insert_medic_info(role, username, name, lastname, birthday, specialization, mail, phone)
+        insert_code = self.controller.insert_medic_info(username, name, lastname, birthday, specialization, mail, phone)
         if insert_code == 0:
             print(Fore.GREEN + 'Information saved correctly!' + Style.RESET_ALL)
             self.medic_menu(username)
@@ -360,7 +360,7 @@ class CommandLineInterface:
 
         from_address_caregiver = self.controller.get_public_key_by_username(username)
         self.act_controller.register_entity('caregiver', name, lastname, from_address=from_address_caregiver)
-        insert_code = self.controller.insert_caregiver_info(role, username, name, lastname, username_patient, relationship, phone)
+        insert_code = self.controller.insert_caregiver_info(username, name, lastname, username_patient, relationship, phone)
         if insert_code == 0:
             print(Fore.GREEN + 'Information saved correctly!\n' + Style.RESET_ALL)
             self.caregiver_menu(username)
@@ -559,7 +559,7 @@ class CommandLineInterface:
                 4: "Change password",
                 5: "Log out"
             }
-            print(Fore.CYAN + "\nMENU")
+            print(Fore.CYAN + "\nMENU" + Style.RESET_ALL)
             for key, value in patient_options.items():
                 print(f"{key} -- {value}")
 
