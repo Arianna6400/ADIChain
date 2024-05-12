@@ -1,10 +1,13 @@
 from models.model_base import Model
+from colorama import Fore, Style, init
 
 class Caregivers(Model):
     """
     This class represents a Caregiver model inheriting from the base Model class.
     It handles the interaction with the Caregivers table in the database.
     """
+
+    init(convert=True)
 
     def __init__(self, username_patient, username, name, lastname, relationship, phone):
         """
@@ -82,9 +85,9 @@ class Caregivers(Model):
                     (self.username_patient, self.name, self.lastname, self.relationship, self.phone, self.username))
             self.conn.commit()
             self.username = self.cur.lastrowid  # Updating the username with last inserted row id
-            print('Information saved correctly!\n')
-        except Exception as e: 
-            print('Internal error!', str(e))
+            print(Fore.GREEN + 'Information saved correctly!\n' + Style.RESET_ALL)
+        except Exception: 
+            print(Fore.RED + 'Internal error!' + Style.RESET_ALL)
 
     def delete(self):
         """

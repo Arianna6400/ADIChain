@@ -1,4 +1,5 @@
 import re
+from colorama import Fore, Style, init
 from datetime import datetime
 from db.db_operations import DatabaseOperations
 from session.session import Session
@@ -8,6 +9,8 @@ class Controller:
     """
     Controller handles user and medical data interactions with the database.
     """
+    init(convert=True)
+
     def __init__(self, session: Session):
         """
         Initialize the Controller with a session object and set up the database operations.
@@ -58,7 +61,7 @@ class Controller:
         else:
             return -2, None
     
-    def insert_patient_info(self, role: str, username: str, name: str, lastname: str, birthday: str, birth_place: str, residence: str, autonomous: bool, phone: str):
+    def insert_patient_info(self, username: str, name: str, lastname: str, birthday: str, birth_place: str, residence: str, autonomous: bool, phone: str):
         """
         Inserts patient information into the database.
 
@@ -78,11 +81,11 @@ class Controller:
         if insertion_code == 0:
             user = self.db_ops.get_user_by_username(username) 
             self.session.set_user(user)
-            print('DONE')
+            print(Fore.GREEN + 'DONE' + Style.RESET_ALL)
 
         return insertion_code
     
-    def insert_medic_info(self, role: str, username: str, name: str, lastname: str, birthday: str, specialization: str, mail: str, phone: str):
+    def insert_medic_info(self, username: str, name: str, lastname: str, birthday: str, specialization: str, mail: str, phone: str):
         """
         Inserts medic information into the database.
 
@@ -99,11 +102,11 @@ class Controller:
         if insertion_code == 0:
             user = self.db_ops.get_user_by_username(username) 
             self.session.set_user(user)
-            print('DONE')
+            print(Fore.GREEN + 'DONE' + Style.RESET_ALL)
 
         return insertion_code
     
-    def insert_caregiver_info(self, role: str, username: str, name: str, lastname: str, username_patient: int, relationship: str, phone: str):
+    def insert_caregiver_info(self, username: str, name: str, lastname: str, username_patient: int, relationship: str, phone: str):
         """
         Inserts caregiver information into the database, associating the caregiver with a patient.
 
@@ -121,7 +124,7 @@ class Controller:
         if insertion_code == 0:
             user = self.db_ops.get_user_by_username(username) 
             self.session.set_user(user)
-            print('DONE')
+            print(Fore.GREEN + 'DONE' + Style.RESET_ALL)
         
         return insertion_code
     
@@ -138,7 +141,7 @@ class Controller:
         insertion_code = self.db_ops.insert_report(username_patient, username_medic, analyses, diagnosis)
 
         if insertion_code == 0:
-            print('Report inserted correctly.')
+            print(Fore.GREEN + 'Report inserted correctly.' + Style.RESET_ALL)
 
         return insertion_code
     
@@ -156,7 +159,7 @@ class Controller:
         insertion_code = self.db_ops.insert_treatment_plan(username_patient, username_medic, description, start_date, end_date)
 
         if insertion_code == 0:
-            print('Treatment plan inserted correctly.')
+            print(Fore.GREEN + 'Treatment plan inserted correctly.' + Style.RESET_ALL)
 
         return insertion_code
 

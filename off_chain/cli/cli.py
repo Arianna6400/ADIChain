@@ -14,6 +14,7 @@ from controllers.action_controller import ActionController
 from session.session import Session
 from db.db_operations import DatabaseOperations
 from cli.utils import Utils
+from colorama import Fore, Style, init
 
 
 class CommandLineInterface:
@@ -22,6 +23,9 @@ class CommandLineInterface:
     It facilitates user interactions, such as registration, login, and navigation 
     through various functionalities based on user roles (patient, medic, caregiver).
     """
+
+    init(convert=True)
+
     def __init__(self, session: Session):
         """Initialize the CommandLineInterface with a session.
 
@@ -61,12 +65,12 @@ class CommandLineInterface:
         choice is made.
         """
 
-        print(r""" ______     _____     __     ______     __  __     ______     __     __   __       
+        print(Fore.CYAN + r""" ______     _____     __     ______     __  __     ______     __     __   __       
 /\  __ \   /\  __-.  /\ \   /\  ___\   /\ \_\ \   /\  __ \   /\ \   /\ "-.\ \      
 \ \  __ \  \ \ \/\ \ \ \ \  \ \ \____  \ \  __ \  \ \  __ \  \ \ \  \ \ \-.  \     
  \ \_\ \_\  \ \____-  \ \_\  \ \_____\  \ \_\ \_\  \ \_\ \_\  \ \_\  \ \_\\"\_\    
   \/_/\/_/   \/____/   \/_/   \/_____/   \/_/\/_/   \/_/\/_/   \/_/   \/_/ \/_/   
-            """)
+            """ + Style.RESET_ALL)
 
         for key in self.menu.keys():
             print(key, '--' ,self.menu[key])
@@ -86,10 +90,10 @@ class CommandLineInterface:
                 print('Bye Bye!')
                 exit()
             else:
-                print('Wrong option. Please enter one of the options listed in the menu!')
+                print(Fore.RED + 'Wrong option. Please enter one of the options listed in the menu!' + Style.RESET_ALL)
 
         except ValueError:
-            print('Wrong input. Please enter a number!\n')
+            print(Fore.RED + 'Wrong input. Please enter a number!\n'+ Style.RESET_ALL)
             return
 
     def registration_menu(self):
@@ -107,10 +111,10 @@ class CommandLineInterface:
                 self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
                 break  # Exit the loop after deployment
             elif proceed.strip().upper() == "N":
-                print("Deployment cancelled. Please deploy the contract when you are ready to register.")
+                print(Fore.RED + "Deployment cancelled. Please deploy the contract when you are ready to register." + Style.RESET_ALL)
                 return  # Return from the function to cancel
             else:
-                print('Wrong input, please insert Y or N!')
+                print(Fore.RED + 'Wrong input, please insert Y or N!' + Style.RESET_ALL)
 
         print('Please, enter your wallet credentials.')
         attempts = 0
@@ -121,10 +125,10 @@ class CommandLineInterface:
             
             if private_key == confirm_private_key:
                 if self.controller.check_keys(public_key, private_key):
-                    print('A wallet with these keys already exists. Please enter a unique set of keys.')
+                    print(Fore.RED + 'A wallet with these keys already exists. Please enter a unique set of keys.' + Style.RESET_ALL)
                     attempts += 1
                     if attempts >= 3:
-                        print("Maximum retry attempts reached. Redeploying...")
+                        print(Fore.RED + "Maximum retry attempts reached. Redeploying..." + Style.RESET_ALL)
                         self.act_controller.deploy_and_initialize('../../on_chain/HealthCareRecords.sol')
                         attempts = 0  # Reset attempts after deployment
                 else:
@@ -133,13 +137,13 @@ class CommandLineInterface:
                         priv_key = keys.PrivateKey(pk_bytes)
                         pk = priv_key.public_key.to_checksum_address()
                         if pk.lower() != public_key.lower():
-                            print('The provided keys do not match. Please check your entries.')
+                            print(Fore.RED + 'The provided keys do not match. Please check your entries.' + Style.RESET_ALL)
                         else:
                             break
                     except Exception:
-                        print('Oops, there is no wallet with the matching public and private key provided.\n')
+                        print(Fore.RED + 'Oops, there is no wallet with the matching public and private key provided.\n' + Style.RESET_ALL)
             else:
-                print('Private key and confirmation do not match. Try again.\n')
+                print(Fore.RED + 'Private key and confirmation do not match. Try again.\n' + Style.RESET_ALL)
 
         
         if is_address(public_key) and (public_key == pk):
@@ -149,7 +153,7 @@ class CommandLineInterface:
             while True:
                 username = input('Username: ')
                 if self.controller.check_username(username) == 0: break
-                else: print('Your username has been taken.\n')
+                else: print(Fore.RED + 'Your username has been taken.\n' + Style.RESET_ALL)
 
             while True:
                 role = input("Insert your role: \n (C) if caregiver \n (M) if medic\n (P) if patient \n Your choice: ").strip().upper()
@@ -159,23 +163,23 @@ class CommandLineInterface:
                     if confirm == 'Y':
                         break
                     else:
-                        print("Role not confirmed. Retry\n")
+                        print(Fore.RED + "Role not confirmed. Retry\n" + Style.RESET_ALL)
                 elif role == 'P':
                     user_role = 'PATIENT'
                     confirm = input("Do you confirm you're a Patient? (Y/n): ").strip().upper()
                     if confirm == 'Y':
                         break
                     else:
-                        print("Role not confirmed. Retry\n")
+                        print(Fore.RED + "Role not confirmed. Retry\n" + Style.RESET_ALL)
                 elif role == 'C':
                     user_role = 'CAREGIVER'
                     confirm = input("Do you confirm you're a Caregiver? (Y/n): ").strip().upper()
                     if confirm == 'Y':
                         break
                     else:
-                        print("Role not confirmed. Retry\n")
+                        print(Fore.RED + "Role not confirmed. Retry\n" + Style.RESET_ALL)
                 else:
-                    print("You have to select a role between Caregiver (C), Medic (M) or Patient (P). Retry\n")
+                    print(Fore.RED + "You have to select a role between Caregiver (C), Medic (M) or Patient (P). Retry\n" + Style.RESET_ALL)
         
             while True:
                 while True:
@@ -184,20 +188,20 @@ class CommandLineInterface:
                     passwd_regex = r'^.{8,50}$'
                     #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
                     if not re.fullmatch(passwd_regex, password):
-                        print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')
+                        print(Fore.RED + 'Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n' + Style.RESET_ALL)
                     else: break
 
                 confirm_password = input('Confirm password: ')
                 #confirm_password = getpass.getpass('Confirm Password: ')
                 
                 if password != confirm_password:
-                    print('Password and confirmation do not match. Try again\n')
+                    print(Fore.RED + 'Password and confirmation do not match. Try again\n' + Style.RESET_ALL)
                 else:
                     break
 
             reg_code = self.controller.registration(username, password, user_role, public_key, private_key)
             if reg_code == 0:
-                print('You have succesfully registered!\n')
+                print(Fore.GREEN + 'You have succesfully registered!\n' + Style.RESET_ALL)
                 if role == 'P':
                     self.insert_patient_info(username, user_role)
                 elif role == 'M':
@@ -205,10 +209,10 @@ class CommandLineInterface:
                 elif role == 'C':
                     self.insert_caregiver_info(username, user_role)
             elif reg_code == -1:
-                print('Your username has been taken.\n')
+                print(Fore.RED + 'Your username has been taken.\n' + Style.RESET_ALL)
         
         else:
-            print('Sorry, but the provided public and private key do not match to any account\n')
+            print(Fore.RED + 'Sorry, but the provided public and private key do not match to any account\n' + Style.RESET_ALL)
             return 
 
     def insert_patient_info(self, username, role, autonomous_flag=1):
@@ -224,44 +228,44 @@ class CommandLineInterface:
             autonomous_flag (bool): Flag indicating whether the patient is autonomous or not. Default set to 1.
         """
 
-        print("Proceed with the insertion of a few personal information.")
+        print("\nProceed with the insertion of a few personal information.")
         while True:
             name = input('Name: ')
             if self.controller.check_null_info(name): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
         while True:
             lastname = input('Lastname: ')
             if self.controller.check_null_info(lastname): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
         while True:
             birthday = input('Date of birth (YYYY-MM-DD): ')
             if self.controller.check_birthdate_format(birthday): break
-            else: print("Invalid birthdate or incorrect format.")
+            else: print(Fore.RED + "\nInvalid birthdate or incorrect format." + Style.RESET_ALL)
         while True:
             birth_place = input('Birth place: ')
             if self.controller.check_null_info(birth_place): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
         while True:
             residence = input('Place of residence: ')
             if self.controller.check_null_info(residence): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
         while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): 
                 if self.controller.check_unique_phone_number(phone) == 0: break
-                else: print("This phone number has already been inserted. \n")
-            else: print("Invalid phone number format.\n")
+                else: print(Fore.RED + "This phone number has already been inserted. \n" + Style.RESET_ALL)
+            else: print(Fore.RED + "Invalid phone number format.\n" + Style.RESET_ALL)
         
         if autonomous_flag == 1:
             from_address_patient = self.controller.get_public_key_by_username(username)
             self.act_controller.register_entity('patient', name, lastname, autonomous_flag, from_address=from_address_patient)
         insert_code = self.controller.insert_patient_info(role, username, name, lastname, birthday, birth_place, residence, autonomous_flag, phone)
         if insert_code == 0:
-            print('Information saved correctly!')
+            print(Fore.GREEN + 'Information saved correctly!' + Style.RESET_ALL)
             if autonomous_flag == 1:
                 self.patient_menu(username)
         elif insert_code == -1:
-            print('Internal error!')
+            print(Fore.RED + 'Internal error!' + Style.RESET_ALL)
 
     def insert_medic_info(self, username, role):
         """
@@ -274,45 +278,45 @@ class CommandLineInterface:
             role (str): The role of the medic.
         """
 
-        print("Proceed with the insertion of a few personal information.")
+        print("\nProceed with the insertion of a few personal information.")
         while True:
             name = input('Name: ')
             if self.controller.check_null_info(name): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
         while True:
             lastname = input('Lastname: ')
             if self.controller.check_null_info(lastname): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
         while True:
             birthday = input('Date of birth (YYYY-MM-DD): ')
             if self.controller.check_birthdate_format(birthday): break
-            else: print("Invalid birthdate or incorrect format.")
+            else: print(Fore.RED + "Invalid birthdate or incorrect format." + Style.RESET_ALL)
         while True:
             specialization = input('Specialization: ')
             if self.controller.check_null_info(specialization): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
         while True:
             mail = input('E-mail: ')
             if self.controller.check_email_format(mail): 
                 if self.controller.check_unique_email(mail) == 0: break
-                else: print("This e-mail has already been inserted. \n")
-            else: print("Invalid e-mail format.\n")
+                else: print(Fore.RED + "This e-mail has already been inserted. \n" + Style.RESET_ALL)
+            else: print(Fore.RED + "Invalid e-mail format.\n" + Style.RESET_ALL)
 
         while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): 
                 if self.controller.check_unique_phone_number(phone) == 0: break
-                else: print("This phone number has already been inserted. \n")
-            else: print("Invalid phone number format.\n")
+                else: print(Fore.RED + "This phone number has already been inserted. \n" + Style.RESET_ALL)
+            else: print(Fore.RED + "Invalid phone number format.\n" + Style.RESET_ALL)
 
         from_address_medic = self.controller.get_public_key_by_username(username)
         self.act_controller.register_entity('medic', name, lastname, specialization, from_address=from_address_medic)
         insert_code = self.controller.insert_medic_info(role, username, name, lastname, birthday, specialization, mail, phone)
         if insert_code == 0:
-            print('Information saved correctly!')
+            print(Fore.GREEN + 'Information saved correctly!' + Style.RESET_ALL)
             self.medic_menu(username)
         elif insert_code == -1:
-            print('Internal error!')
+            print(Fore.RED + 'Internal error!' + Style.RESET_ALL)
 
     def insert_caregiver_info(self, username, role):
         """
@@ -326,42 +330,42 @@ class CommandLineInterface:
             role (str): The role of the caregiver.
         """
 
-        print("Proceed with the insertion of a few personal information.")
+        print("\nProceed with the insertion of a few personal information.")
         while True:
             name = input('Name: ')
             if self.controller.check_null_info(name): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
         while True:
             lastname = input('Lastname: ')
             if self.controller.check_null_info(lastname): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
         while True:
             phone = input('Phone number: ')
             if self.controller.check_phone_number_format(phone): 
                 if self.controller.check_unique_phone_number(phone) == 0: break
-                else: print("This phone number has already been inserted. \n")
-            else: print("Invalid phone number format.\n")
+                else: print(Fore.RED + "This phone number has already been inserted. \n" + Style.RESET_ALL)
+            else: print(Fore.RED + "Invalid phone number format.\n" + Style.RESET_ALL)
 
         print('\nNow register patient information')
         while True:
             username_patient = input('Insert the patient username: ')
             if self.controller.check_username(username_patient) == 0: break
-            else: print('Your username has been taken.\n')
+            else: print(Fore.RED + 'Your username has been taken.\n' + Style.RESET_ALL)
         self.insert_patient_info(username_patient, "PATIENT", 0)
 
         while True:
             relationship = input('What kind of relationship there is between you and the patient: ')
             if self.controller.check_null_info(relationship): break
-            else: print('Please insert information.')
+            else: print(Fore.RED + '\nPlease insert information.' + Style.RESET_ALL)
 
         from_address_caregiver = self.controller.get_public_key_by_username(username)
         self.act_controller.register_entity('caregiver', name, lastname, from_address=from_address_caregiver)
         insert_code = self.controller.insert_caregiver_info(role, username, name, lastname, username_patient, relationship, phone)
         if insert_code == 0:
-            print('Information saved correctly!\n')
+            print(Fore.GREEN + 'Information saved correctly!\n' + Style.RESET_ALL)
             self.caregiver_menu(username)
         elif insert_code == -1:
-            print('Internal error!')
+            print(Fore.RED + 'Internal error!' + Style.RESET_ALL)
 
     def login_menu(self):
         """
@@ -389,7 +393,7 @@ class CommandLineInterface:
                 login_code, user_type = self.controller.login(username, passwd, public_key, private_key)
 
                 if login_code == 0:
-                    print('\nYou have succesfully logged in!\n')
+                    print(Fore.GREEN + '\nYou have succesfully logged in!\n' + Style.RESET_ALL)
                     if user_type == "MEDIC":
                         self.medic_menu(username)
                         return
@@ -400,17 +404,17 @@ class CommandLineInterface:
                         self.patient_menu(username)
                         return
                     else:
-                        print("Error: User type is not recognized.")
+                        print(Fore.RED + "Error: User type is not recognized." + Style.RESET_ALL)
                         return -1
                 elif login_code == -1:
-                    print('\nThe credentials you entered are wrong\n')
+                    print(Fore.RED + '\nThe credentials you entered are wrong\n' + Style.RESET_ALL)
                 elif login_code == -2:
-                    print('\nToo many login attempts\n')
+                    print(Fore.RED + '\nToo many login attempts\n' + Style.RESET_ALL)
                     return -1
                 
             else:
-                print('\nMax number of attemps reached\n')
-                print(f'You will be in timeout for: {int(self.session.get_timeout_left())} seconds\n')
+                print(Fore.RED + '\nMax number of attemps reached\n' + Style.RESET_ALL)
+                print(Fore.RED + f'You will be in timeout for: {int(self.session.get_timeout_left())} seconds\n' + Style.RESET_ALL)
                 return -2
 
     #Homepages
@@ -436,7 +440,7 @@ class CommandLineInterface:
         }
 
         while True:
-            print("\nMENU")                           
+            print(Fore.CYAN + "\nMENU" + Style.RESET_ALL)                           
             for key, value in medic_options.items():
                 print(f"{key} -- {value}")
                                                 
@@ -458,14 +462,14 @@ class CommandLineInterface:
                     elif choice == 5:
                         confirm = input("\nDo you really want to leave? (Y/n): ").strip().upper()
                         if confirm == 'Y':
-                            print("\nThank you for using the service!\n")
+                            print(Fore.CYAN + "\nThank you for using the service!\n" + Style.RESET_ALL)
                             self.session.reset_session()
                             return
                         else:
-                            print("Invalid choice! Please try again.")
+                            print(Fore.RED + "Invalid choice! Please try again." + Style.RESET_ALL)
 
             except ValueError:
-                print("Invalid Input! Please enter a valid number.")
+                print(Fore.RED + "Invalid Input! Please enter a valid number." + Style.RESET_ALL)
 
     #Caregiver
     def caregiver_menu(self, username):
@@ -494,7 +498,7 @@ class CommandLineInterface:
                         7: "Log out"
                     }
 
-            print("\nMENU")                           
+            print(Fore.CYAN + "\nMENU" + Style.RESET_ALL)                           
             for key, value in caregiver_options.items():
                 print(f"{key} -- {value}")        
 
@@ -522,17 +526,17 @@ class CommandLineInterface:
                 elif choice == 7:                           
                     confirm = input("Do you really want to leave? (Y/n): ").strip().upper()
                     if confirm == 'Y':
-                        print("Thank you for using the service!")
+                        print(Fore.CYAN + "Thank you for using the service!" + Style.RESET_ALL)
                         self.session.reset_session()
                         return
                     else:
                         print("Returning to the caregiver menu...")
 
                 else:
-                        print("Invalid choice! Please try again.")
+                        print(Fore.RED + "Invalid choice! Please try again." + Style.RESET_ALL)
 
             except ValueError:
-                    print("Invalid Input! Please enter a valid number.")
+                    print(Fore.RED + "Invalid Input! Please enter a valid number." + Style.RESET_ALL)
             
     #Patient
     def patient_menu(self, username):
@@ -555,7 +559,7 @@ class CommandLineInterface:
                 4: "Change password",
                 5: "Log out"
             }
-            print("\nMENU")
+            print(Fore.CYAN + "\nMENU")
             for key, value in patient_options.items():
                 print(f"{key} -- {value}")
 
@@ -575,14 +579,14 @@ class CommandLineInterface:
                     self.util.change_passwd(username)
 
                 elif choice == 5:
-                    print('Bye Bye!')
+                    print(Fore.CYAN + 'Bye Bye!' + Style.RESET_ALL)
                     self.session.reset_session()
                     return
                 else:
-                    print('Wrong option. Please enter one of the options listed in the menu!')
+                    print(Fore.RED + 'Wrong option. Please enter one of the options listed in the menu!' + Style.RESET_ALL)
 
             except ValueError:
-                print('Wrong input. Please enter a number!')
+                print(Fore.RED + 'Wrong input. Please enter a number!' + Style.RESET_ALL)
     
     def view_patientview(self, username):
         """
@@ -595,7 +599,7 @@ class CommandLineInterface:
         """
 
         patientview = self.controller.get_user_by_username(username)
-        print("\nPATIENT INFO\n")
+        print(Fore.CYAN + "\nPATIENT INFO\n" + Style.RESET_ALL)
         print("Username: ", patientview.get_username())
         print("Name: ", patientview.get_name())
         print("Last Name: ", patientview.get_lastname())
@@ -617,7 +621,7 @@ class CommandLineInterface:
         """
 
         caregiverview = self.controller.get_user_by_username(username)
-        print("\nCAREGIVER INFO\n")
+        print(Fore.CYAN + "\nCAREGIVER INFO\n" + Style.RESET_ALL)
         print("Username: ", caregiverview.get_username())
         print("Name: ", caregiverview.get_name())
         print("Lastname: ", caregiverview.get_lastname())
@@ -637,7 +641,7 @@ class CommandLineInterface:
         """
 
         medicview = self.controller.get_user_by_username(username)
-        print("\nMEDIC INFO\n")
+        print(Fore.CYAN + "\nMEDIC INFO\n" + Style.RESET_ALL)
         print("Username: ", medicview.get_username())
         print("Name: ", medicview.get_name())
         print("Lastname: ", medicview.get_lastname())

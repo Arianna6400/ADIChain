@@ -8,6 +8,7 @@ import sqlite3
 import os
 import hashlib
 
+from colorama import Fore, Style, init
 from config import config
 from models.medics import Medics
 from models.patients import Patients
@@ -21,6 +22,7 @@ class DatabaseOperations:
     Handles all interactions with the database for user data manipulation and retrieval.
     This class manages the connection to the database and executes SQL queries to manage the data.
     """
+    init(convert=True)
 
     def __init__(self):
         """
@@ -216,7 +218,7 @@ class DatabaseOperations:
             existing_users = self.cur.execute(query, (public_key, private_key)).fetchall()
             return len(existing_users) > 0
         except Exception as e:
-            print("An error occurred:", e)
+            print(Fore.RED + f"An error occurred: {e}" + Style.RESET_ALL)
             return False 
         
     def insert_patient(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
@@ -526,7 +528,7 @@ class DatabaseOperations:
             else:
                 return None  # Public key not found
         except Exception as e:
-            print("An error occurred while retrieving public key:", e)
+            print(Fore.RED + f"An error occurred while retrieving public key: {e}" + Style.RESET_ALL)
             return None
 
     def hash_function(self, password: str):

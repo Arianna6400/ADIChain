@@ -1,10 +1,13 @@
 from models.model_base import Model
+from colorama import Fore, Style, init
 
 class Medics(Model):
     """
     This class represents the Medics model that stores medical professional details,
     extending the functionality provided by the Model class.
     """
+
+    init(convert=True)
 
     def __init__(self, username, name, lastname, birthday, specialization, mail, phone):
         """
@@ -88,9 +91,9 @@ class Medics(Model):
                                 (self.name, self.lastname, self.birthday, self.specialization, self.mail, self.phone, self.username))
             self.conn.commit()
             self.username = self.cur.lastrowid
-            print('Information saved correctly!\n')
+            print(Fore.GREEN + 'Information saved correctly!\n' + Style.RESET_ALL)
         except: 
-            print('Internal error!')
+            print(Fore.RED + 'Internal error!' + Style.RESET_ALL)
 
     def delete(self):
         """

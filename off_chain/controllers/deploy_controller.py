@@ -1,5 +1,6 @@
 import os
 import random
+from colorama import Fore, Style, init
 from web3 import Web3
 from solcx import compile_standard, get_installed_solc_versions, install_solc
 
@@ -8,6 +9,9 @@ class DeployController:
     DeployController handles initialization, compilation and deployment for Solidity contract, establishing 
     a connection with Ganache through Web3.
     """
+
+    init(convert=True)
+
     def __init__(self, http_provider='http://127.0.0.1:8545', solc_version='0.8.0'):
         """
         Initializes the deployment controller with Ethereum HTTP provider and Solidity 
@@ -22,7 +26,7 @@ class DeployController:
         self.http_provider = http_provider
         self.solc_version = solc_version
         self.w3 = Web3(Web3.HTTPProvider(self.http_provider))
-        assert self.w3.is_connected(), "Failed to connect to Ethereum node."
+        assert self.w3.is_connected(), Fore.RED + "Failed to connect to Ethereum node." + Style.RESET_ALL
         self.contract = None
 
     def compile_and_deploy(self, contract_source_path, account=None):
@@ -87,4 +91,4 @@ class DeployController:
             self.contract = self.w3.eth.contract(address=tx_receipt.contractAddress, abi=self.abi)
             print(f'Contract deployed at {tx_receipt.contractAddress} from {account}')
         except Exception as e:
-            print(f"An error occurred while deploying the contract from account {account}: {e}")
+            print(Fore.RED + f"An error occurred while deploying the contract from account {account}: {e}" + Style.RESET_ALL)
