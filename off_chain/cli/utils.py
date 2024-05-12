@@ -74,7 +74,7 @@ class Utils:
                 while True:
                     old_pass = input('Old Password: ')
                     if not self.controller.check_passwd(username, old_pass):
-                        print('\nYou entered the wrong old password.\n')
+                        print(Fore.RED + '\nYou entered the wrong old password.\n' + Style.RESET_ALL)
                         break
                     else:
                         while True:
@@ -84,15 +84,15 @@ class Utils:
                             passwd_regex = r'^.{8,50}$'
                             #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
                             if not re.fullmatch(passwd_regex, new_passwd):
-                                print('Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n')    
+                                print(Fore.RED + 'Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n' + Style.RESET_ALL)    
                             elif new_passwd != new_confirm_password:
-                                print('Password and confirmation do not match. Try again\n')
+                                print(Fore.RED + 'Password and confirmation do not match. Try again\n' + Style.RESET_ALL)
                             else:
                                 response = self.controller.change_passwd(username, old_pass, new_passwd)
                                 if response == 0:
-                                    print('\nPassword changed correctly!\n')
+                                    print(Fore.GREEN + '\nPassword changed correctly!\n' + Style.RESET_ALL)
                                 elif response == -1 or response == -2:
-                                    print('\nSorry, something went wrong!\n')
+                                    print(Fore.RED + '\nSorry, something went wrong!\n' + Style.RESET_ALL)
                                 break
                         break
             else:
@@ -111,7 +111,7 @@ class Utils:
             None
         """
      
-        print("\nUpdate profile function")
+        print(Fore.CYAN + "\nUpdate profile function"  + Style.RESET_ALL)
         us = self.controller.get_user_by_username(username)
         us.set_name(click.prompt('Name ', default=us.get_name()))
         us.set_lastname(click.prompt('Lastname ', default=us.get_lastname()))
@@ -124,7 +124,7 @@ class Utils:
                 if self.controller.check_birthdate_format(birthday): 
                     us.set_birthday(birthday)
                     break
-                else: print("Invalid birthdate or incorrect format.")
+                else: print(Fore.RED + "Invalid birthdate or incorrect format." + Style.RESET_ALL)
             us.set_birth_place(click.prompt('Birth place ', default=us.get_birth_place()))
             us.set_residence(click.prompt('Residence ', default=us.get_residence()))
             while True:
@@ -132,7 +132,7 @@ class Utils:
                 if self.controller.check_phone_number_format(phone): 
                     us.set_phone(phone)
                     break
-                else: print("Invalid phone number format.")
+                else: print(Fore.RED + "Invalid phone number format."  + Style.RESET_ALL)
 
             autonomous_flag = int(us.get_autonomous())
             name = us.get_name()
@@ -152,7 +152,7 @@ class Utils:
                 if self.controller.check_phone_number_format(phone): 
                     us.set_phone(phone)
                     break
-                else: print("Invalid phone number format.")
+                else: print(Fore.RED + "Invalid phone number format." + Style.RESET_ALL)
             
             name = us.get_name()
             lastname = us.get_lastname()
@@ -170,20 +170,20 @@ class Utils:
                 if self.controller.check_birthdate_format(birthday): 
                     us.set_birthday(birthday)
                     break
-                else: print("Invalid birthdate or incorrect format.")
+                else: print(Fore.RED + "Invalid birthdate or incorrect format." + Style.RESET_ALL)
             us.set_specialization(click.prompt('Specialization ', default=us.get_specialization()))
             while True:
                 mail = click.prompt('Mail ', default=us.get_mail())
                 if self.controller.check_email_format(mail): 
                     us.set_mail(mail)
                     break
-                else: print("Invalid email format.")
+                else: print(Fore.RED + "Invalid email format." + Style.RESET_ALL)
             while True:
                 phone = click.prompt('Phone ', default=us.get_phone())
                 if self.controller.check_phone_number_format(phone): 
                     us.set_phone(phone)
                     break
-                else: print("Invalid phone number format.")
+                else: print(Fore.RED + "Invalid phone number format." + Style.RESET_ALL)
             
             name = us.get_name()
             lastname = us.get_lastname()
@@ -209,7 +209,7 @@ class Utils:
         """
 
         while True: 
-            print("\nMEDICAL DATA")
+            print(Fore.CYAN + "\nMEDICAL DATA" + Style.RESET_ALL)
             print('\nWhich type of data do you want to consult?')
             print("1 -- Reports ")
             print("2 -- Treatment plans") 
@@ -230,10 +230,10 @@ class Utils:
                     break
                 
                 else:
-                    print('Wrong option. Please enter one of the options listed in the menu!')
+                    print(Fore.RED + 'Wrong option. Please enter one of the options listed in the menu!'  + Style.RESET_ALL)
 
             except ValueError:
-                print('Wrong input. Please enter a number!')
+                print(Fore.RED + 'Wrong input. Please enter a number!' + Style.RESET_ALL)
 
     def handle_selection(self, patients):
 
@@ -261,8 +261,8 @@ class Utils:
                         self.patient_medical_data(patients[selection_index].get_username())
                         break
                 elif selection == 0: break
-                else: print("\nInvalid input, try again!")
-            except: print("Invalid input!")
+                else: print(Fore.RED + "\nInvalid input, try again!" + Style.RESET_ALL)
+            except: print(Fore.RED + "Invalid input!" + Style.RESET_ALL)
 
     def get_page_records(self, page_index, patients):
 
@@ -281,7 +281,7 @@ class Utils:
         end_index = start_index + self.PAGE_SIZE
 
         if not patients:
-            print("\nThere are no patients in the system.")
+            print(Fore.RED + "\nThere are no patients in the system." + Style.RESET_ALL)
             return
         return patients[start_index:end_index]
 
@@ -306,7 +306,7 @@ class Utils:
 
         reports = self.controller.get_reports_list_by_username(username)
         if not reports:
-            print(f"\n{username} doesn't have reports yet.")
+            print(Fore.RED + f"\n{username} doesn't have reports yet." + Style.RESET_ALL)
             if self.controller.get_role_by_username(username_auth) == "MEDIC": 
                 while True:
                     new_report = input("\nDo you want to add one? (Y/n) ").strip().upper()
@@ -314,7 +314,7 @@ class Utils:
                         self.add_report(username)
                         return self.controller.get_reports_list_by_username(username)
                     elif new_report == 'N': return
-                    else: print("Invalid choice!")
+                    else: print(Fore.RED + "Invalid choice!" + Style.RESET_ALL)
         else: return reports[start_index:end_index]
     
     def get_page_treatplan(self, page_index, username):
@@ -338,7 +338,7 @@ class Utils:
 
         treats = self.controller.get_treatplan_list_by_username(username)
         if not treats:
-            print(f"\n{username} doesn't have any treatment plan yet.")
+            print(Fore.RED + f"\n{username} doesn't have any treatment plan yet." + Style.RESET_ALL)
             if self.controller.get_role_by_username(username_auth) == "MEDIC":
                 while True:
                     new_treat = input("\nDo you want to add one? (Y/n) ").strip().upper()
@@ -346,7 +346,7 @@ class Utils:
                         self.add_treatment_plan(username)
                         return self.controller.get_treatplan_list_by_username(username)
                     elif new_treat == 'N': return
-                    else: print("Invalid choice!")
+                    else: print(Fore.RED + "Invalid choice!" + Style.RESET_ALL)
         else: return treats[start_index:end_index]
 
     def display_records(self, username):
@@ -393,8 +393,8 @@ class Utils:
                         print("Exiting...")
                         break
                     else:
-                        print("Invalid input. Please try again. \n")
-                except: print("invalid input!")
+                        print(Fore.RED + "Invalid input. Please try again. \n" + Style.RESET_ALL)
+                except: print(Fore.RED + "Invalid input!" + Style.RESET_ALL)
             else: break
 
     def display_reports(self, username):
@@ -450,8 +450,8 @@ class Utils:
                             if 0 <= selection_index < len(pagereports):
                                 self.show_report_details(pagereports[selection_index])
                     else:
-                        print("Invalid input. Please try again. \n")
-                except: print("invalid input!")
+                        print(Fore.RED + "Invalid input. Please try again. \n" + Style.RESET_ALL)
+                except: print(Fore.RED + "Invalid input!" + Style.RESET_ALL)
             else: break     
 
     def display_treats(self, username):
@@ -507,8 +507,8 @@ class Utils:
                         if 0 <= selection_index < len(treats):
                             self.show_treatment_plan_details(pagetreats[selection_index])
                     else:
-                        print("Invalid input. Please try again. \n")
-                except: print("invalid input!")
+                        print(Fore.RED + "Invalid input. Please try again. \n" + Style.RESET_ALL)
+                except: print(Fore.RED + "Invalid input!" + Style.RESET_ALL)
             else: break
 
     def show_page(self, list, flag, username):
@@ -583,7 +583,7 @@ class Utils:
             patient(Patient): Patient object containing patient details (username, name, last name, age, place of birth, residence).
         """
 
-        print("\nPatient Details:")
+        print(Fore.CYAN + "\nPatient Details:" + Style.RESET_ALL)
         print(f"Username: {patient.get_username()}")
         print(f"Name: {patient.get_name()}")
         print(f"Last Name: {patient.get_lastname()}")
@@ -603,8 +603,8 @@ class Utils:
         medic = self.controller.get_medic_by_username(report.get_username_medic())
 
         print(f"\nReport issued on {report.get_date()} by the medic {medic.get_name()} {medic.get_lastname()}:")
-        print(f"\nAnalyses: {report.get_analyses()}")
-        print(f"\nDiagnosis: {report.get_diagnosis()}")
+        print(f"Analyses: {report.get_analyses()}")
+        print(f"Diagnosis: {report.get_diagnosis()}")
         input("\nPress Enter to exit\n")
 
     def show_treatment_plan_details(self, treat):
@@ -623,9 +623,9 @@ class Utils:
 
         while True:
             print(f"\nTreatment plan issued on {treat.get_date()} by the medic {medic.get_name()} {medic.get_lastname()}:")
-            print(f"\nDescription: {treat.get_description()}")
-            print(f"\nTreatment plan's start: {treat.get_start_date()}")
-            print(f"\nTreatment plan's end: {treat.get_end_date()}")
+            print(f"Description: {treat.get_description()}")
+            print(f"Treatment plan's start: {treat.get_start_date()}")
+            print(f"Treatment plan's end: {treat.get_end_date()}")
             if role == "MEDIC":
                 action = input("\nEnter 'u' to update, or 'q' to quit: \n")
                 if action == "u" or action == "U":
@@ -634,7 +634,7 @@ class Utils:
                     print("Going back...\n")
                     break
                 else:
-                    print("Invalid input. Please try again. \n")
+                    print(Fore.RED + "Invalid input. Please try again. \n" + Style.RESET_ALL)
             else:
                 input("\nPress Enter to exit\n") 
                 break
@@ -647,20 +647,26 @@ class Utils:
             treat (TreatmentPlan): The treatment plan object to be updated.
             medic_username (str): The username of the medic updating the treatment plan.
         """
-
+        while True:
+            password = input("Insert your password in order to proceed with the update: ")
+            if not self.controller.check_passwd(medic_username, password):
+                print(Fore.RED + "\nWrong password submitted. Try again...\n" + Style.RESET_ALL)
+            else:
+                break
+        
         print("\nEnter new treatment plan details (click Enter to keep current values):")
         new_description = input(f"Description ({treat.get_description()}): ").strip() or treat.get_description()
         while True:
             new_start_date = input(f"Start date ({treat.get_start_date()}): ").strip() or str(treat.get_start_date())
             if self.controller.check_tpdate_format(new_start_date, 1): break
-            else: print("Invalid date or incorrect format.")
+            else: print(Fore.RED + "Invalid date or incorrect format." + Style.RESET_ALL)
             
         while True:
             new_end_date = input(f"End date ({treat.get_end_date()}): ").strip() or str(treat.get_end_date())
             if self.controller.check_tpdate_format(new_end_date, 1): 
                 if self.controller.check_date_order(new_start_date, new_end_date): break
-                else: print("\nThe second date cannot come before the first date!")
-            else: print("Invalid date or incorrect format.")
+                else: print(Fore.RED + "\nThe second date cannot come before the first date!" + Style.RESET_ALL)
+            else: print(Fore.RED + "Invalid date or incorrect format." + Style.RESET_ALL)
 
         if new_description != treat.get_description() or new_start_date != treat.get_start_date() or new_end_date != treat.get_end_date():
             try:
@@ -676,9 +682,9 @@ class Utils:
                 treat.set_start_date(new_start_date)
                 treat.set_end_date(new_end_date)
                 treat.save()
-                print("Treatment plan updated successfully.")
+                print(Fore.GREEN +"Treatment plan updated successfully." + Style.RESET_ALL)
             except Exception as e:
-                print("An error occurred while updating the treatment plan:", e)
+                print(Fore.RED + f"An error occurred while updating the treatment plan: {e}" + Style.RESET_ALL)
         else:
             print("No changes made to the treatment plan.")
 
@@ -696,6 +702,13 @@ class Utils:
         user = self.session.get_user()
         username_med = user.get_username()
 
+        while True:
+            password = input("\nInsert your password in order to proceed with the update: ")
+            if not self.controller.check_passwd(username_med, password):
+                print(Fore.RED + "\nWrong password submitted. Try again...\n" + Style.RESET_ALL)
+            else:
+                break
+
         print("\nInsert the information regarding the new report...")
     
         analysis = input("\nInsert analysis: ")
@@ -709,9 +722,9 @@ class Utils:
         result_code = self.controller.insert_report(username, username_med, analysis, diagnosis)
         
         if result_code == 0:
-            print("\nNew report has been saved correctly.")
+            print(Fore.GREEN + "\nNew report has been saved correctly." + Style.RESET_ALL)
         else:
-            print("\nInternal error!")
+            print(Fore.RED + "\nInternal error!" + Style.RESET_ALL)
 
     def add_treatment_plan(self, username):
         """
@@ -727,6 +740,13 @@ class Utils:
         user = self.session.get_user()
         username_med = user.get_username()
 
+        while True:
+            password = input("\nInsert your password in order to proceed with the update: ")
+            if not self.controller.check_passwd(username_med, password):
+                print(Fore.RED + "\nWrong password submitted. Try again...\n" + Style.RESET_ALL)
+            else:
+                break
+
         print("\nInsert the information regarding the new treatment plan...")
     
         description = input("\nInsert description: ")
@@ -739,15 +759,15 @@ class Utils:
                 while True:
                     start_date = input("\nEnter the starting date (YYYY-MM-DD): ")
                     if self.controller.check_tpdate_format(start_date): break
-                    else: print("Invalid date or incorrect format.")
+                    else: print(Fore.RED + "Invalid date or incorrect format." + Style.RESET_ALL)
                 break
-            else: print("invalid input!") 
+            else: print(Fore.RED + "Invalid input!" + Style.RESET_ALL) 
         while True:
             end_date = input("\nEnter the ending date (YYYY-MM-DD): ")
             if self.controller.check_tpdate_format(end_date):
                 if self.controller.check_date_order(start_date, end_date): break
-                else: print("\nThe second date cannot come before the first date!")
-            else: print("Invalid date or incorrect format.")
+                else: print(Fore.RED + "\nThe second date cannot come before the first date!" + Style.RESET_ALL)
+            else: print(Fore.RED + "Invalid date or incorrect format." + Style.RESET_ALL)
         
         try:
             from_address_medic= self.controller.get_public_key_by_username(username_med)
@@ -757,6 +777,6 @@ class Utils:
         result_code = self.controller.insert_treatment_plan(username, username_med, description, start_date, end_date)
 
         if result_code == 0:
-            print("\nNew treatment plan has been saved correctly.")
+            print(Fore.GREEN + "\nNew treatment plan has been saved correctly." + Style.RESET_ALL)
         else:
-            print("\nInternal error!")
+            print(Fore.RED + "\nInternal error!" + Style.RESET_ALL)

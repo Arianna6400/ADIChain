@@ -1,6 +1,7 @@
 import os
 import time
 import json
+from colorama import Fore, Style, init
 from controllers.deploy_controller import DeployController
 from session.logging import log_msg, log_error
 from web3 import Web3
@@ -10,6 +11,9 @@ class ActionController:
     ActionController interacts with the Ethereum blockchain through methods defined in the contract.
     Connection with provider is established thanks to DeployController and Web3.
     """
+
+    init(convert=True)
+
     def __init__(self, http_provider='http://127.0.0.1:8545'):
         """
         Initialize the ActionController to interact with an Ethereum blockchain.
@@ -21,7 +25,7 @@ class ActionController:
         #http://127.0.0.1:8545
         self.http_provider = http_provider
         self.w3 = Web3(Web3.HTTPProvider(self.http_provider))
-        assert self.w3.is_connected(), "Failed to connect to Ethereum node."
+        assert self.w3.is_connected(), Fore.RED + "Failed to connect to Ethereum node." + Style.RESET_ALL
         self.load_contract()
 
     def load_contract(self):
@@ -41,7 +45,7 @@ class ActionController:
                 log_error("Contract address or ABI not found. Please deploy the contract.")
         except FileNotFoundError:
             log_error("Contract files not found. Deploy contract first.")
-            print("Contract files not found. Deploy contract first.")
+            print(Fore.RED + "Contract files not found. Deploy contract first." + Style.RESET_ALL)
             self.contract = None
 
     def deploy_and_initialize(self, contract_source_path='HealthCareRecords.sol'):
@@ -63,7 +67,7 @@ class ActionController:
             log_msg(f"Contract deployed at {self.contract.address} and initialized.")
         except Exception as e:
             log_error(str(e))
-            print("An error occurred during deployment.")
+            print(Fore.RED + "An error occurred during deployment." + Style.RESET_ALL)
         
     def read_data(self, function_name, *args):
         """
@@ -155,7 +159,7 @@ class ActionController:
             ValueError: If no function is available for the specified entity type or the from_address is invalid.
         """
         if not from_address:
-            raise ValueError("A valid Ethereum address must be provided as 'from_address'.")
+            raise ValueError(Fore.RED + "A valid Ethereum address must be provided as 'from_address'." + Style.RESET_ALL)
         entity_functions = {
             'medic': 'addMedic',
             'patient': 'addPatient',
@@ -163,7 +167,7 @@ class ActionController:
         }
         function_name = entity_functions.get(entity_type)
         if not function_name:
-            raise ValueError(f"No function available for entity type {entity_type}")
+            raise ValueError(Fore.RED + f"No function available for entity type {entity_type}" + Style.RESET_ALL)
         return self.write_data(function_name, from_address, *args)
 
     def update_entity(self, entity_type, *args, from_address):
@@ -182,7 +186,7 @@ class ActionController:
             ValueError: If no function is available for the specified entity type or the from_address is invalid.
         """
         if not from_address:
-            raise ValueError("A valid Ethereum address must be provided as 'from_address'.")
+            raise ValueError(Fore.RED + "A valid Ethereum address must be provided as 'from_address'." + Style.RESET_ALL)
         update_functions = {
             'medic': 'updateMedic',
             'patient': 'updatePatient',
@@ -190,7 +194,7 @@ class ActionController:
         }
         function_name = update_functions.get(entity_type)
         if not function_name:
-            raise ValueError(f"No function available for entity type {entity_type}")
+            raise ValueError(Fore.RED + f"No function available for entity type {entity_type}" + Style.RESET_ALL)
         return self.write_data(function_name, from_address, *args)
 
     def manage_report(self, action, *args, from_address):
@@ -209,13 +213,13 @@ class ActionController:
             ValueError: If no function is available for the specified action or the from_address is invalid.
         """
         if not from_address:
-            raise ValueError("A valid Ethereum address must be provided as 'from_address'.")
+            raise ValueError(Fore.RED + "A valid Ethereum address must be provided as 'from_address'." + Style.RESET_ALL)
         report_functions = {
             'add': 'addReport',
         }
         function_name = report_functions.get(action)
         if not function_name:
-            raise ValueError(f"No function available for action {action}")
+            raise ValueError(Fore.RED + f"No function available for action {action}" + Style.RESET_ALL)
         return self.write_data(function_name, from_address, *args)
 
     def manage_treatment_plan(self, action, *args, from_address):
@@ -234,12 +238,12 @@ class ActionController:
             ValueError: If no function is available for the specified action or the from_address is invalid.
         """
         if not from_address:
-            raise ValueError("A valid Ethereum address must be provided as 'from_address'.")
+            raise ValueError(Fore.RED + "A valid Ethereum address must be provided as 'from_address'." + Style.RESET_ALL)
         treatment_plan_functions = {
             'add': 'addTreatmentPlan',
             'update': 'updateTreatmentPlan'
         }
         function_name = treatment_plan_functions.get(action)
         if not function_name:
-            raise ValueError(f"No function available for action {action}")
+            raise ValueError(Fore.RED + f"No function available for action {action}" + Style.RESET_ALL)
         return self.write_data(function_name, from_address, *args)

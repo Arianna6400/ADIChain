@@ -1,10 +1,13 @@
 from models.model_base import Model
+from colorama import Fore, Style, init
 
 class Patients(Model):
     """
     This class represents the Patients model that stores personal and medical information about patients,
     extending the functionality provided by the Model class.
     """
+
+    init(convert=True)
 
     def __init__(self, username, name, lastname, birthday, birth_place, residence, autonomous, phone):
         """
@@ -94,10 +97,9 @@ class Patients(Model):
                                 (self.name, self.lastname, self.birthday, self.birth_place, self.residence, self.phone, self.username))
             self.conn.commit()
             self.username = self.cur.lastrowid # Update the username with the last inserted row ID if new record
-            print('Information saved correctly!\n')
-        except Exception as e: 
-            print (e)
-            print('Internal error!')
+            print(Fore.GREEN + 'Information saved correctly!\n' + Style.RESET_ALL)
+        except Exception: 
+            print(Fore.RED + 'Internal error!' + Style.RESET_ALL)
 
     def delete(self):
         """
