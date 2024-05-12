@@ -367,7 +367,7 @@ class Utils:
 
                 table = Table(title="Patients")
 
-                columns = ["Username", "Name", "Last Name", "Date of Birth", "Place of Birth","Residence"]
+                columns = ["Username", "Name", "Last Name", "Date of Birth", "Place of Birth", "Residence"]
 
                 for column in columns:
                     table.add_column(column)
@@ -416,7 +416,7 @@ class Utils:
                 possessive_suffix = self.controller.possessive_suffix(username)
                 table = Table(title=f"{username}{possessive_suffix} reports")
 
-                columns = ["n° report", "date", "medic", "analysis", "diagnosis"]
+                columns = ["N° report", "Date", "Medic", "Analysis", "Diagnosis"]
 
                 for column in columns:
                     table.add_column(column)
@@ -473,7 +473,7 @@ class Utils:
                 possessive_suffix = self.controller.possessive_suffix(username)
                 table = Table(title=f"{username}{possessive_suffix} treatment plans")
 
-                columns = ["n° treatment plan", "date", "medic", "description", "start_date", "end_date"]
+                columns = ["N° treatment plan", "Insertion date", "Medic", "Description", "Start date", "End date"]
                 
                 for column in columns:
                     table.add_column(column)
