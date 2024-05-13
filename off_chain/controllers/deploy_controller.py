@@ -1,7 +1,6 @@
 import os
 import random
 from colorama import Fore, Style, init
-import solcx
 from web3 import Web3
 from solcx import compile_standard, get_installed_solc_versions, install_solc
 

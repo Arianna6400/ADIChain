@@ -1,6 +1,6 @@
 import re
-from colorama import Fore, Style, init
 from datetime import datetime
+from colorama import Fore, Style, init
 from db.db_operations import DatabaseOperations
 from session.session import Session
 from models.credentials import Credentials
