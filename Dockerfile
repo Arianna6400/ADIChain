@@ -4,6 +4,9 @@ FROM python:3.11
 #Helps not exposing warnings on the container
 ENV PYTHONWARNINGS="ignore"
 
+#Helps exposing colorized output
+ENV TERM xterm-256color
+
 #Installing pip requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -15,5 +18,5 @@ COPY . /progetto
 #Exposing port where our container will run
 EXPOSE 8000
 
-CMD [ "python", "-W", "ignore", "/progetto/off_chain/main.py" ]
+CMD [ "python", "/progetto/off_chain/main.py" ]
 
