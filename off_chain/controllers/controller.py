@@ -277,7 +277,7 @@ class Controller:
             return"'s"
         else:
             return "'"
-
+        
     def check_username(self, username):
         return self.db_ops.check_username(username)
     

@@ -7,7 +7,9 @@ import datetime
 import sqlite3
 import os
 import hashlib
+import base64
 
+from cryptography.fernet import Fernet
 from colorama import Fore, Style, init
 from config import config
 from models.medics import Medics
@@ -121,6 +123,7 @@ class DatabaseOperations:
         """
         try:
             if self.check_username(username) == 0:
+                obfuscated_private_k = self.encrypt_private_k(private_key, hash_password)
                 hashed_passwd = self.hash_function(hash_password)
                 self.cur.execute("""
                                 INSERT INTO Credentials
@@ -130,7 +133,7 @@ class DatabaseOperations:
                                     hashed_passwd,
                                     role,
                                     public_key,
-                                    private_key
+                                    obfuscated_private_k
                                 ))
                 self.conn.commit()
                 return 0
@@ -177,8 +180,44 @@ class DatabaseOperations:
         if count_patients == 0 and count_medics == 0 and count_caregivers == 0:
             return 0 
         else:
-            return -1  
+            return -1 
         
+    def encrypt_private_k(self, private_key, passwd):
+        """
+        Encrypts a private key using a password.
+
+        Args:
+            private_key (str): The private key to encrypt.
+            passwd (str): The password to use for encryption.
+
+        Returns:
+            bytes: The encrypted private key.
+        """
+
+        passwd_hash = hashlib.sha256(passwd.encode('utf-8')).digest()
+        key = base64.urlsafe_b64encode(passwd_hash)
+        cipher_suite = Fernet(key)
+        ciphertext = cipher_suite.encrypt(private_key.encode('utf-8'))
+        return ciphertext
+        
+    def decrypt_private_k(self, encrypted_private_k, passwd):
+        """
+        Decrypts an encrypted private key using a password.
+
+        Args:
+            encrypted_private_k (bytes): The encrypted private key.
+            passwd (str): The password used for encryption.
+
+        Returns:
+            str: The decrypted private key.
+        """
+
+        passwd_hash = hashlib.sha256(passwd.encode('utf-8')).digest()
+        key = base64.urlsafe_b64encode(passwd_hash)
+        cipher_suite = Fernet(key)
+        plaintext = cipher_suite.decrypt(encrypted_private_k.decode('utf-8'))
+        return plaintext.decode('utf-8')
+    
     def check_unique_email(self, mail):
         """
         Checks if an email address is unique within the Medics table in the database.
@@ -572,7 +611,7 @@ class DatabaseOperations:
             bool: True if all provided credentials match the stored values, False otherwise.
         """
         creds = self.get_creds_by_username(username)
-        if(creds is not None and self.check_passwd(username, password) and creds.get_public_key() == public_key and private_key == creds.get_private_key()):
+        if(creds is not None and self.check_passwd(username, password) and creds.get_public_key() == public_key and private_key == self.decrypt_private_k(creds.get_private_key(), password)):
             return True
         else:
             return False
@@ -630,11 +669,13 @@ class DatabaseOperations:
         creds = self.get_creds_by_username(username)
         if creds is not None:
             new_hash = self.hash_function(new_pass)
+            private_key = self.decrypt_private_k(creds.get_private_key(), old_pass)
+            new_encrypted_priv_k = self.encrypt_private_k(private_key, new_pass)
             try:
                 self.cur.execute("""
                                 UPDATE Credentials
-                                SET hash_password = ?
-                                WHERE username = ?""", (new_hash, username))
+                                SET hash_password = ?, private_key = ?
+                                WHERE username = ?""", (new_hash, new_encrypted_priv_k, username))
                 self.conn.commit()
                 return 0
             except Exception as ex:

@@ -416,14 +416,14 @@ class Utils:
                 possessive_suffix = self.controller.possessive_suffix(username)
                 table = Table(title=f"{username}{possessive_suffix} reports")
 
-                columns = ["N° report", "Date", "Medic", "Analysis", "Diagnosis"]
+                columns = ["N° report", "Date", "Medic", "Analysis"]
 
                 for column in columns:
                     table.add_column(column)
 
                 for i, report in enumerate(pagereports, start=1):
                     medic = self.controller.get_medic_by_username(report.get_username_medic())
-                    row = [str(i), report.get_date(), f"{medic.get_name()} {medic.get_lastname()}", report.get_analyses(), report.get_diagnosis()]
+                    row = [str(i), report.get_date(), f"{medic.get_name()} {medic.get_lastname()}", report.get_analyses()]
                     table.add_row(*row, style = 'bright_green')
 
                 console = Console()
@@ -473,14 +473,14 @@ class Utils:
                 possessive_suffix = self.controller.possessive_suffix(username)
                 table = Table(title=f"{username}{possessive_suffix} treatment plans")
 
-                columns = ["N° treatment plan", "Insertion date", "Medic", "Description", "Start date", "End date"]
+                columns = ["N° treatment plan", "Insertion date", "Medic", "Start date", "End date"]
                 
                 for column in columns:
                     table.add_column(column)
 
                 for i, treat in enumerate(pagetreats, start=1):
                     medic = self.controller.get_medic_by_username(treat.get_username_medic())
-                    row = [str(i), treat.get_date(), f"{medic.get_name()} {medic.get_lastname()}", treat.get_description(), treat.get_start_date(), treat.get_end_date()]
+                    row = [str(i), treat.get_date(), f"{medic.get_name()} {medic.get_lastname()}", treat.get_start_date(), treat.get_end_date()]
                     table.add_row(*row, style = 'bright_green')
 
                 console = Console()
@@ -677,7 +677,8 @@ class Utils:
                                                                 new_end_date, from_address=from_address_medic)
                 except Exception as e:
                     log_error(e)
-                updated_description = f"{treat.get_description()}. \nDescription updated on {self.today_date} by the medic {medic_username}: {new_description}"
+                medic = self.controller.get_medic_by_username(medic_username)
+                updated_description = f"{treat.get_description()}. \nDescription updated on {self.today_date} by the medic {medic.get_name()} {medic.get_lastname()}: {new_description}"
                 treat.set_description(updated_description)
                 treat.set_start_date(new_start_date)
                 treat.set_end_date(new_end_date)
@@ -710,10 +711,18 @@ class Utils:
                 break
 
         print("\nInsert the information regarding the new report...")
-    
-        analysis = input("\nInsert analysis: ")
-        diagnosis = input("\nInsert diagnosis: ")
+        while True:
+            analysis = input("\nInsert analysis: ")
+            if self.controller.check_null_info(analysis):
+                break 
+            else: print(Fore.RED + "\nYou must enter report's informations" + Style.RESET_ALL)
+        while True:
+            diagnosis = input("\nInsert diagnosis: ")
+            if self.controller.check_null_info(diagnosis):
+                break
+            else: print(Fore.RED + "\nYou must enter report's informations" + Style.RESET_ALL)
 
+           
         try:
             from_address_medic = self.controller.get_public_key_by_username(username_med)
             self.act_controller.manage_report('add', analysis, diagnosis, from_address=from_address_medic)
@@ -748,8 +757,13 @@ class Utils:
                 break
 
         print("\nInsert the information regarding the new treatment plan...")
-    
-        description = input("\nInsert description: ")
+
+        while True:
+            description = input("\nInsert description: ")
+            if self.controller.check_null_info(description):
+                break
+            else: print(Fore.RED + "\nYou must enter report's informations" + Style.RESET_ALL)
+
         while True:
             quest = input("\nDoes the patient have to start the plan today? (Y/n) ").strip().upper()
             if quest == "Y": 
