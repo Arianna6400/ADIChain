@@ -12,5 +12,5 @@ COPY . /progetto
 #Exposing port where our container will run
 EXPOSE 8000
 
-CMD [ "python", "/progetto/off_chain/main.py" ]
+CMD [ "python", "-W", "ignore", "/progetto/off_chain/main.py" ]
 

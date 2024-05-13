@@ -1,8 +1,11 @@
 import os
 import random
 from colorama import Fore, Style, init
+import solcx
 from web3 import Web3
 from solcx import compile_standard, get_installed_solc_versions, install_solc
+
+solcx.install_solc('0.8.0')
 
 class DeployController:
     """
@@ -12,7 +15,7 @@ class DeployController:
 
     init(convert=True)
 
-    def __init__(self, http_provider='http://127.0.0.1:8545', solc_version='0.8.0'):
+    def __init__(self, http_provider='http://ganache:8545', solc_version='0.8.0'):
         """
         Initializes the deployment controller with Ethereum HTTP provider and Solidity 
         compiler version.

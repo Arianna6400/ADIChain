@@ -184,8 +184,7 @@ class CommandLineInterface:
             while True:
                 while True:
                     password = getpass.getpass('Password: ')
-                    passwd_regex = r'^.{8,50}$'
-                    #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
+                    passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
                     if not re.fullmatch(passwd_regex, password):
                         print(Fore.RED + 'Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n' + Style.RESET_ALL)
                     else: break

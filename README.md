@@ -76,6 +76,12 @@ Then, make sure you are placed in the right directory:
 cd ADIChain
 ```
 
+You can run the following command if you want to re-build Docker's image:
+
+```bash
+docker-compose build --no-cache
+```
+
 Now, you can initiate the process of creating and starting the Docker containers required to host the Ethereum blockchain by running the following simple command:
 
 ```bash
@@ -136,6 +142,7 @@ In order to make registration tests easy, we have included some interesting scri
 1. `extract.sh` -> Allows you to extract the Ganache logs, through Docker-compose, to access both the *public key* and the *private key* associated with the contract being deployed.
 2. `gen_email.sh` -> Generates a list of random emails, with the domain '**adichain.com**', associated with a username that is also randomic.
 3. `gen_phone.sh` -> Generates a list of random phone numbers, both landline and mobile, with Italian prefixes.
+4. `gen_password.sh` -> Generates a list of random passwords according to the **Regex** format required by the system.
 
 To run the scripts, you need to go to the project's `/scripts` directory. After that, you need to run the following command to make the scripts executable:
 

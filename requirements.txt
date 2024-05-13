@@ -7,3 +7,4 @@ click
 rich
 colorama
 faker
+cryptography

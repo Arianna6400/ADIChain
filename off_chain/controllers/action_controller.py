@@ -14,7 +14,7 @@ class ActionController:
 
     init(convert=True)
 
-    def __init__(self, http_provider='http://127.0.0.1:8545'):
+    def __init__(self, http_provider='http://ganache:8545'):
         """
         Initialize the ActionController to interact with an Ethereum blockchain.
 
