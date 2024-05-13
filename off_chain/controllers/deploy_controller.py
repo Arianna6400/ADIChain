@@ -5,8 +5,6 @@ import solcx
 from web3 import Web3
 from solcx import compile_standard, get_installed_solc_versions, install_solc
 
-solcx.install_solc('0.8.0')
-
 class DeployController:
     """
     DeployController handles initialization, compilation and deployment for Solidity contract, establishing 

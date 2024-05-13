@@ -647,7 +647,7 @@ class Utils:
             medic_username (str): The username of the medic updating the treatment plan.
         """
         while True:
-            password = input("Insert your password in order to proceed with the update: ")
+            password = getpass.getpass("Insert your password in order to proceed with the update: ")
             if not self.controller.check_passwd(medic_username, password):
                 print(Fore.RED + "\nWrong password submitted. Try again...\n" + Style.RESET_ALL)
             else:
@@ -703,7 +703,7 @@ class Utils:
         username_med = user.get_username()
 
         while True:
-            password = input("\nInsert your password in order to proceed with the update: ")
+            password = getpass.getpass("\nInsert your password in order to proceed with the update: ")
             if not self.controller.check_passwd(username_med, password):
                 print(Fore.RED + "\nWrong password submitted. Try again...\n" + Style.RESET_ALL)
             else:
@@ -749,7 +749,7 @@ class Utils:
         username_med = user.get_username()
 
         while True:
-            password = input("\nInsert your password in order to proceed with the update: ")
+            password = getpass.getpass("\nInsert your password in order to proceed with the update: ")
             if not self.controller.check_passwd(username_med, password):
                 print(Fore.RED + "\nWrong password submitted. Try again...\n" + Style.RESET_ALL)
             else:
