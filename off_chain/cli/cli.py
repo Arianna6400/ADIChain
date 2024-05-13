@@ -120,8 +120,8 @@ class CommandLineInterface:
         attempts = 0
         while True:
             public_key = input('Public Key: ')
-            private_key = input('Private Key: ')
-            confirm_private_key = input('Confirm Private Key: ')
+            private_key = getpass.getpass('Private Key: ')
+            confirm_private_key = getpass.getpass('Confirm Private Key: ')
             
             if private_key == confirm_private_key:
                 if self.controller.check_keys(public_key, private_key):
@@ -183,16 +183,14 @@ class CommandLineInterface:
         
             while True:
                 while True:
-                    password = input('Password: ')
-                    #password = getpass.getpass('Password: ')
+                    password = getpass.getpass('Password: ')
                     passwd_regex = r'^.{8,50}$'
                     #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
                     if not re.fullmatch(passwd_regex, password):
                         print(Fore.RED + 'Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n' + Style.RESET_ALL)
                     else: break
 
-                confirm_password = input('Confirm password: ')
-                #confirm_password = getpass.getpass('Confirm Password: ')
+                confirm_password = getpass.getpass('Confirm Password: ')
                 
                 if password != confirm_password:
                     print(Fore.RED + 'Password and confirmation do not match. Try again\n' + Style.RESET_ALL)
@@ -203,11 +201,11 @@ class CommandLineInterface:
             if reg_code == 0:
                 print(Fore.GREEN + 'You have succesfully registered!\n' + Style.RESET_ALL)
                 if role == 'P':
-                    self.insert_patient_info(username, user_role)
+                    self.insert_patient_info(username)
                 elif role == 'M':
-                    self.insert_medic_info(username, user_role)
+                    self.insert_medic_info(username)
                 elif role == 'C':
-                    self.insert_caregiver_info(username, user_role)
+                    self.insert_caregiver_info(username)
             elif reg_code == -1:
                 print(Fore.RED + 'Your username has been taken.\n' + Style.RESET_ALL)
         
@@ -215,7 +213,7 @@ class CommandLineInterface:
             print(Fore.RED + 'Sorry, but the provided public and private key do not match to any account\n' + Style.RESET_ALL)
             return 
 
-    def insert_patient_info(self, username, role, autonomous_flag=1):
+    def insert_patient_info(self, username, autonomous_flag=1):
         """
         This method guides users through the process of providing personal information.
         It validates user inputs and ensures data integrity before inserting the 
@@ -267,7 +265,7 @@ class CommandLineInterface:
         elif insert_code == -1:
             print(Fore.RED + 'Internal error!' + Style.RESET_ALL)
 
-    def insert_medic_info(self, username, role):
+    def insert_medic_info(self, username):
         """
         This method assists medics in providing their personal information. It validates 
         user inputs and ensures data integrity before inserting the information into 
@@ -318,7 +316,7 @@ class CommandLineInterface:
         elif insert_code == -1:
             print(Fore.RED + 'Internal error!' + Style.RESET_ALL)
 
-    def insert_caregiver_info(self, username, role):
+    def insert_caregiver_info(self, username):
         """
         This method facilitates the process of caregivers providing their personal 
         information and the patient's information the are taking care of. It validates user inputs and ensures data 
@@ -351,7 +349,7 @@ class CommandLineInterface:
             username_patient = input('Insert the patient username: ')
             if self.controller.check_username(username_patient) == 0: break
             else: print(Fore.RED + 'Your username has been taken.\n' + Style.RESET_ALL)
-        self.insert_patient_info(username_patient, "PATIENT", 0)
+        self.insert_patient_info(username_patient, 0)
 
         while True:
             relationship = input('What kind of relationship there is between you and the patient: ')
@@ -384,11 +382,9 @@ class CommandLineInterface:
 
             if self.session.get_timeout_left() <= 0 and self.controller.check_attempts():
                 public_key = input('Insert public key: ')
-                private_key = input('Insert private key: ')
-                #private_key = getpass.getpass('Private Key: ')
+                private_key = getpass.getpass('Private Key: ')
                 username = input('Insert username: ')
-                passwd = input('Insert password: ')
-                #passwd = getpass.getpass('Insert password: ')
+                passwd = getpass.getpass('Insert password: ')
 
                 login_code, user_type = self.controller.login(username, passwd, public_key, private_key)
 

@@ -8,6 +8,7 @@ import datetime
 import math
 import re
 import click
+import getpass
 from colorama import Fore, Style, init
 from rich.console import Console
 from rich.table import Table
@@ -16,8 +17,7 @@ from controllers.controller import Controller
 from controllers.action_controller import ActionController
 from session.session import Session
 from session.logging import log_error
-from models.treatmentplan import TreatmentPlans
-from models.patients import Patients
+
 
 
 class Utils:
@@ -78,11 +78,10 @@ class Utils:
                         break
                     else:
                         while True:
-                            new_passwd = input('New password: ')
-                            new_confirm_password = input('Confirm new password: ')
+                            new_passwd = getpass.getpass('New password: ')
+                            new_confirm_password = getpass.getpass('Confirm new password: ')
 
-                            passwd_regex = r'^.{8,50}$'
-                            #passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
+                            passwd_regex = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?!.*\s).{8,100}$'
                             if not re.fullmatch(passwd_regex, new_passwd):
                                 print(Fore.RED + 'Password must contain at least 8 characters, at least one digit, at least one uppercase letter, one lowercase letter, and at least one special character.\n' + Style.RESET_ALL)    
                             elif new_passwd != new_confirm_password:

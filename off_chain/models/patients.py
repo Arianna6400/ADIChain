@@ -98,8 +98,8 @@ class Patients(Model):
             self.conn.commit()
             self.username = self.cur.lastrowid # Update the username with the last inserted row ID if new record
             print(Fore.GREEN + 'Information saved correctly!\n' + Style.RESET_ALL)
-        except Exception: 
-            print(Fore.RED + 'Internal error!' + Style.RESET_ALL)
+        except Exception as e: 
+            print(Fore.RED + 'Internal error!' + Style.RESET_ALL, e)
 
     def delete(self):
         """
