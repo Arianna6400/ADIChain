@@ -574,9 +574,13 @@ class CommandLineInterface:
                     self.util.change_passwd(username)
 
                 elif choice == 5:
-                    print(Fore.CYAN + 'Bye Bye!' + Style.RESET_ALL)
-                    self.session.reset_session()
-                    return
+                        confirm = input("\nDo you really want to leave? (Y/n): ").strip().upper()
+                        if confirm == 'Y':
+                            print(Fore.CYAN + "\nThank you for using the service!\n" + Style.RESET_ALL)
+                            self.session.reset_session()
+                            return
+                        else:
+                            print(Fore.RED + "Invalid choice! Please try again." + Style.RESET_ALL)
                 else:
                     print(Fore.RED + 'Wrong option. Please enter one of the options listed in the menu!' + Style.RESET_ALL)
 
