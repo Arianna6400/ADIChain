@@ -135,6 +135,8 @@ Upon the very first startup of the program, it will perform an application check
 Now, you can *register* a new account as a Doctor, Patient or Caregiver, or *login* if you are already enrolled, and start exploring every feature of our application.
 **Enjoy it!**
 
+> **NOTE:** If you want to test the entire application, you **need** to have both *public key* and *private key* once the deployment has been completed during the registration phase. In order to access those elements, you could run the `extract.sh`script described below, or you could connect your local Ganache to find them. We would like to highlight the fact that the extraction script is for **educational purposes only**. In a real-world context, it is strongly discoureged to use this solution for security purposes. 
+
 ### Bonus track: Scripts
 
 In order to make registration tests easy, we have included some interesting scripts:
