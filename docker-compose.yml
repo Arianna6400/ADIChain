@@ -18,7 +18,6 @@ services:
     tty: true
     depends_on:
       - ganache
-    restart: always
     command: >
       sh -c "
         echo 'Waiting for Ganache to be ready...';
