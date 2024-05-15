@@ -1,0 +1,24 @@
+username: arianna_agresta
+public: 0x45a6A4e2a0a5dd6D9D178361dfcCe4d84E39F328
+private: 0x8ccbb2f6bd2f5a83004148c5219aa57b720c27e126e1b95d8275be96b6e82e8b
+role: medic
+pass: u0xzwj5TtI+YhY5W
+
+username: andrea_visi
+public: 0x172b68d6440adE8dB01281652940204Ee84feF52
+private: 0xcf3f75e56cc7bcb8492692c111c59bc0e6bd523d8745c4e6c661a7c55fda2c59
+role: patient
+pass: To5sODRnPr+J2IFF
+
+username: alessio_giacconi
+public: 0x5Faa625aB6bdaBc90b6507B71fD7171403f609ed
+private: 0x9b823e8b3ea41d29b4a78a08375170d0e0e2f73129dfca71e74d6cfd18f6b739
+role: caregiver
+pass: BdEkyy+aq6pSHG22
+username_paziente: mauro_giuliani
+
+username: emanuele_biccheri
+public: 0xc7Cd2D64A94a8931740c4eE2D262AA056b78914E
+private: 0x0fdfec29486efd8068962601262e63311e93448267416d7a6dd18d0db7d8a90b
+role: patient
+pass: Nrnm49s6DJ+B4kMj

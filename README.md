@@ -133,6 +133,7 @@ Upon the very first startup of the program, it will perform an application check
 ![](https://github.com/Arianna6400/ADIChain/blob/master/docs/first_look.png)
 
 Now, you can *register* a new account as a Doctor, Patient or Caregiver, or *login* if you are already enrolled, and start exploring every feature of our application.
+You can find some test credentials in `credenziali_di_prova.txt`, inside this repository.
 **Enjoy it!**
 
 > **NOTE:** If you want to test the entire application, you **need** to have both *public key* and *private key* once the deployment has been completed during the registration phase. In order to access those elements, you could run the `extract.sh`script described below, or you could connect your local Ganache to find them. We would like to highlight the fact that the extraction script is for **educational purposes only**. In a real-world context, it is strongly discoureged to use this solution for security purposes. 
